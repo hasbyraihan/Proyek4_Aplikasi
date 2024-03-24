@@ -38,15 +38,17 @@ class DashboardScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 // Menambahkan foto dengan jarak bawah 20.0
-                SizedBox(height: 30.0),
+                // SizedBox(height: 30.0),
                 Container(
-                  margin: EdgeInsets.only(bottom: 20.0),
-                  child: Image.asset(
-                    'assets/images/logo.png', // Ganti dengan path foto Anda
-                    height: 350.0, // Sesuaikan tinggi foto sesuai kebutuhan
-                    fit: BoxFit.cover, // Atur cara foto diatur dalam container
+                  // margin: EdgeInsets.only(bottom: 20.0),
+                  child: Expanded(
+                    child: Image.asset(
+                      'assets/images/logo.png',
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ),
+
                 // Menambahkan kalimat "Selamat datang" di tengah
                 SizedBox(height: 100.0),
                 Text(
@@ -130,4 +132,3 @@ class MyPainter extends CustomPainter {
     return false;
   }
 }
-

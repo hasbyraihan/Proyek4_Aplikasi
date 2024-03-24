@@ -25,11 +25,15 @@ class Dashboard extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Color(0xFFC5E0CD),
         automaticallyImplyLeading: false,
-        leading: IconButton(
-          icon: Icon(Icons.help),
-          onPressed: () {
-            // Fungsi untuk menu FAQ
-          },
+        leading: Row(
+          children: [
+            IconButton(
+              icon: Icon(Icons.question_answer_outlined),
+              onPressed: () {
+                // Fungsi untuk menu FAQ
+              },
+            ),
+          ],
         ),
         actions: [
           Padding(
