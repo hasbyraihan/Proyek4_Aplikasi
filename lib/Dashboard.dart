@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_helloo_world/Faq.dart';
 
 void main() {
   runApp(MyDashboardApp());
@@ -20,7 +21,7 @@ class MyDashboardApp extends StatelessWidget {
 
 class Dashboard extends StatefulWidget {
   @override
-_DashboardState createState() => _DashboardState();
+  _DashboardState createState() => _DashboardState();
 }
 
 class _DashboardState extends State<Dashboard> {
@@ -36,7 +37,10 @@ class _DashboardState extends State<Dashboard> {
             IconButton(
               icon: Icon(Icons.question_answer_outlined),
               onPressed: () {
-                // Fungsi untuk menu FAQ
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => FAQ()),
+                ); // Fungsi untuk menu FAQ
               },
             ),
           ],
