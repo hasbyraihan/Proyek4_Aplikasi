@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_helloo_world/Faq.dart';
+import 'package:flutter_helloo_world/login.dart';
 
 void main() {
   runApp(MyDashboardApp());
@@ -117,31 +118,69 @@ class _DashboardState extends State<Dashboard> {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        backgroundColor: Colors.black, // Ubah warna background menjadi hitam
-        selectedItemColor:
-            Colors.black, // Ubah warna ikon yang dipilih menjadi putih
-        unselectedItemColor:
-            Colors.grey, // Ubah warna ikon yang tidak dipilih menjadi abu-abu
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: 'Notifications',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
+  currentIndex: _selectedIndex,
+  backgroundColor: Colors.black, // Ubah warna background menjadi hitam
+  selectedItemColor: Colors.black, // Ubah warna ikon yang dipilih menjadi putih
+  unselectedItemColor: Colors.grey, // Ubah warna ikon yang tidak dipilih menjadi abu-abu
+  onTap: (index) {
+    // Fungsi untuk menangani navigasi berdasarkan index yang dipilih
+    setState(() {
+      _selectedIndex = index;
+      // Navigasi ke halaman yang sesuai berdasarkan index
+      if (_selectedIndex == 3) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Login()),
+        );
+      } else {
+        // Implementasi navigasi ke halaman lain jika diperlukan
+      }
+    });
+  },
+  items: [
+    BottomNavigationBarItem(
+      icon: IconButton(
+        icon: Icon(Icons.home),
+        onPressed: () {
+          // Fungsi untuk menangani ketika item "Home" ditekan
+        },
       ),
+      label: 'Home',
+    ),
+    BottomNavigationBarItem(
+      icon: IconButton(
+        icon: Icon(Icons.search),
+        onPressed: () {
+          // Fungsi untuk menangani ketika item "Search" ditekan
+        },
+      ),
+      label: 'Search',
+    ),
+    BottomNavigationBarItem(
+      icon: IconButton(
+        icon: Icon(Icons.notifications),
+        onPressed: () {
+          // Fungsi untuk menangani ketika item "Notifications" ditekan
+        },
+      ),
+      label: 'Notifications',
+    ),
+    BottomNavigationBarItem(
+      icon: IconButton(
+        icon: Icon(Icons.person),
+        onPressed: () {
+          // Fungsi untuk menangani ketika item "Profile" ditekan
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Login()),
+          );
+        },
+      ),
+      label: 'Profile',
+    ),
+  ],
+),
+
     );
   }
 }
