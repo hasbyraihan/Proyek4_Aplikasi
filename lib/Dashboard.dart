@@ -18,7 +18,13 @@ class MyDashboardApp extends StatelessWidget {
   }
 }
 
-class Dashboard extends StatelessWidget {
+class Dashboard extends StatefulWidget {
+  @override
+_DashboardState createState() => _DashboardState();
+}
+
+class _DashboardState extends State<Dashboard> {
+  int _selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,7 +62,7 @@ class Dashboard extends StatelessWidget {
               SizedBox(height: 10),
               ContainerCardPopulation(
                 title: 'Populasi Warga',
-                malePopulation: 21523,
+                malePopulation: 20500,
                 femalePopulation: 13450,
               ),
               SizedBox(height: 10),
@@ -101,6 +107,32 @@ class Dashboard extends StatelessWidget {
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        backgroundColor: Colors.black, // Ubah warna background menjadi hitam
+        selectedItemColor:
+            Colors.black, // Ubah warna ikon yang dipilih menjadi putih
+        unselectedItemColor:
+            Colors.grey, // Ubah warna ikon yang tidak dipilih menjadi abu-abu
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: 'Search',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications),
+            label: 'Notifications',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
       ),
     );
   }
