@@ -56,9 +56,8 @@ class Dashboard extends StatelessWidget {
               SizedBox(height: 10),
               ContainerCardPopulation(
                 title: 'Populasi Warga',
-                totalPopulation: 20000,
-                malePopulation: 20000,
-                femalePopulation: 10000,
+                malePopulation: 21523,
+                femalePopulation: 13450,
               ),
               SizedBox(height: 10),
               ContainerCardCarousel(
@@ -106,7 +105,6 @@ class Dashboard extends StatelessWidget {
     );
   }
 }
-
 
 class ContainerCard extends StatelessWidget {
   final String title;
@@ -217,20 +215,20 @@ class ContainerCardCarousel extends StatelessWidget {
 
 class ContainerCardPopulation extends StatelessWidget {
   final String title;
-  final int totalPopulation;
   final int malePopulation;
   final int femalePopulation;
 
   const ContainerCardPopulation({
     Key? key,
     required this.title,
-    required this.totalPopulation,
     required this.malePopulation,
     required this.femalePopulation,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    int totalPopulation = malePopulation + femalePopulation;
+
     return Container(
       width: 380,
       height: 237,
@@ -255,18 +253,16 @@ class ContainerCardPopulation extends StatelessWidget {
           Expanded(
             child: Column(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _buildPopulationBox('Total', totalPopulation, Color(0xFF60AD77)),
-                  ],
-                ),
+                _buildPopulationBox(
+                    'Total', totalPopulation, Color(0xFF60AD77)),
                 SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _buildPopulationBox('Laki-laki', malePopulation, Color(0xFF60AD77)),
-                    _buildPopulationBox('Perempuan', femalePopulation, Color(0xFF60AD77)),
+                    _buildPopulationBox(
+                        'Laki-laki', malePopulation, Color(0xFF60AD77)),
+                    _buildPopulationBox(
+                        'Perempuan', femalePopulation, Color(0xFF60AD77)),
                   ],
                 ),
               ],
@@ -278,38 +274,38 @@ class ContainerCardPopulation extends StatelessWidget {
   }
 
   Widget _buildPopulationBox(String label, int population, Color color) {
-  return Container(
-    width: 150,
-    height: 60,
-    decoration: BoxDecoration(
-      color: color,
-      borderRadius: BorderRadius.circular(20),
-    ),
-    margin: EdgeInsets.all(5),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
+    return Container(
+      width: 150,
+      height: 50, // Sesuaikan tinggi dengan kebutuhan Anda
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      margin: EdgeInsets.all(5),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
+            textAlign: TextAlign.center,
           ),
-          textAlign: TextAlign.center,
-        ),
-        SizedBox(height: 1),
-        Text(
-          population.toString(),
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 15,
+          SizedBox(height: 1),
+          Text(
+            population.toString(),
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 15,
+            ),
+            textAlign: TextAlign.center,
           ),
-          textAlign: TextAlign.center,
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
   }
 }
 
@@ -428,6 +424,3 @@ class RWData {
     required this.needs,
   });
 }
-
-
-
