@@ -60,7 +60,7 @@ class DashboardScreen extends StatelessWidget {
                   ),
                 ),
                 // Menambahkan jarak antara teks dan teks di bawahnya
-                SizedBox(height: 20.0),
+                SizedBox(height: 100.0),
                 // Menambahkan kalimat di bawah foto
                 Text(
                   'Pengabdian menjadi lebih \n mudah dan praktis',
@@ -70,7 +70,7 @@ class DashboardScreen extends StatelessWidget {
                     fontStyle: FontStyle.italic,
                   ),
                 ),
-                SizedBox(height: 60.0),
+                SizedBox(height: 100.0),
                 // Menambahkan tombol "Next" di tengah
                 Center(
                   child: SizedBox(

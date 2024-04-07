@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_helloo_world/Faq.dart';
+import 'package:flutter_helloo_world/Timeline.dart';
 import 'package:flutter_helloo_world/login.dart';
 
 void main() {
@@ -149,12 +150,16 @@ class _DashboardState extends State<Dashboard> {
     ),
     BottomNavigationBarItem(
       icon: IconButton(
-        icon: Icon(Icons.search),
+        icon: Icon(Icons.calendar_today), // Ganti ikon dengan kalender
         onPressed: () {
-          // Fungsi untuk menangani ketika item "Search" ditekan
+          // Fungsi untuk menangani ketika item "Calendar" ditekan
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Timeline()),
+          );
         },
       ),
-      label: 'Search',
+      label: 'Timeline', // Atur label sesuai dengan kebutuhan
     ),
     BottomNavigationBarItem(
       icon: IconButton(
