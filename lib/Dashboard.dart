@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_helloo_world/Faq.dart';
+import 'package:flutter_helloo_world/History.dart';
 import 'package:flutter_helloo_world/Timeline.dart';
 import 'package:flutter_helloo_world/login.dart';
 
@@ -163,12 +164,16 @@ class _DashboardState extends State<Dashboard> {
     ),
     BottomNavigationBarItem(
       icon: IconButton(
-        icon: Icon(Icons.notifications),
+        icon: Icon(Icons.history), // Ganti ikon dengan ikon untuk history
         onPressed: () {
-          // Fungsi untuk menangani ketika item "Notifications" ditekan
+          // Fungsi untuk menangani ketika item "History" ditekan
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => History()),
+          );
         },
       ),
-      label: 'Notifications',
+      label: 'History', // Ubah label menjadi "History"
     ),
     BottomNavigationBarItem(
       icon: IconButton(
