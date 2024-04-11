@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_helloo_world/daftar.dart';
+
 
 class Login extends StatefulWidget {
   @override
@@ -82,7 +84,10 @@ class _LoginState extends State<Login> {
             SizedBox(height: 40),
             TextButton(
               onPressed: () {
-                // Fungsi untuk navigasi ke halaman lupa password
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Daftar()),
+              );
               },
               style: TextButton.styleFrom(
                 backgroundColor: Color(0xFFE9F0EB),
