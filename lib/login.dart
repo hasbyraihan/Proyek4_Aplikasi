@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_helloo_world/daftar.dart';
 
-
 class Login extends StatefulWidget {
   @override
   _LoginState createState() => _LoginState();
@@ -84,16 +83,15 @@ class _LoginState extends State<Login> {
             SizedBox(height: 40),
             TextButton(
               onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Daftar()),
-              );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Daftar()),
+                );
               },
               style: TextButton.styleFrom(
                 backgroundColor: Color(0xFFE9F0EB),
               ),
-              child: Text(
-                  'Belum mempunyai akun? DAFTAR',
+              child: Text('Belum mempunyai akun? DAFTAR',
                   style: TextStyle(color: Colors.green)),
             ),
           ],
