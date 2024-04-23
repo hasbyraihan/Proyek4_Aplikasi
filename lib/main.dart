@@ -1,9 +1,13 @@
 import 'dart:math';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'Dashboard.dart';
 
-void main() {
-  runApp(MyDashboardApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(); // Initialize Firebase
+
+  runApp(MyDashboardApp()); // Replace MyApp with your app's main widget
 }
 
 class MyDashboardApp extends StatelessWidget {

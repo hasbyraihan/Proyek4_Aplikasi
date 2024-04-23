@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "485364401816",
+    "firebase_url": "https://project4-bmth-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "project4-bmth",
+    "storage_bucket": "project4-bmth.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:485364401816:android:040ddc1af035f3e65432ed",
+        "android_client_info": {
+          "package_name": "com.example.flutter_helloo_world"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsne3iRCo57Shf8JDdgUTu3_UCOF4u8Ow"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
