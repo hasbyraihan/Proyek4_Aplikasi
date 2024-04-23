@@ -1,6 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_helloo_world/daftar.dart';
+import 'dart:developer';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_helloo_world/Auth/AuthServices.dart';
+import 'package:flutter_helloo_world/Auth/daftar.dart';
+import 'package:flutter_helloo_world/Dashboard.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -8,6 +11,23 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  late TextEditingController _email;
+  late TextEditingController _password;
+
+  @override
+  void initState() {
+    super.initState();
+    _email = TextEditingController();
+    _password = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _email.dispose();
+    _password.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,9 +58,10 @@ class _LoginState extends State<Login> {
               padding: EdgeInsets.symmetric(horizontal: 40),
               child: TextField(
                 decoration: InputDecoration(
-                  hintText: 'Username',
-                  labelText: 'Username',
+                  hintText: 'Email',
+                  labelText: 'Email',
                 ),
+                controller: _email,
               ),
             ),
             SizedBox(height: 10),
@@ -52,6 +73,7 @@ class _LoginState extends State<Login> {
                   hintText: 'Password',
                   labelText: 'Password',
                 ),
+                controller: _password,
               ),
             ),
             SizedBox(height: 10),
@@ -69,8 +91,10 @@ class _LoginState extends State<Login> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 40),
               child: ElevatedButton(
-                onPressed: () {
-                  // Fungsi untuk login
+                onPressed: () async {
+                  final email = _email.text;
+                  final password = _password.text;
+                  await handleLogin(email, password);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(
@@ -84,21 +108,34 @@ class _LoginState extends State<Login> {
             SizedBox(height: 40),
             TextButton(
               onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Daftar()),
-              );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Daftar()),
+                );
               },
               style: TextButton.styleFrom(
                 backgroundColor: Color(0xFFE9F0EB),
               ),
-              child: Text(
-                  'Belum mempunyai akun? DAFTAR',
+              child: Text('Belum mempunyai akun? DAFTAR',
                   style: TextStyle(color: Colors.green)),
             ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> handleLogin(String email, String password) async {
+    final userCredential = await AuthServices().login(email, password);
+    if (userCredential != null) {
+      // User logged in successfully,
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Dashboard()),
+      );
+    } else {
+      log('Firebase Auth Error');
+      // Login failed, display error message
+    }
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_helloo_world/Dashboard.dart';
-import 'package:flutter_helloo_world/login.dart';
+import 'package:flutter_helloo_world/Auth/login.dart';
 import 'package:flutter_helloo_world/Faq.dart';
 import 'package:flutter_helloo_world/History.dart';
 
@@ -43,81 +43,84 @@ class _TimelineState extends State<Timeline> {
       ),
       backgroundColor: Color(0xFFE9F0EB),
       body: ListView(
-        padding: EdgeInsets.symmetric(horizontal: 16), // Tambahkan padding horizontal di sini
+        padding: EdgeInsets.symmetric(
+            horizontal: 16), // Tambahkan padding horizontal di sini
         children: [
           CustomContainer(
             color: Color(0xFF60AD77),
             text: 'Sinumbra',
             topLeftText: 'RW 1',
             onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Login()),
-            );
-          },
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Login()),
+              );
+            },
           ),
           CustomContainer(
             color: Color(0xFF60AD77),
             text: 'Ciparay',
             topLeftText: 'RW 2',
             onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Login()),
-            );
-          },
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Login()),
+              );
+            },
           ),
           CustomContainer(
             color: Color(0xFF60AD77),
             text: 'Persil',
             topLeftText: 'RW 3',
             onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Login()),
-            );
-          },
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Login()),
+              );
+            },
           ),
           CustomContainer(
             color: Color(0xFF60AD77),
             text: 'Nyampay',
             topLeftText: 'RW 4',
             onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Login()),
-            );
-          },
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Login()),
+              );
+            },
           ),
           CustomContainer(
             color: Color(0xFF60AD77),
             text: 'Stamplat',
             topLeftText: 'RW 5',
             onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Login()),
-            );
-          },
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Login()),
+              );
+            },
           ),
           CustomContainer(
             color: Color(0xFF60AD77),
             text: 'Kanaan',
             topLeftText: 'RW 6',
             onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Login()),
-            );
-          },
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Login()),
+              );
+            },
           ),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         backgroundColor: Colors.black, // Ubah warna background menjadi hitam
-        selectedItemColor: Colors.black, // Ubah warna ikon yang dipilih menjadi putih
-        unselectedItemColor: Colors.grey, // Ubah warna ikon yang tidak dipilih menjadi abu-abu
+        selectedItemColor:
+            Colors.black, // Ubah warna ikon yang dipilih menjadi putih
+        unselectedItemColor:
+            Colors.grey, // Ubah warna ikon yang tidak dipilih menjadi abu-abu
         onTap: (index) {
           // Fungsi untuk menangani navigasi berdasarkan index yang dipilih
           setState(() {
@@ -251,5 +254,3 @@ class CustomContainer extends StatelessWidget {
     );
   }
 }
-
-

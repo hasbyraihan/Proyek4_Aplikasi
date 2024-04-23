@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_helloo_world/Auth/AuthServices.dart';
+import 'package:flutter_helloo_world/Auth/login.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
@@ -15,7 +17,6 @@ class _DaftarState extends State<Daftar> {
   late TextEditingController _passwordController;
   late TextEditingController _fotoController;
   late XFile? _image = null;
-  
 
   @override
   void initState() {
@@ -45,6 +46,7 @@ class _DaftarState extends State<Daftar> {
     if (image != null) {
       setState(() {
         _image = image;
+        _fotoController.text = image.path;
       });
     }
   }
@@ -135,7 +137,7 @@ class _DaftarState extends State<Daftar> {
             SizedBox(height: 40.0),
             ElevatedButton(
               onPressed: () {
-                // Implementasi logika untuk menyimpan data ke database atau melakukan validasi
+                _Signup();
               },
               child: Text(
                 "Daftar",
@@ -145,22 +147,44 @@ class _DaftarState extends State<Daftar> {
             SizedBox(height: 40.0),
             TextButton(
               onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Daftar()),
-              );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Login()),
+                );
               },
               style: TextButton.styleFrom(
                 backgroundColor: Color(0xFFE9F0EB),
               ),
-              child: Text(
-                  'Sudah mempunyai akun? MASUK',
+              child: Text('Sudah mempunyai akun? MASUK',
                   style: TextStyle(color: Colors.green)),
             ),
           ],
         ),
       ),
     );
+  }
+
+  _Signup() async {
+    try {
+      await AuthServices().signup(
+        _emailController.text,
+        _passwordController.text,
+        _namaController.text,
+        _nimController.text,
+        _perguruanTinggiController.text,
+        _fotoController.text, // Assuming _fotoController holds the image path
+      );
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Login()),
+      );
+
+      // Handle successful signup (e.g., navigate to a confirmation screen)
+    } catch (e) {
+      // Display an error message to the user based on the exception type
+      print('Error during signup: $e');
+    }
   }
 }
 
@@ -227,7 +251,7 @@ class RoundedPasswordField extends StatelessWidget {
         obscureText: true,
         decoration: InputDecoration(
           hintText: hintText,
-          prefixIcon: prefixIcon, 
+          prefixIcon: prefixIcon,
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
         ),
