@@ -1,9 +1,13 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_helloo_world/AdminDesa/AdminDashboard.dart';
 import 'package:flutter_helloo_world/Auth/AuthServices.dart';
 import 'package:flutter_helloo_world/Auth/daftar.dart';
-import 'package:flutter_helloo_world/Dashboard.dart';
+import 'package:flutter_helloo_world/Mahasiswa/MahasiwaDashboard.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+enum UserRole { admin, mahasiswa }
 
 class Login extends StatefulWidget {
   @override
@@ -126,16 +130,48 @@ class _LoginState extends State<Login> {
   }
 
   Future<void> handleLogin(String email, String password) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) =>
+          Center(child: CircularProgressIndicator()),
+    );
+
     final userCredential = await AuthServices().login(email, password);
+    Navigator.pop(context);
+
     if (userCredential != null) {
-      // User logged in successfully,
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Dashboard()),
-      );
+      // Get the logged-in user's UID from the userCredential object
+      final userId = userCredential.user!.uid;
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setBool('isLoggedIn', true);
+
+      // Fetch user data (including role) from Firebase (replace with your implementation)
+      final userData = await AuthServices()
+          .getUserData(userId); // Replace _getUserData with your code
+
+      if (userData != null && userData['role'] != null) {
+        final userRole = UserRole.values.byName(userData['role'] as String);
+
+        // Navigate based on user role
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) {
+            if (userRole == UserRole.admin) {
+              return AdminDashboard();
+            } else {
+              return MahasiswaDashboard();
+            }
+          }),
+        );
+      } else {
+        print('Error: Failed to retrieve user data or role is missing');
+        // Handle error (e.g., display message to user)
+      }
     } else {
       log('Firebase Auth Error');
-      // Login failed, display error message
+      // Handle login failure (e.g., display error message)
     }
   }
 }

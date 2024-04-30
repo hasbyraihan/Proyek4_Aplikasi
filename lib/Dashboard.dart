@@ -1,12 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_helloo_world/Faq.dart';
-import 'package:flutter_helloo_world/History.dart';
-import 'package:flutter_helloo_world/Timeline.dart';
-import 'package:flutter_helloo_world/profil.dart';
-
-import 'package:flutter_helloo_world/Auth/login.dart';
+import 'package:flutter_helloo_world/Component/NavigationBar.dart'
+    as BarNavigasi;
 
 void main() {
   runApp(MyDashboardApp());
@@ -122,90 +118,13 @@ class _DashboardState extends State<Dashboard> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: BarNavigasi.NavigationBar(
         currentIndex: _selectedIndex,
-        backgroundColor: Colors.black, // Ubah warna background menjadi hitam
-        selectedItemColor:
-            Colors.black, // Ubah warna ikon yang dipilih menjadi putih
-        unselectedItemColor:
-            Colors.grey, // Ubah warna ikon yang tidak dipilih menjadi abu-abu
         onTap: (index) {
-          // Fungsi untuk menangani navigasi berdasarkan index yang dipilih
           setState(() {
             _selectedIndex = index;
-            // Navigasi ke halaman yang sesuai berdasarkan index
-            if (_selectedIndex == 3) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Login()),
-              );
-            } else {
-              // Implementasi navigasi ke halaman lain jika diperlukan
-            }
           });
         },
-        items: [
-          BottomNavigationBarItem(
-            icon: IconButton(
-              icon: Icon(Icons.home),
-              onPressed: () {
-                // Fungsi untuk menangani ketika item "Home" ditekan
-              },
-            ),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: IconButton(
-              icon: Icon(Icons.calendar_today), // Ganti ikon dengan kalender
-              onPressed: () {
-                // Fungsi untuk menangani ketika item "Calendar" ditekan
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Timeline()),
-                );
-              },
-            ),
-            label: 'Timeline', // Atur label sesuai dengan kebutuhan
-          ),
-          BottomNavigationBarItem(
-            icon: IconButton(
-              icon: Icon(Icons.history), // Ganti ikon dengan ikon untuk history
-              onPressed: () {
-                // Fungsi untuk menangani ketika item "History" ditekan
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => History()),
-                );
-              },
-            ),
-            label: 'History', // Ubah label menjadi "History"
-          ),
-          BottomNavigationBarItem(
-            icon: IconButton(
-              icon: Icon(Icons.person),
-              onPressed: () async {
-                // Check if user is logged in
-                final currentUser = FirebaseAuth.instance.currentUser;
-                if (currentUser != null) {
-                  // User is logged in, navigate to profile page
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            Profil()), // Replace Profile() with your actual profile page widget
-                  );
-                } else {
-                  // User is not logged in, navigate to login page
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Login()),
-                  );
-                }
-              },
-            ),
-            label: 'Profile',
-          ),
-        ],
       ),
     );
   }

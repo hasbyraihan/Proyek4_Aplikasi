@@ -167,13 +167,14 @@ class _DaftarState extends State<Daftar> {
   _Signup() async {
     try {
       await AuthServices().signup(
-        _emailController.text,
-        _passwordController.text,
-        _namaController.text,
-        _nimController.text,
-        _perguruanTinggiController.text,
-        _fotoController.text, // Assuming _fotoController holds the image path
-      );
+          _emailController.text,
+          _passwordController.text,
+          _namaController.text,
+          _nimController.text,
+          _perguruanTinggiController.text,
+          _fotoController.text,
+          "mahasiswa" // Assuming _fotoController holds the image path
+          );
 
       Navigator.push(
         context,

@@ -2,47 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_helloo_world/Auth/AuthServices.dart';
-import 'package:flutter_helloo_world/Auth/daftar.dart';
 import 'package:flutter_helloo_world/Dashboard.dart';
-
-class User {
-  final String uid;
-  final String nama;
-  final String nim;
-  final String namaPerguruanTinggi;
-  final String fotoProfil;
-
-  User({
-    required this.uid,
-    required this.nama,
-    required this.nim,
-    required this.namaPerguruanTinggi,
-    required this.fotoProfil,
-  });
-
-  factory User.fromMap(Map<Object?, Object?>? data) {
-    if (data == null) {
-      throw ArgumentError("Data cannot be null");
-    }
-    return User(
-      uid: data['uid'].toString(),
-      nama: data['nama'].toString(),
-      nim: data['nim'].toString(),
-      namaPerguruanTinggi: data['namaPerguruanTinggi'].toString(),
-      fotoProfil: data['fotoProfilURL'].toString(),
-    );
-  }
-
-  static User loading() {
-    return User(
-      uid: '',
-      nama: 'Loading...',
-      nim: '',
-      namaPerguruanTinggi: '',
-      fotoProfil: '',
-    );
-  }
-}
+import 'package:flutter_helloo_world/Models/User.dart' as user;
+import 'package:flutter_helloo_world/Component/NavigationBar.dart'
+    as BarNavigasi;
 
 class Profil extends StatefulWidget {
   @override
@@ -50,7 +13,7 @@ class Profil extends StatefulWidget {
 }
 
 class _ProfilState extends State<Profil> {
-  late User _user; // Mendeklarasikan _user
+  late user.User _user; // Mendeklarasikan _user
 
   @override
   void initState() {
@@ -63,19 +26,18 @@ class _ProfilState extends State<Profil> {
       final firebaseUser = FirebaseAuth.instance.currentUser;
       if (firebaseUser != null) {
         setState(() {
-          _user = User.loading();
+          _user = user.User.loading();
         });
 
         final userId = firebaseUser.uid;
-        final userRef =
-            FirebaseDatabase.instance.ref('/Users-Mahasiswa/$userId');
+        final userRef = FirebaseDatabase.instance.ref('/Users/$userId');
         final userSnapshot = await userRef.get();
 
         final userData = userSnapshot.value as Map<Object?, Object?>?;
 
         if (userData != null) {
           setState(() {
-            _user = User.fromMap(userData);
+            _user = user.User.fromMap(userData);
           });
         } else {
           print('Error: User data is null');
@@ -90,6 +52,7 @@ class _ProfilState extends State<Profil> {
 
   @override
   Widget build(BuildContext context) {
+    int _selectedIndex = 0;
     return Scaffold(
       appBar: AppBar(
           // Kode app bar...
@@ -133,6 +96,14 @@ class _ProfilState extends State<Profil> {
                 ],
               )
             : CircularProgressIndicator(), // Loading indicator saat memuat data
+      ),
+      bottomNavigationBar: BarNavigasi.NavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
       ),
     );
   }
