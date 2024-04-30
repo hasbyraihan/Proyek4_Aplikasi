@@ -54,7 +54,7 @@ class _TimelineState extends State<Timeline> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Login()),
+                MaterialPageRoute(builder: (context) => TimelineDetail()),
               );
             },
           ),
@@ -65,7 +65,7 @@ class _TimelineState extends State<Timeline> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Login()),
+                MaterialPageRoute(builder: (context) => TimelineDetail()),
               );
             },
           ),
@@ -76,7 +76,7 @@ class _TimelineState extends State<Timeline> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Login()),
+                MaterialPageRoute(builder: (context) => TimelineDetail()),
               );
             },
           ),
@@ -87,7 +87,7 @@ class _TimelineState extends State<Timeline> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Login()),
+                MaterialPageRoute(builder: (context) => TimelineDetail()),
               );
             },
           ),
@@ -98,7 +98,7 @@ class _TimelineState extends State<Timeline> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Login()),
+                MaterialPageRoute(builder: (context) => TimelineDetail()),
               );
             },
           ),
@@ -109,7 +109,7 @@ class _TimelineState extends State<Timeline> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Login()),
+                MaterialPageRoute(builder: (context) => TimelineDetail()),
               );
             },
           ),
