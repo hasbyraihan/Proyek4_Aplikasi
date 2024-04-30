@@ -4,6 +4,7 @@ import 'package:flutter_helloo_world/Faq.dart';
 
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
+import 'package:flutter_helloo_world/TimelineDetail.dart';
 
 class Timeline extends StatefulWidget {
   @override
