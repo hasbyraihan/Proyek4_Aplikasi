@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_helloo_world/AdminDesa/AdminManageInfo.dart';
+import 'package:flutter_helloo_world/AdminDesa/AdminPopulasi.dart';
 import 'package:flutter_helloo_world/Faq.dart';
 
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
 
-class AdminDashboard extends StatefulWidget {
+class AdminManageInfo extends StatefulWidget {
   @override
-  _AdminDashboardState createState() => _AdminDashboardState();
+  _AdminManageInfoState createState() => _AdminManageInfoState();
 }
 
-class _AdminDashboardState extends State<AdminDashboard> {
+class _AdminManageInfoState extends State<AdminManageInfo> {
   int _selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
@@ -49,9 +49,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
         children: [
           CustomContainer(
             color: Color(0xFF60AD77),
-            text: 'Manage Akun',
+            text: 'Lokasi',
             additionalText: 'Desa',
-            icon: Icons.person,
+            icon: Icons.map,
             onTap: () {
               Navigator.push(
                 context,
@@ -61,33 +61,21 @@ class _AdminDashboardState extends State<AdminDashboard> {
           ),
           CustomContainer(
             color: Color(0xFF60AD77),
-            text: 'Manage ',
-            additionalText: 'Informasi Desa',
-            icon: Icons.developer_board,
+            text: 'Populasi',
+            additionalText: 'Warga Desa',
+            icon: Icons.person_add_alt,
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => AdminManageInfo()),
+                MaterialPageRoute(builder: (context) => AdminPopulasi()),
               );
             },
           ),
           CustomContainer(
             color: Color(0xFF60AD77),
-            text: 'Verifikasi',
-            additionalText: 'Pengajuan',
-            icon: Icons.bar_chart,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => FAQ()),
-              );
-            },
-          ),
-          CustomContainer(
-            color: Color(0xFF60AD77),
-            text: 'Rating Hasil',
-            additionalText: 'Pengabdian',
-            icon: Icons.star_border,
+            text: 'Dokumentasi',
+            additionalText: 'Desa',
+            icon: Icons.photo_camera_back_outlined,
             onTap: () {
               Navigator.push(
                 context,
@@ -97,33 +85,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
           ),
           CustomContainer(
             color: Color(0xFF60AD77),
-            text: 'Edit Template',
-            additionalText: 'Laporan',
-            icon: Icons.upload_file,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => FAQ()),
-              );
-            },
-          ),
-          CustomContainer(
-            color: Color(0xFF60AD77),
-            text: 'Edit',
-            additionalText: 'FAQ',
-            icon: Icons.question_answer_outlined,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => FAQ()),
-              );
-            },
-          ),
-          CustomContainer(
-            color: Color(0xFF60AD77),
-            text: 'Edit Contact',
-            additionalText: 'Person',
-            icon: Icons.contacts,
+            text: 'Kebutuhan',
+            additionalText: 'Rukun Warga',
+            icon: Icons.holiday_village_sharp,
             onTap: () {
               Navigator.push(
                 context,
