@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_helloo_world/Auth/login.dart';
-import 'package:flutter_helloo_world/Dashboard.dart';
+import 'package:flutter_helloo_world/AdminDesa/AdminPopulasi.dart';
 import 'package:flutter_helloo_world/Faq.dart';
 
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
 
-class MahasiswaDashboard extends StatefulWidget {
+class AdminManageInfo extends StatefulWidget {
   @override
-  _MahasiswaDashboardState createState() => _MahasiswaDashboardState();
+  _AdminManageInfoState createState() => _AdminManageInfoState();
 }
 
-class _MahasiswaDashboardState extends State<MahasiswaDashboard> {
+class _AdminManageInfoState extends State<AdminManageInfo> {
   int _selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
@@ -51,85 +49,49 @@ class _MahasiswaDashboardState extends State<MahasiswaDashboard> {
         children: [
           CustomContainer(
             color: Color(0xFF60AD77),
-            text: 'Pengajuan',
-            additionalText: 'Pengabdian',
-            icon: Icons.edit_document,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Login()),
-              );
-            },
-          ),
-          CustomContainer(
-            color: Color(0xFF60AD77),
-            text: 'Progress',
-            additionalText: 'Pengajuan',
-            icon: Icons.bar_chart,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Login()),
-              );
-            },
-          ),
-          CustomContainer(
-            color: Color(0xFF60AD77),
-            text: 'Upload Hasil',
-            additionalText: 'Pengabdian',
-            icon: Icons.upload_file,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Login()),
-              );
-            },
-          ),
-          CustomContainer(
-            color: Color(0xFF60AD77),
-            text: 'Template Laporan',
-            additionalText: 'Pengajuan',
-            icon: Icons.file_present,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Login()),
-              );
-            },
-          ),
-          CustomContainer(
-            color: Color(0xFF60AD77),
-            text: 'Rating Hasil',
-            additionalText: 'Pengabdian',
-            icon: Icons.star_border,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Login()),
-              );
-            },
-          ),
-          CustomContainer(
-            color: Color(0xFF60AD77),
-            text: 'Informasi',
+            text: 'Lokasi',
             additionalText: 'Desa',
-            icon: Icons.other_houses,
+            icon: Icons.map,
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Dashboard()),
+                MaterialPageRoute(builder: (context) => FAQ()),
               );
             },
           ),
           CustomContainer(
             color: Color(0xFF60AD77),
-            text: 'Contact',
-            additionalText: 'Person',
-            icon: Icons.contacts,
+            text: 'Populasi',
+            additionalText: 'Warga Desa',
+            icon: Icons.person_add_alt,
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Login()),
+                MaterialPageRoute(builder: (context) => AdminPopulasi()),
+              );
+            },
+          ),
+          CustomContainer(
+            color: Color(0xFF60AD77),
+            text: 'Dokumentasi',
+            additionalText: 'Desa',
+            icon: Icons.photo_camera_back_outlined,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => FAQ()),
+              );
+            },
+          ),
+          CustomContainer(
+            color: Color(0xFF60AD77),
+            text: 'Kebutuhan',
+            additionalText: 'Rukun Warga',
+            icon: Icons.holiday_village_sharp,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => FAQ()),
               );
             },
           ),
@@ -181,16 +143,18 @@ class CustomContainer extends StatelessWidget {
         child: Stack(
           children: [
             Positioned(
-              left: _width / 4 - 20, // Posisi ikon pada 1/4 bagian dari panjang container
+              left: _width / 4 -
+                  20, // Posisi ikon pada 1/4 bagian dari panjang container
               top: _height / 2 - 40, // Posisi ikon di tengah secara vertikal
               child: Icon(
                 icon,
                 size: 80, // Atur ukuran ikon sesuai kebutuhan
-                color: Color.fromARGB(255, 16, 80, 8), // Atur warna ikon sesuai kebutuhan
+                color: Color.fromARGB(
+                    255, 16, 80, 8), // Atur warna ikon sesuai kebutuhan
               ),
             ),
             Positioned(
-              left: _width * 3/4,
+              left: _width * 3 / 4,
               top: _height / 2 - 25,
               child: Text(
                 text,
@@ -202,7 +166,7 @@ class CustomContainer extends StatelessWidget {
               ),
             ),
             Positioned(
-              left: _width * 3/4,
+              left: _width * 3 / 4,
               top: _height / 2 - 5,
               child: Text(
                 additionalText,
