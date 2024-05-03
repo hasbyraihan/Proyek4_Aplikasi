@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_helloo_world/AdminDesa/AdminKebutuhan.dart';
 import 'package:flutter_helloo_world/AdminDesa/AdminPopulasi.dart';
 import 'package:flutter_helloo_world/Faq.dart';
 
@@ -17,20 +18,6 @@ class _AdminManageInfoState extends State<AdminManageInfo> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFFC5E0CD),
-        automaticallyImplyLeading: false,
-        leading: Row(
-          children: [
-            IconButton(
-              icon: Icon(Icons.question_answer_outlined),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => FAQ()),
-                ); // Fungsi untuk menu FAQ
-              },
-            ),
-          ],
-        ),
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 20.0),
@@ -91,7 +78,7 @@ class _AdminManageInfoState extends State<AdminManageInfo> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => FAQ()),
+                MaterialPageRoute(builder: (context) => AdminKebutuhan()),
               );
             },
           ),
