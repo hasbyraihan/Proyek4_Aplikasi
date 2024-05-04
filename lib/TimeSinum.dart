@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_helloo_world/Dashboard.dart';
+import 'package:flutter_helloo_world/login.dart';
 import 'package:flutter_helloo_world/Faq.dart';
+import 'package:flutter_helloo_world/Timeline.dart';
+import 'package:flutter_helloo_world/History.dart';
 
-import 'package:flutter_helloo_world/Component/NavigationBar.dart'
-    as BarNavigasi;
 
-class History extends StatefulWidget {
+class TimeSinum extends StatefulWidget {
   @override
-  _HistoryState createState() => _HistoryState();
+  _TimeSinumState createState() => _TimeSinumState();
 }
 
-class _HistoryState extends State<History> {
-  int _selectedIndex = 2; // Deklarasi dan inisialisasi _selectedIndex
+class _TimeSinumState extends State<TimeSinum> {
+  int _selectedIndex = 1; // Deklarasi dan inisialisasi _selectedIndex
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,8 +45,7 @@ class _HistoryState extends State<History> {
       ),
       backgroundColor: Color(0xFFE9F0EB),
       body: ListView(
-        padding: EdgeInsets.symmetric(
-            horizontal: 16), // Tambahkan padding horizontal di sini
+        padding: EdgeInsets.symmetric(horizontal: 16), // Tambahkan padding horizontal di sini
         children: [
           CustomContainer(
             color: Color(0xFF60AD77),
@@ -54,8 +54,7 @@ class _HistoryState extends State<History> {
             additionalText: 'Sinumbra',
             TanggalText: '21 Maret - 24 Maret',
             TahunText: '2023',
-            logoPath:
-                'assets/images/logopolban.png', // Memberikan path gambar logo
+            logoPath: 'assets/images/logopolban.png', // Memberikan path gambar logo
           ),
           CustomContainer(
             color: Color(0xFF60AD77),
@@ -64,8 +63,7 @@ class _HistoryState extends State<History> {
             additionalText: 'Ciparay',
             TanggalText: '2 Juli - 24 April',
             TahunText: '2023',
-            logoPath:
-                'assets/images/logougm.png', // Memberikan path gambar logo
+            logoPath: 'assets/images/logougm.png', // Memberikan path gambar logo
           ),
           CustomContainer(
             color: Color(0xFF60AD77),
@@ -74,18 +72,84 @@ class _HistoryState extends State<History> {
             additionalText: 'Eul - Eul',
             TanggalText: '2 Januari - 24 April',
             TahunText: '2023',
-            logoPath:
-                'assets/images/logounpad.png', // Memberikan path gambar logo
+            logoPath: 'assets/images/logounpad.png', // Memberikan path gambar logo
           ),
         ],
       ),
-      bottomNavigationBar: BarNavigasi.NavigationBar(
+      bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
+        backgroundColor: Colors.black, // Ubah warna background menjadi hitam
+        selectedItemColor: Colors.black, // Ubah warna ikon yang dipilih menjadi putih
+        unselectedItemColor: Colors.grey, // Ubah warna ikon yang tidak dipilih menjadi abu-abu
         onTap: (index) {
+          // Fungsi untuk menangani navigasi berdasarkan index yang dipilih
           setState(() {
             _selectedIndex = index;
+            // Navigasi ke halaman yang sesuai berdasarkan index
+            if (_selectedIndex == 3) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Login()),
+              );
+            } else {
+              // Implementasi navigasi ke halaman lain jika diperlukan
+            }
           });
         },
+        items: [
+          BottomNavigationBarItem(
+            icon: IconButton(
+              icon: Icon(Icons.home),
+              onPressed: () {
+                // Fungsi untuk menangani ketika item "Calendar" ditekan
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Dashboard()),
+                );
+              },
+            ),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: IconButton(
+              icon: Icon(Icons.calendar_today), // Ganti ikon dengan kalender
+              onPressed: () {
+                // Fungsi untuk menangani ketika item "Calendar" ditekan
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Timeline()),
+                );
+              },
+            ),
+            label: 'Timeline', // Atur label sesuai dengan kebutuhan
+          ),
+          BottomNavigationBarItem(
+            icon: IconButton(
+              icon: Icon(Icons.history), // Ganti ikon dengan ikon untuk history
+              onPressed: () {
+                // Fungsi untuk menangani ketika item "History" ditekan
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => History()),
+                );
+              },
+            ),
+            label: 'History', // Ubah label menjadi "History"
+          ),
+          BottomNavigationBarItem(
+            icon: IconButton(
+              icon: Icon(Icons.person),
+              onPressed: () {
+                // Fungsi untuk menangani ketika item "Profile" ditekan
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Login()),
+                );
+              },
+            ),
+            label: 'Profile',
+          ),
+        ],
       ),
     );
   }
@@ -129,21 +193,18 @@ class CustomContainer extends StatelessWidget {
           Positioned(
             left: 17, // Padding dari sisi kiri
             top: 36, // Padding dari atas
-
-            child: Image.asset(
-              // Menambahkan gambar logo
+            
+            child: Image.asset( // Menambahkan gambar logo
               logoPath,
               width: 70, // Ukuran gambar logo
               height: 70,
             ),
           ),
           Positioned(
-            left: (_width) /
-                2, // Menempatkan teks di tengah horizontal berdasarkan lebar container dan lebar gambar logo
+            left: (_width) / 2, // Menempatkan teks di tengah horizontal berdasarkan lebar container dan lebar gambar logo
             top: 12, // Padding dari atas
             child: Align(
-              alignment: Alignment
-                  .center, // Menyatukan teks ke tengah horizontal dari container
+              alignment: Alignment.center, // Menyatukan teks ke tengah horizontal dari container
               child: Text(
                 topLeftText,
                 style: TextStyle(
@@ -155,16 +216,12 @@ class CustomContainer extends StatelessWidget {
             ),
           ),
           Positioned(
-            left: (_width) /
-                2, // Menempatkan teks di tengah horizontal berdasarkan lebar container dan lebar gambar logo
-            top: 12 +
-                20 +
-                8, // Padding dari atas + tinggi teks topLeftText + padding tambahan
+            left: (_width) / 2, // Menempatkan teks di tengah horizontal berdasarkan lebar container dan lebar gambar logo
+            top: 12 + 20 + 8, // Padding dari atas + tinggi teks topLeftText + padding tambahan
             child: Align(
-              alignment: Alignment
-                  .center, // Menyatukan teks ke tengah horizontal dari container
+              alignment: Alignment.center, // Menyatukan teks ke tengah horizontal dari container
               child: Text(
-                '"' + text + '"',
+                '"' + text + '"' ,
                 style: TextStyle(
                   color: Color.fromARGB(255, 89, 255, 0),
                   fontSize: 18,
@@ -174,7 +231,7 @@ class CustomContainer extends StatelessWidget {
             ),
           ),
           Positioned(
-            left: (_width) / 2,
+            left: (_width) /2,
             top: 12 + 20 + 8 + 20 + 8 + 18 + 8,
             child: Align(
               alignment: Alignment.center,
@@ -189,7 +246,7 @@ class CustomContainer extends StatelessWidget {
             ),
           ),
           Positioned(
-            left: (_width) / 2,
+            left: (_width) /2,
             top: 12 + 20 + 8 + 20 + 8,
             child: Align(
               alignment: Alignment.center,
@@ -204,7 +261,7 @@ class CustomContainer extends StatelessWidget {
             ),
           ),
           Positioned(
-            left: (_width) + 45,
+            left: (_width) + 45 ,
             top: 12 + 20 + 8 + 20 + 8 + 18 + 8,
             child: Align(
               alignment: Alignment.center,
@@ -225,4 +282,4 @@ class CustomContainer extends StatelessWidget {
 }
 
 
-                  
+
