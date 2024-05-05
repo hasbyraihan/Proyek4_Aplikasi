@@ -1,24 +1,45 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_helloo_world/AdminDesa/AdminManageInfo.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_helloo_world/Auth/login.dart';
+import 'package:flutter_helloo_world/Mahasiswa/MahasiwaDashboard.dart';
 import 'package:flutter_helloo_world/Faq.dart';
 
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
 
-import '../Dashboard.dart';
-
-class AdminDashboard extends StatefulWidget {
+class TemplatePengajuan extends StatefulWidget {
   @override
-  _AdminDashboardState createState() => _AdminDashboardState();
+  _TemplatePengajuanState createState() => _TemplatePengajuanState();
 }
 
-class _AdminDashboardState extends State<AdminDashboard> {
+class _TemplatePengajuanState extends State<TemplatePengajuan> {
   int _selectedIndex = 0;
+  void navigateToDashboard(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MahasiswaDashboard()),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFFC5E0CD),
+        automaticallyImplyLeading: false,
+        leading: Row(
+          children: [
+            IconButton(
+              icon: Icon(Icons.question_answer_outlined),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => FAQ()),
+                ); // Fungsi untuk menu FAQ
+              },
+            ),
+          ],
+        ),
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 20.0),
@@ -37,97 +58,56 @@ class _AdminDashboardState extends State<AdminDashboard> {
         children: [
           CustomContainer(
             color: Color(0xFF60AD77),
-            text: 'Informasi',
-            additionalText: 'Desa',
-            icon: Icons.other_houses,
+            text: 'Surat Izin Kapolsek',
+            icon: Icons.file_download,
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Dashboard()),
+                MaterialPageRoute(builder: (context) => Login()),
               );
             },
           ),
           CustomContainer(
             color: Color(0xFF60AD77),
-            text: 'Manage Akun',
-            additionalText: 'Desa',
-            icon: Icons.person,
+            text: 'Surat Izin Koramil',
+            icon: Icons.file_download,
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => FAQ()),
+                MaterialPageRoute(builder: (context) => Login()),
               );
             },
           ),
           CustomContainer(
             color: Color(0xFF60AD77),
-            text: 'Manage ',
-            additionalText: 'Informasi Desa',
-            icon: Icons.developer_board,
+            text: 'Surat Izin PT',
+            icon: Icons.file_download,
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => AdminManageInfo()),
+                MaterialPageRoute(builder: (context) => Login()),
               );
             },
           ),
           CustomContainer(
             color: Color(0xFF60AD77),
-            text: 'Verifikasi',
-            additionalText: 'Pengajuan',
-            icon: Icons.bar_chart,
+            text: 'Surat Izin Kecamatan',
+            icon: Icons.file_download,
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => FAQ()),
+                MaterialPageRoute(builder: (context) => Login()),
               );
             },
           ),
           CustomContainer(
             color: Color(0xFF60AD77),
-            text: 'Rating Hasil',
-            additionalText: 'Pengabdian',
-            icon: Icons.star_border,
+            text: 'Surat Izin Desa',
+            icon: Icons.file_download,
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => FAQ()),
-              );
-            },
-          ),
-          CustomContainer(
-            color: Color(0xFF60AD77),
-            text: 'Edit Template',
-            additionalText: 'Laporan',
-            icon: Icons.upload_file,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => FAQ()),
-              );
-            },
-          ),
-          CustomContainer(
-            color: Color(0xFF60AD77),
-            text: 'Edit',
-            additionalText: 'FAQ',
-            icon: Icons.question_answer_outlined,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => FAQ()),
-              );
-            },
-          ),
-          CustomContainer(
-            color: Color(0xFF60AD77),
-            text: 'Edit Contact',
-            additionalText: 'Person',
-            icon: Icons.contacts,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => FAQ()),
+                MaterialPageRoute(builder: (context) => Login()),
               );
             },
           ),
@@ -148,7 +128,6 @@ class _AdminDashboardState extends State<AdminDashboard> {
 class CustomContainer extends StatelessWidget {
   final Color color;
   final String text;
-  final String additionalText;
   final VoidCallback onTap;
   final IconData icon;
 
@@ -156,13 +135,12 @@ class CustomContainer extends StatelessWidget {
     Key? key,
     required this.color,
     required this.text,
-    required this.additionalText,
     required this.onTap,
     required this.icon,
   }) : super(key: key);
 
   final double _width = 207; // Atur lebar container di sini
-  final double _height = 130; // Atur tinggi container di sini
+  final double _height = 100; // Atur tinggi container di sini
 
   @override
   Widget build(BuildContext context) {
@@ -179,33 +157,19 @@ class CustomContainer extends StatelessWidget {
         child: Stack(
           children: [
             Positioned(
-              left: _width / 4 -
-                  20, // Posisi ikon pada 1/4 bagian dari panjang container
-              top: _height / 2 - 40, // Posisi ikon di tengah secara vertikal
+              left: _width + 60, // 
+              top: _height / 2 - 30, // Posisi ikon di tengah secara vertikal
               child: Icon(
                 icon,
-                size: 80, // Atur ukuran ikon sesuai kebutuhan
-                color: Color.fromARGB(
-                    255, 16, 80, 8), // Atur warna ikon sesuai kebutuhan
+                size: 60, // Atur ukuran ikon sesuai kebutuhan
+                color: Color.fromARGB(255, 16, 80, 8), // Atur warna ikon sesuai kebutuhan
               ),
             ),
             Positioned(
-              left: _width * 3 / 4,
-              top: _height / 2 - 25,
+              left: _width / 4 - 20,
+              top: _height / 2 - 10,
               child: Text(
                 text,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            Positioned(
-              left: _width * 3 / 4,
-              top: _height / 2 - 5,
-              child: Text(
-                additionalText,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 20,

@@ -3,6 +3,8 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_helloo_world/Faq.dart';
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 void main() {
   runApp(MyDashboardApp());
@@ -26,8 +28,77 @@ class Dashboard extends StatefulWidget {
   _DashboardState createState() => _DashboardState();
 }
 
+Future<List<RWData>> fetchRWData() async {
+  try {
+    final http.Response response = await http
+        .get(Uri.parse('http://10.0.2.2:8000/api/info-desa/kebutuhan-rw'));
+    if (response.statusCode == 200) {
+      final dynamic data = jsonDecode(response.body);
+      List<RWData> rwDataList = [];
+      if (data is Map<String, dynamic>) {
+        data.forEach((key, value) {
+          if (value is Map<String, dynamic>) {
+            final rwNumber = value['rw'];
+            final needs = List<String>.from(value['kebutuhan'] ?? []);
+            rwDataList.add(RWData(rwNumber: rwNumber, needs: needs));
+          }
+        });
+        return rwDataList;
+      } else {
+        throw 'Failed to parse data';
+      }
+    } else {
+      throw 'Failed to fetch data: ${response.statusCode}';
+    }
+  } catch (e) {
+    throw 'Error: $e';
+  }
+}
+
 class _DashboardState extends State<Dashboard> {
   int _selectedIndex = 0;
+  int pria = 0;
+  int wanita = 0;
+  String total = '';
+  late Future<List<RWData>> rwDataFuture = fetchRWData();
+
+  Future<void> fetchPopulasi() async {
+    try {
+      final http.Response response = await http
+          .get(Uri.parse('http://10.0.2.2:8000/api/info-desa/populasi'));
+      if (response.statusCode == 200) {
+        final dynamic data = jsonDecode(response.body);
+        if (data is Map<String, dynamic>) {
+          setState(() {
+            pria = data['pria'] ?? 0; // default value if 'pria' key is missing
+            wanita =
+                data['wanita'] ?? 0; // default value if 'wanita' key is missing
+            total = data['total'] ??
+                'Data not available'; // default value if 'total' key is missing
+          });
+        } else {
+          setState(() {
+            total = 'Failed to parse data';
+          });
+        }
+      } else {
+        setState(() {
+          total = 'Failed to fetch data: ${response.statusCode}';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        total = 'Error: $e';
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchPopulasi();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,8 +143,8 @@ class _DashboardState extends State<Dashboard> {
               SizedBox(height: 10),
               ContainerCardPopulation(
                 title: 'Populasi Warga',
-                malePopulation: 20500,
-                femalePopulation: 13450,
+                malePopulation: pria,
+                femalePopulation: wanita,
               ),
               SizedBox(height: 10),
               ContainerCardCarousel(
@@ -85,35 +156,21 @@ class _DashboardState extends State<Dashboard> {
                 ],
               ),
               SizedBox(height: 10),
-              ContainerCardRW(
-                rwDataList: [
-                  RWData(
-                    rwNumber: 1,
-                    needs: [
-                      'Tidak ada Bak sampah',
-                      'Kurang gizi',
-                      'Minim Teknologi',
-                    ],
-                  ),
-                  RWData(
-                    rwNumber: 2,
-                    needs: [
-                      'Kurang Air bersih',
-                      'Kurang Pendidikan',
-                      'Minim Akses Transportasi',
-                    ],
-                  ),
-                  RWData(
-                    rwNumber: 3,
-                    needs: [
-                      'Kurang Guru',
-                      'Lingkungan Kotor',
-                      'Keterbatasan Fasilitas',
-                    ],
-                  ),
-                  // Tambahkan data RW lainnya di sini...
-                ],
-              )
+              FutureBuilder<List<RWData>>(
+                future: rwDataFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator(); // Menampilkan loading indicator saat data sedang diambil
+                  } else if (snapshot.hasError) {
+                    return Text(
+                        'Error: ${snapshot.error}'); // Menampilkan pesan error jika terjadi kesalahan
+                  } else {
+                    return ContainerCardRW(
+                        rwDataList: snapshot.data ??
+                            []); // Menampilkan ContainerCardRW dengan data RW yang telah diambil
+                  }
+                },
+              ),
             ],
           ),
         ),
