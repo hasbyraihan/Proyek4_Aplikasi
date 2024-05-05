@@ -1,21 +1,26 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_helloo_world/Auth/login.dart';
-import 'package:flutter_helloo_world/Dashboard.dart';
+import 'package:flutter_helloo_world/Mahasiswa/MahasiwaDashboard.dart';
 import 'package:flutter_helloo_world/Faq.dart';
+
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
-import 'package:flutter_helloo_world/Mahasiswa/ContactPerson.dart';
-import 'package:flutter_helloo_world/Mahasiswa/RatingPengabdian.dart';
-import 'package:flutter_helloo_world/Mahasiswa/TemplatePengajuan.dart';
 
-class MahasiswaDashboard extends StatefulWidget {
+class TemplatePengajuan extends StatefulWidget {
   @override
-  _MahasiswaDashboardState createState() => _MahasiswaDashboardState();
+  _TemplatePengajuanState createState() => _TemplatePengajuanState();
 }
 
-class _MahasiswaDashboardState extends State<MahasiswaDashboard> {
+class _TemplatePengajuanState extends State<TemplatePengajuan> {
   int _selectedIndex = 0;
+  void navigateToDashboard(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MahasiswaDashboard()),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,9 +58,8 @@ class _MahasiswaDashboardState extends State<MahasiswaDashboard> {
         children: [
           CustomContainer(
             color: Color(0xFF60AD77),
-            text: 'Pengajuan',
-            additionalText: 'Pengabdian',
-            icon: Icons.edit_document,
+            text: 'Surat Izin Kapolsek',
+            icon: Icons.file_download,
             onTap: () {
               Navigator.push(
                 context,
@@ -65,9 +69,8 @@ class _MahasiswaDashboardState extends State<MahasiswaDashboard> {
           ),
           CustomContainer(
             color: Color(0xFF60AD77),
-            text: 'Progress',
-            additionalText: 'Pengajuan',
-            icon: Icons.bar_chart,
+            text: 'Surat Izin Koramil',
+            icon: Icons.file_download,
             onTap: () {
               Navigator.push(
                 context,
@@ -77,9 +80,8 @@ class _MahasiswaDashboardState extends State<MahasiswaDashboard> {
           ),
           CustomContainer(
             color: Color(0xFF60AD77),
-            text: 'Upload Hasil',
-            additionalText: 'Pengabdian',
-            icon: Icons.upload_file,
+            text: 'Surat Izin PT',
+            icon: Icons.file_download,
             onTap: () {
               Navigator.push(
                 context,
@@ -89,49 +91,23 @@ class _MahasiswaDashboardState extends State<MahasiswaDashboard> {
           ),
           CustomContainer(
             color: Color(0xFF60AD77),
-            text: 'Template Laporan',
-            additionalText: 'Pengajuan',
-            icon: Icons.file_present,
+            text: 'Surat Izin Kecamatan',
+            icon: Icons.file_download,
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => TemplatePengajuan()),
+                MaterialPageRoute(builder: (context) => Login()),
               );
             },
           ),
           CustomContainer(
             color: Color(0xFF60AD77),
-            text: 'Rating Hasil',
-            additionalText: 'Pengabdian',
-            icon: Icons.star_border,
+            text: 'Surat Izin Desa',
+            icon: Icons.file_download,
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => RatingPengabdian()),
-              );
-            },
-          ),
-          CustomContainer(
-            color: Color(0xFF60AD77),
-            text: 'Informasi',
-            additionalText: 'Desa',
-            icon: Icons.other_houses,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Dashboard()),
-              );
-            },
-          ),
-          CustomContainer(
-            color: Color(0xFF60AD77),
-            text: 'Contact',
-            additionalText: 'Person',
-            icon: Icons.contacts,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ContactPerson()),
+                MaterialPageRoute(builder: (context) => Login()),
               );
             },
           ),
@@ -152,7 +128,6 @@ class _MahasiswaDashboardState extends State<MahasiswaDashboard> {
 class CustomContainer extends StatelessWidget {
   final Color color;
   final String text;
-  final String additionalText;
   final VoidCallback onTap;
   final IconData icon;
 
@@ -160,13 +135,12 @@ class CustomContainer extends StatelessWidget {
     Key? key,
     required this.color,
     required this.text,
-    required this.additionalText,
     required this.onTap,
     required this.icon,
   }) : super(key: key);
 
   final double _width = 207; // Atur lebar container di sini
-  final double _height = 130; // Atur tinggi container di sini
+  final double _height = 100; // Atur tinggi container di sini
 
   @override
   Widget build(BuildContext context) {
@@ -183,31 +157,19 @@ class CustomContainer extends StatelessWidget {
         child: Stack(
           children: [
             Positioned(
-              left: _width / 4 - 20, // Posisi ikon pada 1/4 bagian dari panjang container
-              top: _height / 2 - 40, // Posisi ikon di tengah secara vertikal
+              left: _width + 60, // 
+              top: _height / 2 - 30, // Posisi ikon di tengah secara vertikal
               child: Icon(
                 icon,
-                size: 80, // Atur ukuran ikon sesuai kebutuhan
+                size: 60, // Atur ukuran ikon sesuai kebutuhan
                 color: Color.fromARGB(255, 16, 80, 8), // Atur warna ikon sesuai kebutuhan
               ),
             ),
             Positioned(
-              left: _width * 3/4,
-              top: _height / 2 - 25,
+              left: _width / 4 - 20,
+              top: _height / 2 - 10,
               child: Text(
                 text,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            Positioned(
-              left: _width * 3/4,
-              top: _height / 2 - 5,
-              child: Text(
-                additionalText,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 20,
