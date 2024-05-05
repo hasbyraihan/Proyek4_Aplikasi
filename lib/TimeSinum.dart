@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_helloo_world/Dashboard.dart';
-import 'package:flutter_helloo_world/login.dart';
+
 import 'package:flutter_helloo_world/Faq.dart';
-import 'package:flutter_helloo_world/Timeline.dart';
-import 'package:flutter_helloo_world/History.dart';
+
+import 'package:flutter_helloo_world/Component/NavigationBar.dart'
+    as BarNavigasi;
 
 
 class TimeSinum extends StatefulWidget {
@@ -76,82 +76,14 @@ class _TimeSinumState extends State<TimeSinum> {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: BarNavigasi.NavigationBar(
         currentIndex: _selectedIndex,
-        backgroundColor: Colors.black, // Ubah warna background menjadi hitam
-        selectedItemColor: Colors.black, // Ubah warna ikon yang dipilih menjadi putih
-        unselectedItemColor: Colors.grey, // Ubah warna ikon yang tidak dipilih menjadi abu-abu
         onTap: (index) {
-          // Fungsi untuk menangani navigasi berdasarkan index yang dipilih
           setState(() {
             _selectedIndex = index;
-            // Navigasi ke halaman yang sesuai berdasarkan index
-            if (_selectedIndex == 3) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Login()),
-              );
-            } else {
-              // Implementasi navigasi ke halaman lain jika diperlukan
-            }
           });
         },
-        items: [
-          BottomNavigationBarItem(
-            icon: IconButton(
-              icon: Icon(Icons.home),
-              onPressed: () {
-                // Fungsi untuk menangani ketika item "Calendar" ditekan
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Dashboard()),
-                );
-              },
-            ),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: IconButton(
-              icon: Icon(Icons.calendar_today), // Ganti ikon dengan kalender
-              onPressed: () {
-                // Fungsi untuk menangani ketika item "Calendar" ditekan
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Timeline()),
-                );
-              },
-            ),
-            label: 'Timeline', // Atur label sesuai dengan kebutuhan
-          ),
-          BottomNavigationBarItem(
-            icon: IconButton(
-              icon: Icon(Icons.history), // Ganti ikon dengan ikon untuk history
-              onPressed: () {
-                // Fungsi untuk menangani ketika item "History" ditekan
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => History()),
-                );
-              },
-            ),
-            label: 'History', // Ubah label menjadi "History"
-          ),
-          BottomNavigationBarItem(
-            icon: IconButton(
-              icon: Icon(Icons.person),
-              onPressed: () {
-                // Fungsi untuk menangani ketika item "Profile" ditekan
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Login()),
-                );
-              },
-            ),
-            label: 'Profile',
-          ),
-        ],
-      ),
-    );
+      ), );
   }
 }
 

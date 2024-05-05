@@ -5,6 +5,8 @@ import 'package:flutter_helloo_world/Faq.dart';
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
 
+import '../Dashboard.dart';
+
 class AdminDashboard extends StatefulWidget {
   @override
   _AdminDashboardState createState() => _AdminDashboardState();
@@ -33,6 +35,18 @@ class _AdminDashboardState extends State<AdminDashboard> {
         padding: EdgeInsets.symmetric(
             horizontal: 16), // Tambahkan padding horizontal di sini
         children: [
+          CustomContainer(
+            color: Color(0xFF60AD77),
+            text: 'Informasi',
+            additionalText: 'Desa',
+            icon: Icons.other_houses,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Dashboard()),
+              );
+            },
+          ),
           CustomContainer(
             color: Color(0xFF60AD77),
             text: 'Manage Akun',
