@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_helloo_world/AdminDesa/AdminContactPerson.dart';
+import 'package:flutter_helloo_world/AdminDesa/AdminFAQEditPage.dart';
 import 'package:flutter_helloo_world/AdminDesa/AdminManageInfo.dart';
+import 'package:flutter_helloo_world/AdminDesa/AdminUploadTemplatePage.dart';
 import 'package:flutter_helloo_world/Faq.dart';
 
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
@@ -89,7 +92,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => FAQ()),
+                MaterialPageRoute(builder: (context) => AdminUploadTemplatePage()),
               );
             },
           ),
@@ -101,7 +104,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => FAQ()),
+                MaterialPageRoute(builder: (context) => AdminFAQEditPage()),
               );
             },
           ),
@@ -113,7 +116,14 @@ class _AdminDashboardState extends State<AdminDashboard> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => FAQ()),
+                MaterialPageRoute(
+                  builder: (context) => AdminContactPerson(
+                    contactNumber: '',
+                    contactName: '',
+                    contactUrl:
+                        'wa.me/+62...', //nanti contact url pada nomornya diambil dari contaactnumber aja biar gausah ngisi
+                  ),
+                ),
               );
             },
           ),
