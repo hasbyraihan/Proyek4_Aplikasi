@@ -1,6 +1,15 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
+
+class FAQItem {
+  String? key;
+  String question;
+  String answer;
+
+  FAQItem({this.key, required this.question, required this.answer});
+}
 
 class AdminFAQEditPage extends StatefulWidget {
   @override
@@ -8,11 +17,12 @@ class AdminFAQEditPage extends StatefulWidget {
 }
 
 class _AdminFAQEditPageState extends State<AdminFAQEditPage> {
-  List<TextEditingController> questionControllers = [];
-  List<TextEditingController> answerControllers = [];
-  int _selectedIndex = 0;
+  final DatabaseReference faqRef = FirebaseDatabase.instance.ref().child('faq');
+  List<FAQItem> faqItems = [];
+
   @override
   Widget build(BuildContext context) {
+    int _selectedIndex = 0;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFFC5E0CD),
@@ -31,32 +41,39 @@ class _AdminFAQEditPageState extends State<AdminFAQEditPage> {
       body: ListView(
         padding: EdgeInsets.all(16.0),
         children: [
-          // Existing question and answer fields
-          for (int i = 0; i < questionControllers.length; i++)
+          for (int i = 0; i < faqItems.length; i++)
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 TextField(
-                  controller: questionControllers[i],
+                  controller: TextEditingController(text: faqItems[i].question),
+                  onChanged: (value) => faqItems[i].question = value,
                   decoration: InputDecoration(
-                    labelText: 'Question ${i + 1}',
+                    labelText: 'Pertanyaan ${i + 1}',
                   ),
                 ),
                 TextField(
-                  controller: answerControllers[i],
+                  controller: TextEditingController(text: faqItems[i].answer),
+                  onChanged: (value) => faqItems[i].answer = value,
                   decoration: InputDecoration(
-                    labelText: 'Answer ${i + 1}',
+                    labelText: 'Jawaban ${i + 1}',
                   ),
                 ),
                 SizedBox(height: 16.0),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      faqItems.removeAt(i);
+                    });
+                  },
+                  child: Text('Hapus Pertanyaan'),
+                ),
               ],
             ),
-          // Button to add more fields
           ElevatedButton(
             onPressed: () {
               setState(() {
-                questionControllers.add(TextEditingController());
-                answerControllers.add(TextEditingController());
+                faqItems.add(FAQItem(question: '', answer: ''));
               });
             },
             child: Text('Tambah Pertanyaan'),
@@ -64,7 +81,7 @@ class _AdminFAQEditPageState extends State<AdminFAQEditPage> {
           SizedBox(height: 16.0),
           ElevatedButton(
             onPressed: () {
-              // Implement logic to save edited FAQ here
+              saveFAQsToFirebase();
             },
             child: Text('Simpan Perubahan'),
           ),
@@ -81,15 +98,35 @@ class _AdminFAQEditPageState extends State<AdminFAQEditPage> {
     );
   }
 
+  Future<void> saveFAQsToFirebase() async {
+    try {
+      for (var faq in faqItems) {
+        if (faq.key == null) {
+          final ref = await faqRef.push();
+          await ref.set({
+            'pertanyaan': faq.question,
+            'jawab': faq.answer,
+          });
+          faq.key = ref.key;
+        } else {
+          await faqRef.child(faq.key!).set({
+            'pertanyaan': faq.question,
+            'jawab': faq.answer,
+          });
+        }
+      }
+    } catch (e) {
+      print('Error saving FAQs: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   void dispose() {
-    // Dispose all controllers
-    for (var controller in questionControllers) {
-      controller.dispose();
-    }
-    for (var controller in answerControllers) {
-      controller.dispose();
-    }
     super.dispose();
   }
 }

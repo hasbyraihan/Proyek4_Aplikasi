@@ -5,10 +5,7 @@ import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
-void main() {
-  runApp(MyDashboardApp());
-}
+import 'package:firebase_database/firebase_database.dart';
 
 class MyDashboardApp extends StatelessWidget {
   @override
@@ -28,27 +25,22 @@ class Dashboard extends StatefulWidget {
   _DashboardState createState() => _DashboardState();
 }
 
-Future<List<RWData>> fetchRWData() async {
+Future<List<RWData>> fetchRWDataFromFirebase() async {
   try {
-    final http.Response response = await http
-        .get(Uri.parse('http://10.0.2.2:8000/api/info-desa/kebutuhan-rw'));
-    if (response.statusCode == 200) {
-      final dynamic data = jsonDecode(response.body);
-      List<RWData> rwDataList = [];
-      if (data is Map<String, dynamic>) {
-        data.forEach((key, value) {
-          if (value is Map<String, dynamic>) {
-            final rwNumber = value['rw'];
-            final needs = List<String>.from(value['kebutuhan'] ?? []);
-            rwDataList.add(RWData(rwNumber: rwNumber, needs: needs));
-          }
-        });
-        return rwDataList;
-      } else {
-        throw 'Failed to parse data';
-      }
+    final userRef = FirebaseDatabase.instance.ref('info-desa/kebutuhan-rw');
+    final userSnapshot = await userRef.get();
+
+    List<RWData> rwDataList = [];
+    if (userSnapshot.value != null) {
+      Map<dynamic, dynamic> data = userSnapshot.value as Map<dynamic, dynamic>;
+      data.forEach((key, value) {
+        final rwNumber = value['rw'] as int;
+        final needs = List<String>.from(value['kebutuhan'] ?? []);
+        rwDataList.add(RWData(rwNumber: rwNumber, needs: needs));
+      });
+      return rwDataList;
     } else {
-      throw 'Failed to fetch data: ${response.statusCode}';
+      throw 'Data not found';
     }
   } catch (e) {
     throw 'Error: $e';
@@ -60,30 +52,31 @@ class _DashboardState extends State<Dashboard> {
   int pria = 0;
   int wanita = 0;
   String total = '';
-  late Future<List<RWData>> rwDataFuture = fetchRWData();
+  late Future<List<RWData>> rwDataFuture = fetchRWDataFromFirebase();
 
   Future<void> fetchPopulasi() async {
     try {
-      final http.Response response = await http
-          .get(Uri.parse('http://10.0.2.2:8000/api/info-desa/populasi'));
-      if (response.statusCode == 200) {
-        final dynamic data = jsonDecode(response.body);
-        if (data is Map<String, dynamic>) {
+      final ref = FirebaseDatabase.instance.ref();
+      final snapshot = await ref.child('info-desa/populasi').get();
+
+      if (snapshot.exists) {
+        Map<Object?, Object?>? data = snapshot.value as Map<Object?, Object?>?;
+        if (data != null) {
           setState(() {
-            pria = data['pria'] ?? 0; // default value if 'pria' key is missing
-            wanita =
-                data['wanita'] ?? 0; // default value if 'wanita' key is missing
-            total = data['total'] ??
-                'Data not available'; // default value if 'total' key is missing
+            pria = data['pria'] as int;
+            wanita = data['wanita'] as int;
+            total = data['total'] as String? ?? 'Data not available';
           });
         } else {
           setState(() {
-            total = 'Failed to parse data';
+            pria = 100;
+            wanita = 10;
           });
         }
       } else {
         setState(() {
-          total = 'Failed to fetch data: ${response.statusCode}';
+          total = 'Failed to fetch data: Data not found';
+          print('Failed to fetch data: Data not found');
         });
       }
     } catch (e) {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
+import 'package:firebase_database/firebase_database.dart';
 
 class AdminContactPerson extends StatefulWidget {
   final String contactNumber;
@@ -24,6 +24,9 @@ class _AdminContactPersonState extends State<AdminContactPerson> {
   late TextEditingController _nameController;
   late TextEditingController _urlController;
   int _selectedIndex = 0;
+
+  final DatabaseReference contactRef =
+      FirebaseDatabase.instance.ref().child('contact-person');
 
   @override
   void initState() {
@@ -71,33 +74,31 @@ class _AdminContactPersonState extends State<AdminContactPerson> {
               'Nomor Telepon',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            TextField(
-              controller: _numberController,
-              keyboardType: TextInputType.phone,
-              decoration: InputDecoration(
-                hintText: 'Masukkan nomor telepon',
-              ),
-            ),
-            SizedBox(height: 20),
-            Text(
-              'URL Tujuan',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            TextField(
-              controller: _urlController,
-              decoration: InputDecoration(
-                hintText: 'Masukkan URL tujuan',
-              ),
+            Row(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Text(
+                    '+62 ',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Expanded(
+                  flex: 3,
+                  child: TextField(
+                    controller: _numberController,
+                    keyboardType: TextInputType.phone,
+                    decoration: InputDecoration(
+                      hintText: 'Masukkan nomor telepon',
+                    ),
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // Simpan perubahan dan kembali ke halaman sebelumnya
-                Navigator.pop(context, {
-                  'contactNumber': _numberController.text,
-                  'contactName': _nameController.text,
-                  'contactUrl': _urlController.text,
-                });
+                saveContactInfoToFirebase();
               },
               child: Text('Simpan Perubahan'),
             ),
@@ -113,6 +114,30 @@ class _AdminContactPersonState extends State<AdminContactPerson> {
         },
       ),
     );
+  }
+
+  void saveContactInfoToFirebase() async {
+    try {
+      final Map<String, dynamic> contactInfo = {
+        'contactNumber': '0${_numberController.text}',
+        'contactName': _nameController.text,
+        'contactUrl':
+            'https://wa.me/62${_numberController.text}', // WhatsApp URL
+      };
+
+      await contactRef.update(contactInfo);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Informasi kontak berhasil diperbarui.'),
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: $e'),
+        ),
+      );
+    }
   }
 
   @override
