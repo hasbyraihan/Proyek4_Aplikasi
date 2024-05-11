@@ -1,10 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter_helloo_world/Component/NavigationBar.dart'
+    as BarNavigasi;
 
 class AdminUploadTemplatePage extends StatefulWidget {
   @override
-  _AdminUploadTemplatePageState createState() => _AdminUploadTemplatePageState();
+  _AdminUploadTemplatePageState createState() =>
+      _AdminUploadTemplatePageState();
 }
 
 class _AdminUploadTemplatePageState extends State<AdminUploadTemplatePage> {
@@ -28,12 +31,24 @@ class _AdminUploadTemplatePageState extends State<AdminUploadTemplatePage> {
     }
   }
 
+  int _selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Upload Template'),
+        backgroundColor: Color(0xFFC5E0CD),
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: 20.0),
+            child: Image.asset(
+              'assets/images/logo.png',
+              width: 54,
+              height: 52,
+            ),
+          ),
+        ],
       ),
+      backgroundColor: Color(0xFFE9F0EB),
       body: ListView.builder(
         itemCount: templates.length,
         itemBuilder: (context, index) {
@@ -47,6 +62,14 @@ class _AdminUploadTemplatePageState extends State<AdminUploadTemplatePage> {
               },
             ),
           );
+        },
+      ),
+      bottomNavigationBar: BarNavigasi.NavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
         },
       ),
     );
