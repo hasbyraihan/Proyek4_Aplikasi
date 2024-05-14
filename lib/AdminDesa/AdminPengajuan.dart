@@ -5,14 +5,22 @@ import 'package:flutter_helloo_world/Faq.dart';
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
 
-
-class TimeSinum extends StatefulWidget {
-  @override
-  _TimeSinumState createState() => _TimeSinumState();
+enum TemplateStatus {
+  BelumDiverifikasi,
+  Diterima,
+  PerluDirevisi,
+  Pending,
 }
 
-class _TimeSinumState extends State<TimeSinum> {
-  int _selectedIndex = 1; // Deklarasi dan inisialisasi _selectedIndex
+class AdminPengajuan extends StatefulWidget {
+  @override
+  _AdminPengajuanState createState() => _AdminPengajuanState();
+}
+
+class _AdminPengajuanState extends State<AdminPengajuan> {
+  int _selectedIndex = 2;
+  TemplateStatus _templateStatus = TemplateStatus.BelumDiverifikasi;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,34 +53,24 @@ class _TimeSinumState extends State<TimeSinum> {
       ),
       backgroundColor: Color(0xFFE9F0EB),
       body: ListView(
-        padding: EdgeInsets.symmetric(horizontal: 16), // Tambahkan padding horizontal di sini
+        padding: EdgeInsets.symmetric(
+            horizontal: 16), // Tambahkan padding horizontal di sini
         children: [
           CustomContainer(
-            color: Color(0xFF60AD77),
+            color: _getColorForStatus(_templateStatus),
             text: 'ANANTARA',
             topLeftText: 'Politeknik Negeri Bandung',
             additionalText: 'Sinumbra',
             TanggalText: '21 Maret - 24 Maret',
             TahunText: '2023',
-            logoPath: 'assets/images/logopolban.png', // Memberikan path gambar logo
-          ),
-          CustomContainer(
-            color: Color(0xFF60AD77),
-            text: 'Sewatana',
-            topLeftText: 'Universitas Gajah Mada',
-            additionalText: 'Ciparay',
-            TanggalText: '2 Juli - 24 April',
-            TahunText: '2023',
-            logoPath: 'assets/images/logougm.png', // Memberikan path gambar logo
-          ),
-          CustomContainer(
-            color: Color(0xFF60AD77),
-            text: 'Gerakan Unpad Mengajar ',
-            topLeftText: 'Universitas Padjajaran',
-            additionalText: 'Eul - Eul',
-            TanggalText: '2 Januari - 24 April',
-            TahunText: '2023',
-            logoPath: 'assets/images/logounpad.png', // Memberikan path gambar logo
+            logoPath:
+                'assets/images/logopolban.png', // Memberikan path gambar logo
+            templateStatus: _templateStatus,
+            onStatusChanged: (status) {
+              setState(() {
+                _templateStatus = status!;
+              });
+            },
           ),
         ],
       ),
@@ -83,7 +81,21 @@ class _TimeSinumState extends State<TimeSinum> {
             _selectedIndex = index;
           });
         },
-      ), );
+      ),
+    );
+  }
+
+  Color _getColorForStatus(TemplateStatus status) {
+    switch (status) {
+      case TemplateStatus.BelumDiverifikasi:
+        return Colors.grey;
+      case TemplateStatus.Diterima:
+        return Colors.green;
+      case TemplateStatus.PerluDirevisi:
+        return Colors.red;
+      case TemplateStatus.Pending:
+        return Colors.orange;
+    }
   }
 }
 
@@ -94,7 +106,9 @@ class CustomContainer extends StatelessWidget {
   final String additionalText;
   final String TanggalText;
   final String TahunText;
-  final String logoPath; // Menambahkan path gambar logo
+  final String logoPath;
+  final TemplateStatus? templateStatus;
+  final ValueChanged<TemplateStatus?> onStatusChanged;
 
   const CustomContainer({
     Key? key,
@@ -104,11 +118,13 @@ class CustomContainer extends StatelessWidget {
     required this.additionalText,
     required this.TanggalText,
     required this.TahunText,
-    required this.logoPath, // Menambahkan path gambar logo
+    required this.logoPath,
+    required this.templateStatus,
+    required this.onStatusChanged,
   }) : super(key: key);
 
   final double _width = 200; // Atur lebar container di sini
-  final double _height = 140; // Atur tinggi container di sini
+  final double _height = 170; // Atur tinggi container di sini
 
   @override
   Widget build(BuildContext context) {
@@ -125,18 +141,21 @@ class CustomContainer extends StatelessWidget {
           Positioned(
             left: 17, // Padding dari sisi kiri
             top: 36, // Padding dari atas
-            
-            child: Image.asset( // Menambahkan gambar logo
+
+            child: Image.asset(
+              // Menambahkan gambar logo
               logoPath,
               width: 70, // Ukuran gambar logo
               height: 70,
             ),
           ),
           Positioned(
-            left: (_width) / 2, // Menempatkan teks di tengah horizontal berdasarkan lebar container dan lebar gambar logo
+            left: (_width) /
+                2, // Menempatkan teks di tengah horizontal berdasarkan lebar container dan lebar gambar logo
             top: 12, // Padding dari atas
             child: Align(
-              alignment: Alignment.center, // Menyatukan teks ke tengah horizontal dari container
+              alignment: Alignment
+                  .center, // Menyatukan teks ke tengah horizontal dari container
               child: Text(
                 topLeftText,
                 style: TextStyle(
@@ -148,12 +167,16 @@ class CustomContainer extends StatelessWidget {
             ),
           ),
           Positioned(
-            left: (_width) / 2, // Menempatkan teks di tengah horizontal berdasarkan lebar container dan lebar gambar logo
-            top: 12 + 20 + 8, // Padding dari atas + tinggi teks topLeftText + padding tambahan
+            left: (_width) /
+                2, // Menempatkan teks di tengah horizontal berdasarkan lebar container dan lebar gambar logo
+            top: 12 +
+                20 +
+                8, // Padding dari atas + tinggi teks topLeftText + padding tambahan
             child: Align(
-              alignment: Alignment.center, // Menyatukan teks ke tengah horizontal dari container
+              alignment: Alignment
+                  .center, // Menyatukan teks ke tengah horizontal dari container
               child: Text(
-                '"' + text + '"' ,
+                '"' + text + '"',
                 style: TextStyle(
                   color: Color.fromARGB(255, 89, 255, 0),
                   fontSize: 18,
@@ -163,7 +186,7 @@ class CustomContainer extends StatelessWidget {
             ),
           ),
           Positioned(
-            left: (_width) /2,
+            left: (_width) / 2,
             top: 12 + 20 + 8 + 20 + 8 + 18 + 8,
             child: Align(
               alignment: Alignment.center,
@@ -178,7 +201,7 @@ class CustomContainer extends StatelessWidget {
             ),
           ),
           Positioned(
-            left: (_width) /2,
+            left: (_width) / 2,
             top: 12 + 20 + 8 + 20 + 8,
             child: Align(
               alignment: Alignment.center,
@@ -193,7 +216,7 @@ class CustomContainer extends StatelessWidget {
             ),
           ),
           Positioned(
-            left: (_width) + 45 ,
+            left: (_width) + 45,
             top: 12 + 20 + 8 + 20 + 8 + 18 + 8,
             child: Align(
               alignment: Alignment.center,
@@ -207,11 +230,34 @@ class CustomContainer extends StatelessWidget {
               ),
             ),
           ),
+          Positioned(
+            left: 20,
+            top: 120,
+            child: DropdownButton<TemplateStatus>(
+              value: templateStatus,
+              onChanged: onStatusChanged,
+              items: [
+                DropdownMenuItem(
+                  value: TemplateStatus.BelumDiverifikasi,
+                  child: Text('Belum Diverifikasi'),
+                ),
+                DropdownMenuItem(
+                  value: TemplateStatus.Diterima,
+                  child: Text('Diterima'),
+                ),
+                DropdownMenuItem(
+                  value: TemplateStatus.PerluDirevisi,
+                  child: Text('Perlu Direvisi'),
+                ),
+                DropdownMenuItem(
+                  value: TemplateStatus.Pending,
+                  child: Text('Pending'),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
   }
 }
-
-
-

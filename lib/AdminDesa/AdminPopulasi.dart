@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_helloo_world/AdminDesa/AdminDatabaseSerice.dart';
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
 
@@ -100,6 +101,8 @@ class _AdminPopulasiState extends State<AdminPopulasi> {
                 ElevatedButton(
                   onPressed: () {
                     // Implementasi logika untuk menyimpan data ke database atau melakukan validasi
+                    AdminDatabaseService().updateDataPopulasi(
+                        context, _malePopulation, _femalePopulation);
                   },
                   child: Text(
                     "Simpan",

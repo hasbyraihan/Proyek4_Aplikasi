@@ -448,6 +448,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.7"
+<<<<<<< HEAD
   permission_handler:
     dependency: "direct main"
     description:
@@ -496,6 +497,8 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.1"
+=======
+>>>>>>> dadec23e0e624d88e3e47df6d30e6d4b7d9f79dc
   platform:
     dependency: transitive
     description:

@@ -49,81 +49,84 @@ class _LoginState extends State<Login> {
         ],
       ),
       backgroundColor: Color(0xFFE9F0EB),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.person,
-              size: 100, // Ukuran besar icon person
-            ),
-            SizedBox(height: 20),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 40),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Email',
-                  labelText: 'Email',
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(height: 100),
+              Icon(
+                Icons.person,
+                size: 100, // Ukuran besar icon person
+              ),
+              SizedBox(height: 20),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 40),
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Email',
+                    labelText: 'Email',
+                  ),
+                  controller: _email,
                 ),
-                controller: _email,
               ),
-            ),
-            SizedBox(height: 10),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 40),
-              child: TextField(
-                obscureText: true, // Masking untuk password
-                decoration: InputDecoration(
-                  hintText: 'Password',
-                  labelText: 'Password',
+              SizedBox(height: 10),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 40),
+                child: TextField(
+                  obscureText: true, // Masking untuk password
+                  decoration: InputDecoration(
+                    hintText: 'Password',
+                    labelText: 'Password',
+                  ),
+                  controller: _password,
                 ),
-                controller: _password,
               ),
-            ),
-            SizedBox(height: 10),
-            TextButton(
-              onPressed: () {
-                // Fungsi untuk navigasi ke halaman lupa password
-              },
-              style: TextButton.styleFrom(
-                backgroundColor: Color(0xFFE9F0EB),
-              ),
-              child: Text('Lupa Kata Sandi?',
-                  style: TextStyle(color: Colors.green)),
-            ),
-            SizedBox(height: 60, width: 40),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 40),
-              child: ElevatedButton(
-                onPressed: () async {
-                  final email = _email.text;
-                  final password = _password.text;
-                  await handleLogin(email, password);
+              SizedBox(height: 10),
+              TextButton(
+                onPressed: () {
+                  // Fungsi untuk navigasi ke halaman lupa password
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(
-                      0xFF60AD77), // Mengatur warna latar belakang tombol menjadi hijau
-                  minimumSize: Size(
-                      double.infinity, 50), // Mengatur lebar dan tinggi tombol
+                style: TextButton.styleFrom(
+                  backgroundColor: Color(0xFFE9F0EB),
                 ),
-                child: Text('Login', style: TextStyle(color: Colors.black)),
+                child: Text('Lupa Kata Sandi?',
+                    style: TextStyle(color: Colors.green)),
               ),
-            ),
-            SizedBox(height: 40),
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Daftar()),
-                );
-              },
-              style: TextButton.styleFrom(
-                backgroundColor: Color(0xFFE9F0EB),
+              SizedBox(height: 60, width: 40),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 40),
+                child: ElevatedButton(
+                  onPressed: () async {
+                    final email = _email.text;
+                    final password = _password.text;
+                    await handleLogin(email, password);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(
+                        0xFF60AD77), // Mengatur warna latar belakang tombol menjadi hijau
+                    minimumSize: Size(double.infinity,
+                        50), // Mengatur lebar dan tinggi tombol
+                  ),
+                  child: Text('Login', style: TextStyle(color: Colors.black)),
+                ),
               ),
-              child: Text('Belum mempunyai akun? DAFTAR',
-                  style: TextStyle(color: Colors.green)),
-            ),
-          ],
+              SizedBox(height: 40),
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Daftar()),
+                  );
+                },
+                style: TextButton.styleFrom(
+                  backgroundColor: Color(0xFFE9F0EB),
+                ),
+                child: Text('Belum mempunyai akun? DAFTAR',
+                    style: TextStyle(color: Colors.green)),
+              ),
+            ],
+          ),
         ),
       ),
     );

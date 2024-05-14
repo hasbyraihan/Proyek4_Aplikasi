@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_helloo_world/AdminDesa/AdminContactPerson.dart';
+import 'package:flutter_helloo_world/AdminDesa/AdminFAQEditPage.dart';
 import 'package:flutter_helloo_world/AdminDesa/AdminManageInfo.dart';
+import 'package:flutter_helloo_world/AdminDesa/AdminPengajuan.dart';
+import 'package:flutter_helloo_world/AdminDesa/AdminUploadTemplatePage.dart';
 import 'package:flutter_helloo_world/Faq.dart';
 
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
+
+import '../Dashboard.dart';
 
 class AdminDashboard extends StatefulWidget {
   @override
@@ -33,6 +39,18 @@ class _AdminDashboardState extends State<AdminDashboard> {
         padding: EdgeInsets.symmetric(
             horizontal: 16), // Tambahkan padding horizontal di sini
         children: [
+          CustomContainer(
+            color: Color(0xFF60AD77),
+            text: 'Informasi',
+            additionalText: 'Desa',
+            icon: Icons.other_houses,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Dashboard()),
+              );
+            },
+          ),
           CustomContainer(
             color: Color(0xFF60AD77),
             text: 'Manage Akun',
@@ -65,7 +83,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => FAQ()),
+                MaterialPageRoute(builder: (context) => AdminPengajuan()),
               );
             },
           ),
@@ -89,7 +107,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => FAQ()),
+                MaterialPageRoute(builder: (context) => AdminUploadTemplatePage()),
               );
             },
           ),
@@ -101,7 +119,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => FAQ()),
+                MaterialPageRoute(builder: (context) => AdminFAQEditPage()),
               );
             },
           ),
@@ -113,7 +131,14 @@ class _AdminDashboardState extends State<AdminDashboard> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => FAQ()),
+                MaterialPageRoute(
+                  builder: (context) => AdminContactPerson(
+                    contactNumber: '',
+                    contactName: '',
+                    contactUrl:
+                        'wa.me/+62...', //nanti contact url pada nomornya diambil dari contaactnumber aja biar gausah ngisi
+                  ),
+                ),
               );
             },
           ),

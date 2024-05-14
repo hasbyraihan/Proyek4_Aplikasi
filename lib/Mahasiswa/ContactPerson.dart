@@ -1,16 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart'; // Import library untuk membuka URL
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_helloo_world/Mahasiswa/MahasiwaDashboard.dart';
 import 'package:flutter_helloo_world/Faq.dart';
-import 'package:flutter_helloo_world/Component/NavigationBar.dart' as BarNavigasi;
+import 'package:flutter_helloo_world/Component/NavigationBar.dart'
+    as BarNavigasi;
 
 class ContactPerson extends StatefulWidget {
   @override
   _ContactPersonState createState() => _ContactPersonState();
 }
 
+class Contact_Person {
+  final String name;
+  final String phoneNumber;
+  final String url;
+
+  Contact_Person({
+    required this.name,
+    required this.phoneNumber,
+    required this.url,
+  });
+}
+
 class _ContactPersonState extends State<ContactPerson> {
   int _selectedIndex = 0;
+  Contact_Person? _contactPerson;
+
+  @override
+  void initState() {
+    super.initState();
+    _getContactPerson();
+  }
+
+  Future<void> _getContactPerson() async {
+    final userRef = FirebaseDatabase.instance.ref('contact-person');
+    final snapshot = await userRef.get();
+
+    if (snapshot.value != null) {
+      Map<dynamic, dynamic> data = snapshot.value as Map<dynamic, dynamic>;
+      setState(() {
+        _contactPerson = Contact_Person(
+          name: data['contactName'] ?? '',
+          phoneNumber: data['contactNumber'] ?? '',
+          url: data['contactUrl'] ?? '',
+        );
+      });
+    }
+  }
 
   void navigateToDashboard(BuildContext context) {
     Navigator.push(
@@ -55,26 +92,30 @@ class _ContactPersonState extends State<ContactPerson> {
         ],
       ),
       backgroundColor: Color(0xFFE9F0EB),
-      body: ListView(
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        children: [
-          // Item kedua
-          ContactItem(
-            color: Color(0xFFE9F0EB),
-            icon: Icons.phone,
-            text: '0898-6487-811',
-            name: 'Adang Bahrudin',
-          ),
+      body: _contactPerson != null
+          ? ListView(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              children: [
+                // Item kedua
+                ContactItem(
+                  color: Color(0xFFE9F0EB),
+                  icon: Icons.phone,
+                  text: _contactPerson!.phoneNumber,
+                  name: _contactPerson!.name,
+                ),
 
-          // Tombol untuk membuka link
-          ElevatedButton(
-            onPressed: () {
-              _launchURL('https://example.com');
-            },
-            child: Text('Visit Website'),
-          ),
-        ],
-      ),
+                // Tombol untuk membuka link
+                ElevatedButton(
+                  onPressed: () {
+                    _launchURL(_contactPerson!.url);
+                  },
+                  child: Text('Visit Website'),
+                ),
+              ],
+            )
+          : Center(
+              child: CircularProgressIndicator(),
+            ),
       bottomNavigationBar: BarNavigasi.NavigationBar(
         currentIndex: _selectedIndex,
         onTap: (index) {
@@ -141,5 +182,3 @@ class ContactItem extends StatelessWidget {
     );
   }
 }
-
-
