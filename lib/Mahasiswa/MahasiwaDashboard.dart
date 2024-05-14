@@ -6,6 +6,7 @@ import 'package:flutter_helloo_world/Faq.dart';
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
 import 'package:flutter_helloo_world/Mahasiswa/ContactPerson.dart';
+import 'package:flutter_helloo_world/Mahasiswa/Pengajuan.dart';
 import 'package:flutter_helloo_world/Mahasiswa/RatingPengabdian.dart';
 import 'package:flutter_helloo_world/Mahasiswa/TemplatePengajuan.dart';
 
@@ -59,7 +60,7 @@ class _MahasiswaDashboardState extends State<MahasiswaDashboard> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Login()),
+                MaterialPageRoute(builder: (context) => Pengajuan()),
               );
             },
           ),
