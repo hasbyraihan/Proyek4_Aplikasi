@@ -14,7 +14,7 @@ class MyDashboardApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Dashboard App',
+      title: 'Simpemas',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
