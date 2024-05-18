@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_helloo_world/AdminDesa/AdminDashboard.dart';
 import 'package:flutter_helloo_world/Auth/login.dart';
 import 'package:flutter_helloo_world/Dashboard.dart';
+import 'package:flutter_helloo_world/Faq.dart';
 import 'package:flutter_helloo_world/History.dart';
 import 'package:flutter_helloo_world/Mahasiswa/MahasiwaDashboard.dart';
 import 'package:flutter_helloo_world/Timeline.dart';
@@ -71,6 +72,30 @@ class _NavigationBarState extends State<NavigationBar> {
     }
   }
 
+  Widget _buildCircularIcon(IconData icon, int index) {
+    bool isSelected = _selectedIndex == index;
+    return Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: isSelected ? Colors.lightGreenAccent : Colors.lightGreen[100],
+      ),
+      child: IconButton(
+        icon: Icon(icon, color: Colors.black),
+        onPressed: () {
+          setState(() {
+            _selectedIndex = index;
+          });
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => FAQ()),
+          );
+        },
+      ),
+    );
+  }
+
   Future<bool> _checkUserLoggedIn() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool('isLoggedIn') ?? false;
@@ -80,10 +105,9 @@ class _NavigationBarState extends State<NavigationBar> {
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       currentIndex: _selectedIndex,
-      backgroundColor: Colors.black,
-      selectedItemColor: Colors.black,
+      backgroundColor: Color(0xFFC5E0CD),
+      selectedItemColor: Color(0xFFC5E0CD),
       unselectedItemColor: Colors.grey,
-      
       onTap: (index) {
         // Navigasi ke halaman yang sesuai berdasarkan index
         if (index == 3) {
@@ -150,6 +174,18 @@ class _NavigationBarState extends State<NavigationBar> {
             },
           ),
           label: 'Timeline',
+        ),
+        BottomNavigationBarItem(
+          icon: IconButton(
+            icon: _buildCircularIcon(Icons.menu, 2),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => FAQ()),
+              );
+            },
+          ),
+          label: 'Menu',
         ),
         BottomNavigationBarItem(
           icon: IconButton(
