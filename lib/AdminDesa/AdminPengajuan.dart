@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_helloo_world/AdminDesa/AdminDetailPengajuan.dart';
 
 import 'package:flutter_helloo_world/Faq.dart';
 
@@ -63,6 +64,7 @@ class _AdminPengajuanState extends State<AdminPengajuan> {
             additionalText: 'Sinumbra',
             TanggalText: '21 Maret - 24 Maret',
             TahunText: '2023',
+            Link: '',
             logoPath:
                 'assets/images/logopolban.png', // Memberikan path gambar logo
             templateStatus: _templateStatus,
@@ -106,6 +108,7 @@ class CustomContainer extends StatelessWidget {
   final String additionalText;
   final String TanggalText;
   final String TahunText;
+  final String Link;
   final String logoPath;
   final TemplateStatus? templateStatus;
   final ValueChanged<TemplateStatus?> onStatusChanged;
@@ -118,6 +121,7 @@ class CustomContainer extends StatelessWidget {
     required this.additionalText,
     required this.TanggalText,
     required this.TahunText,
+    required this.Link,
     required this.logoPath,
     required this.templateStatus,
     required this.onStatusChanged,
@@ -254,6 +258,32 @@ class CustomContainer extends StatelessWidget {
                   child: Text('Pending'),
                 ),
               ],
+            ),
+          ),
+          Positioned(
+            left: (_width),
+            top: 130,
+            child: GestureDetector(
+              onTap: () {
+                // Navigasi ke halaman lain
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AdminDetailPengajuan(), // Ganti dengan halaman tujuan
+                  ),
+                );
+              },
+              child: Align(
+                alignment: Alignment.center,
+                child: Text(
+                  'Detail Pengajuan >',
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 167, 235, 111),
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ),
           ),
         ],
