@@ -83,6 +83,7 @@ class _NavigationBarState extends State<NavigationBar> {
       backgroundColor: Colors.black,
       selectedItemColor: Colors.black,
       unselectedItemColor: Colors.grey,
+      
       onTap: (index) {
         // Navigasi ke halaman yang sesuai berdasarkan index
         if (index == 3) {

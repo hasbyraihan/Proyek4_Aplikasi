@@ -43,6 +43,10 @@ class _HistoryState extends State<History> {
         ],
       ),
       backgroundColor: Color(0xFFE9F0EB),
+      floatingActionButton: Container(
+        child: Text('data'),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       body: ListView(
         padding: EdgeInsets.symmetric(
             horizontal: 16), // Tambahkan padding horizontal di sini
@@ -223,6 +227,3 @@ class CustomContainer extends StatelessWidget {
     );
   }
 }
-
-
-                  
