@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_helloo_world/daftar.dart';
+import 'package:flutter_helloo_world/Component/NavigationBar.dart'
+    as BarNavigasi;
 
 class Login extends StatefulWidget {
   @override
@@ -7,6 +9,7 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  int _selectedIndex = 2; // Deklarasi dan inisialisasi _selectedIndex
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,6 +102,7 @@ class _LoginState extends State<Login> {
           ),
         ),
       ),
+      
     );
   }
 }
