@@ -36,18 +36,6 @@ class _AdminManageInfoState extends State<AdminManageInfo> {
         children: [
           CustomContainer(
             color: Color(0xFF60AD77),
-            text: 'Lokasi',
-            additionalText: 'Desa',
-            icon: Icons.map,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => FAQ()),
-              );
-            },
-          ),
-          CustomContainer(
-            color: Color(0xFF60AD77),
             text: 'Populasi',
             additionalText: 'Warga Desa',
             icon: Icons.person_add_alt,
