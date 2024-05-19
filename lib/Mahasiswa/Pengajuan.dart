@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
+import 'package:flutter_helloo_world/Mahasiswa/MahasiwaDashboard.dart';
 
 class Pengajuan extends StatefulWidget {
   @override
@@ -13,14 +14,12 @@ class Pengajuan extends StatefulWidget {
 class _PengajuanState extends State<Pengajuan> {
   int _selectedIndex = 0;
 
-  // Controller untuk menampung nilai dari TextField
   TextEditingController perguruanTinggiController = TextEditingController();
+  TextEditingController jurusanController = TextEditingController();
   TextEditingController namaProgramController = TextEditingController();
-  TextEditingController bidangPengabdianController = TextEditingController();
   TextEditingController jumlahLakiLakiController = TextEditingController();
   TextEditingController jumlahPerempuanController = TextEditingController();
   TextEditingController dateController = TextEditingController();
-  TextEditingController rwController = TextEditingController();
 
   final List<String> rwOptions = [
     'RW 1',
@@ -33,19 +32,19 @@ class _PengajuanState extends State<Pengajuan> {
     'RW 8',
     'RW 9',
     'RW 10'
-  ]; // Daftar opsi RW
-  String? selectedRW; // Nilai RW yang dipilih
+  ];
+  String? selectedRW;
 
-  final List<String> bidangOptions = [
-    'Lingkungan',
+  final List<String> bidangPengabdianOptions = [
     'Penelitian',
     'Pendidikan',
-    'Kesehatan',
-    'Pembangunan'
+    'Lingkungan',
+    'Pembangunan',
+    'Kesehatan'
   ];
-  String? selectedBidang;
+  String? selectedBidangPengabdian =
+      'Penelitian'; // Set default value to avoid null
 
-  // Fungsi untuk menampilkan DatePicker
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
@@ -61,9 +60,9 @@ class _PengajuanState extends State<Pengajuan> {
     }
   }
 
-  // Fungsi untuk melakukan validasi
   bool _validateFields() {
     if (perguruanTinggiController.text.isEmpty ||
+        jurusanController.text.isEmpty ||
         namaProgramController.text.isEmpty ||
         jumlahLakiLakiController.text.isEmpty ||
         jumlahPerempuanController.text.isEmpty ||
@@ -102,30 +101,41 @@ class _PengajuanState extends State<Pengajuan> {
             children: [
               SizedBox(height: 20),
               CustomContainer(
+                hintText: 'Perguruan Tinggi',
                 label: 'Perguruan Tinggi',
                 icon: Icons.assured_workload,
                 controller: perguruanTinggiController,
               ),
               SizedBox(height: 10),
               CustomContainer(
+                hintText: 'Jurusan',
+                label: 'Jurusan',
+                icon: Icons.school_outlined,
+                controller: jurusanController,
+              ),
+              SizedBox(height: 10),
+              CustomContainer(
+                hintText: 'Nama Program',
                 label: 'Nama Program',
-                icon: Icons.assured_workload,
+                icon: Icons.webhook_rounded,
                 controller: namaProgramController,
               ),
               SizedBox(height: 10),
               CustomContainer(
+                hintText: 'Bidang Pengabdian',
                 label: 'Bidang Pengabdian',
-                icon: Icons.assured_workload,
-                options: bidangOptions, // Berikan daftar opsi untuk dropdown RW
-                value: selectedBidang, // Nilai yang dipilih pada dropdown
+                icon: Icons.group_work_sharp,
+                options: bidangPengabdianOptions,
+                value: selectedBidangPengabdian,
                 onChanged: (newValue) {
                   setState(() {
-                    selectedBidang = newValue;
+                    selectedBidangPengabdian = newValue;
                   });
                 },
               ),
               SizedBox(height: 10),
               CustomContainer(
+                hintText: 'Jumlah Peserta Laki-Laki',
                 label: 'Jumlah Peserta Laki-Laki',
                 icon: Icons.person,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -133,13 +143,15 @@ class _PengajuanState extends State<Pengajuan> {
               ),
               SizedBox(height: 10),
               CustomContainer(
+                hintText: 'Jumlah Peserta Perempuan',
                 label: 'Jumlah Peserta Perempuan',
-                icon: Icons.person,
+                icon: Icons.person_2,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 controller: jumlahPerempuanController,
               ),
               SizedBox(height: 10),
               CustomContainer(
+                hintText: 'DD/MM/YY',
                 label: 'DD/MM/YY',
                 icon: Icons.calendar_today,
                 controller: dateController,
@@ -147,10 +159,11 @@ class _PengajuanState extends State<Pengajuan> {
               ),
               SizedBox(height: 10),
               CustomContainer(
+                hintText: 'RW',
                 label: 'RW',
-                icon: Icons.assured_workload,
-                options: rwOptions, // Berikan daftar opsi untuk dropdown RW
-                value: selectedRW, // Nilai yang dipilih pada dropdown
+                icon: Icons.maps_home_work,
+                options: rwOptions,
+                value: selectedRW,
                 onChanged: (newValue) {
                   setState(() {
                     selectedRW = newValue;
@@ -160,18 +173,27 @@ class _PengajuanState extends State<Pengajuan> {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  // Lakukan validasi sebelum pindah ke halaman berikutnya
                   if (_validateFields()) {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => PengajuanUploadFile()),
+                        builder: (context) => PengajuanUploadFile(
+                          perguruanTinggi: perguruanTinggiController.text,
+                          jurusan: jurusanController.text,
+                          namaProgram: namaProgramController.text,
+                          bidangPengabdian: selectedBidangPengabdian!,
+                          jumlahLakiLaki: jumlahLakiLakiController.text,
+                          jumlahPerempuan: jumlahPerempuanController.text,
+                          tanggal: dateController.text,
+                          rw: selectedRW,
+                        ),
+                      ),
                     );
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green, // Atur warna tombol
-                  foregroundColor: Colors.black, // Atur warna teks
+                  backgroundColor: Colors.green,
+                  foregroundColor: Colors.black,
                 ),
                 child: Text('Halaman Selanjutnya'),
               ),
@@ -193,6 +215,26 @@ class _PengajuanState extends State<Pengajuan> {
 }
 
 class PengajuanUploadFile extends StatefulWidget {
+  final String perguruanTinggi;
+  final String jurusan;
+  final String namaProgram;
+  final String bidangPengabdian;
+  final String jumlahLakiLaki;
+  final String jumlahPerempuan;
+  final String tanggal;
+  final String? rw;
+
+  PengajuanUploadFile({
+    required this.perguruanTinggi,
+    required this.jurusan,
+    required this.namaProgram,
+    required this.bidangPengabdian,
+    required this.jumlahLakiLaki,
+    required this.jumlahPerempuan,
+    required this.tanggal,
+    this.rw,
+  });
+
   @override
   _PengajuanUploadFileState createState() => _PengajuanUploadFileState();
 }
@@ -232,6 +274,33 @@ class _PengajuanUploadFileState extends State<PengajuanUploadFile> {
     }
   }
 
+  void _saveAllFiles() {
+    bool allFilesUploaded = templateFiles.values.every((file) => file != null);
+
+    if (allFilesUploaded) {
+      // Simpan data dan file PDF ke database atau penyimpanan lokal di sini
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Yeayy, data berhasil dikirim!'),
+        ),
+      );
+
+      // Navigate to the dashboard page and remove all previous routes
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => MahasiswaDashboard()),
+        (Route<dynamic> route) => false,
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Eitss, upload dokumen nya dulu yaa'),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -249,17 +318,27 @@ class _PengajuanUploadFileState extends State<PengajuanUploadFile> {
         ],
       ),
       backgroundColor: Color(0xFFE9F0EB),
-      body: Column(
-        children: [
-          SizedBox(
-            height: 20,
-          ),
-          _buildUploadRow('Surat Izin Desa'),
-          _buildUploadRow('Surat Izin Kecamatan'),
-          _buildUploadRow('Surat Izin PT'),
-          _buildUploadRow('Surat Izin Koramil'),
-          _buildUploadRow('Surat Izin Kapolsek'),
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(height: 20),
+            _buildUploadRow('Surat Izin Desa'),
+            _buildUploadRow('Surat Izin Kecamatan'),
+            _buildUploadRow('Surat Izin PT'),
+            _buildUploadRow('Surat Izin Koramil'),
+            _buildUploadRow('Surat Izin Kapolsek'),
+            SizedBox(height: 50),
+            ElevatedButton(
+              onPressed: _saveAllFiles,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                foregroundColor: Colors.black,
+                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 16),
+              ),
+              child: Text('Simpan Semua File'),
+            ),
+          ],
+        ),
       ),
       bottomNavigationBar: BarNavigasi.NavigationBar(
         currentIndex: _selectedIndex,
@@ -279,58 +358,55 @@ class _PengajuanUploadFileState extends State<PengajuanUploadFile> {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 20),
           child: Text(
-            key, // Menampilkan nama kolom
+            key,
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16,
             ),
           ),
         ),
-        SizedBox(height: 5), // Jarak antara teks dan container
+        SizedBox(height: 5),
         Container(
-          margin:
-              EdgeInsets.symmetric(horizontal: 30), // Mengatur jarak kiri kanan
+          margin: EdgeInsets.symmetric(horizontal: 30),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
                 child: uploadedFileNames[key] == null
-                    ? ElevatedButton.icon(
-                        onPressed: () => _pickFile(key),
-                        icon: Icon(
-                          Icons.upload_file,
-                          color: Colors.white,
-                        ),
-                        label: Text(
-                          'Unggah File PDF',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green,
-                          padding: EdgeInsets.symmetric(
-                              vertical: 16), // Ukuran tombol vertikal
-                        ),
-                      )
-                    : Container(
-                        padding: EdgeInsets.symmetric(vertical: 16),
-                        decoration: BoxDecoration(
-                            color: Colors.green,
-                            borderRadius: BorderRadius.circular(20)),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.file_present, color: Colors.white),
-                            SizedBox(width: 8),
-                            Text(
-                              uploadedFileNames[key]!,
-                              style: TextStyle(color: Colors.white),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
-                        ),
+                  ? ElevatedButton.icon(
+                      onPressed: () => _pickFile(key),
+                      icon: Icon(
+                        Icons.upload_file,
+                        color: Colors.white,
                       ),
+                      label: Text(
+                        'Unggah File PDF',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                      ),
+                    )
+                  : Container(
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      decoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.file_present, color: Colors.white),
+                          SizedBox(width: 8),
+                          Text(
+                            uploadedFileNames[key]!,
+                            style: TextStyle(color: Colors.white),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
               ),
-              SizedBox(height: 20),
             ],
           ),
         ),
@@ -340,33 +416,31 @@ class _PengajuanUploadFileState extends State<PengajuanUploadFile> {
 }
 
 class CustomContainer extends StatelessWidget {
+  final String hintText;
   final String label;
   final IconData icon;
-  final List<TextInputFormatter>? inputFormatters;
-  final TextInputType? keyboardType;
-  final TextEditingController? controller;
-  final List<String>? options; // Daftar opsi dropdown
-  final String? value; // Nilai yang dipilih pada dropdown
-  final ValueChanged<String?>?
-      onChanged; // Fungsi yang dipanggil saat nilai dropdown berubah
+  final List<String>? options;
+  final String? value;
+  final ValueChanged<String?>? onChanged;
   final VoidCallback? onTap;
+  final TextEditingController? controller;
+  final List<TextInputFormatter>? inputFormatters;
 
   const CustomContainer({
     Key? key,
+    required this.hintText,
     required this.label,
     required this.icon,
-    this.inputFormatters,
-    this.keyboardType,
-    this.controller,
-    this.options, // Tambahkan parameter untuk daftar opsi dropdown
-    this.value, // Tambahkan parameter untuk nilai dropdown yang dipilih
-    this.onChanged, // Tambahkan parameter untuk fungsi onChanged
+    this.options,
+    this.value,
+    this.onChanged,
     this.onTap,
+    this.controller,
+    this.inputFormatters,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // Jika widget ini adalah dropdown
     if (options != null && onChanged != null) {
       return Container(
         padding: EdgeInsets.symmetric(horizontal: 10),
@@ -383,8 +457,7 @@ class CustomContainer extends StatelessWidget {
             ),
             Expanded(
               child: DropdownButtonFormField<String>(
-                value: value ??
-                    options!.first, // Set nilai default jika value null
+                value: value,
                 onChanged: onChanged,
                 items: options!.map((String value) {
                   return DropdownMenuItem<String>(
@@ -402,7 +475,6 @@ class CustomContainer extends StatelessWidget {
         ),
       );
     } else {
-      // Jika widget ini bukan dropdown
       return Container(
         padding: EdgeInsets.symmetric(horizontal: 10),
         margin: EdgeInsets.fromLTRB(20, 10, 20, 10),
@@ -418,17 +490,15 @@ class CustomContainer extends StatelessWidget {
             ),
             Expanded(
               child: TextFormField(
-                controller:
-                    controller, // Gunakan controller hanya pada TextFormField
                 decoration: InputDecoration(
+                  hintText: hintText,
                   labelText: label,
                   border: InputBorder.none,
                 ),
-                inputFormatters: inputFormatters,
-                keyboardType: keyboardType,
                 onTap: onTap,
-                readOnly: onTap !=
-                    null, // Set TextField to readOnly if onTap is provided
+                readOnly: onTap != null,
+                controller: controller,
+                inputFormatters: inputFormatters,
               ),
             ),
           ],
