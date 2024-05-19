@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_helloo_world/AdminDesa/AdminManageAkun.dart';
 import 'package:flutter_helloo_world/Auth/AuthServices.dart';
-import 'package:flutter_helloo_world/Auth/login.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
@@ -152,19 +152,19 @@ class _AddAkunState extends State<AddAkun> {
 
   _Signup() async {
     try {
-      await AuthServices().signup(
+      await AuthServices().addAcc(
           _emailController.text,
           _passwordController.text,
           _namaController.text,
           _nipController.text,
           _jabatanController.text,
           _fotoController.text,
-          "mahasiswa" // Assuming _fotoController holds the image path
+          "admin" // Assuming _fotoController holds the image path
           );
 
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => Login()),
+        MaterialPageRoute(builder: (context) => AdminManageAkun()),
       );
 
       // Handle successful signup (e.g., navigate to a confirmation screen)

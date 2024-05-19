@@ -2,14 +2,18 @@
 
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_helloo_world/Models/UserDesa.dart' as users;
 
 class AuthServices {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseDatabase _database = FirebaseDatabase.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
+  // Tambahkan variabel untuk menyimpan kredensial pengguna yang sedang login
+  late String currentUserEmail = 'admin@gmail.com';
+  late String currentUserPassword = 'admin123';
 
   Future<void> signup(String email, String password, String nama, String nim,
       String namaPerguruanTinggi, String fotoProfilPath, String role) async {
@@ -111,6 +115,64 @@ class AuthServices {
     } catch (error) {
       print('Error fetching user data: $error');
       return null; // Handle error appropriately
+    }
+  }
+
+  Future<void> addAcc(String email, String password, String nama, String nip,
+      String jabatan, String fotoProfilPath, String role) async {
+    try {
+      final credential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      final userId = credential.user!.uid;
+
+      final user = users.UserDesa(
+          uid: userId,
+          nama: nama,
+          nip: nip,
+          jabatan: jabatan,
+          fotoProfil: '', // Placeholder for later URL retrieval
+          role: role,
+          email: email,
+          password: password);
+
+      // Save user data to Realtime Database
+      await _database.ref('/Users/$userId').set(user.toMap());
+
+      // Upload foto profil (if provided)
+      if (fotoProfilPath.isNotEmpty) {
+        final storageRef =
+            _storage.ref('/user-profile-images/$userId-fotoProfil.jpg');
+        final fotoProfilFile = File(
+            fotoProfilPath); // Assuming fotoProfilPath leads to a valid file
+
+        await storageRef.putFile(fotoProfilFile);
+
+        // Update fotoProfilURL after successful upload
+        final fotoProfilURL = await storageRef.getDownloadURL();
+        user.fotoProfil = fotoProfilURL;
+
+        // Optionally, update user data in Realtime Database with the URL
+        await _database
+            .ref('/Users/$userId')
+            .update({'fotoProfilURL': fotoProfilURL});
+      }
+      try {
+        // Sign back in with the original user's credentials
+        await _auth.signInWithEmailAndPassword(
+            email: currentUserEmail, password: currentUserPassword);
+      } catch (e) {
+        print('Error signing back in: $e');
+        // Show a message to the user
+      }
+    } on FirebaseAuthException catch (e) {
+      // Handle FirebaseAuthException appropriately (e.g., display error message)
+      print('Firebase Auth Error: ${e.code}');
+    } catch (e) {
+      // Handle other potential errors (e.g., network issues, storage errors)
+      print('Error during signup: ${e.toString()}');
     }
   }
 }

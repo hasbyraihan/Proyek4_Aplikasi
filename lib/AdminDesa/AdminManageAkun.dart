@@ -1,11 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_helloo_world/AdminDesa/AdminAddAkun.dart';
-import 'package:flutter_helloo_world/AdminDesa/AdminKebutuhan.dart';
-import 'package:flutter_helloo_world/AdminDesa/AdminPopulasi.dart';
-import 'package:flutter_helloo_world/Faq.dart';
-
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
+import 'package:flutter_helloo_world/Models/UserDesa.dart' as user;
 
 class AdminManageAkun extends StatefulWidget {
   @override
@@ -14,6 +13,60 @@ class AdminManageAkun extends StatefulWidget {
 
 class _AdminManageAkunState extends State<AdminManageAkun> {
   int _selectedIndex = 0;
+  final DatabaseReference _database =
+      FirebaseDatabase.instance.ref().child('Users');
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final firebaseUser = FirebaseAuth.instance.currentUser;
+
+  // Tambahkan variabel untuk menyimpan kredensial pengguna yang sedang login
+  late String currentUserEmail = 'admin@gmail.com';
+  late String currentUserPassword = 'admin123';
+
+  Stream<List<user.UserDesa>> getUsers() {
+    return _database.onValue.map((event) {
+      final data = Map<String, dynamic>.from(event.snapshot.value as Map);
+      return data.entries
+          .map((entry) => user.UserDesa.fromMap(
+              Map<Object?, Object?>.from(entry.value), entry.key))
+          .where((user) => user.role == 'admin')
+          .toList();
+    });
+  }
+
+  Future<void> deleteUser(String uid, String email, String password) async {
+    try {
+      // Sign in the user to be deleted
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
+      User? user = userCredential.user;
+
+      if (user != null && user.uid == uid) {
+        // Delete from Firebase Realtime Database
+        await _database.child(uid).remove();
+
+        // Delete from Firebase Authentication
+        await user.delete();
+      }
+    } catch (e) {
+      print('Error deleting user: $e');
+    } finally {
+      // Sign out the user after deletion
+      await _auth.signOut();
+
+      try {
+        // Sign back in with the original user's credentials
+        await _auth.signInWithEmailAndPassword(
+            email: currentUserEmail, password: currentUserPassword);
+      } catch (e) {
+        print('Error signing back in: $e');
+        // Show a message to the user
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Failed to sign back in. Please try again.'),
+        ));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,32 +84,43 @@ class _AdminManageAkunState extends State<AdminManageAkun> {
         ],
       ),
       backgroundColor: Color(0xFFE9F0EB),
-      body: ListView(
-        padding: EdgeInsets.symmetric(
-            horizontal: 16), // Tambahkan padding horizontal di sini
-        children: [
-          CustomContainer(
-            color: Color(0xFF60AD77),
-            text: 'Populasi',
-            additionalText: 'Warga Desa',
-            icon1: Icons.edit,
-            onTapIcon1: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => AdminPopulasi()),
+      body: StreamBuilder<List<user.UserDesa>>(
+        stream: getUsers(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text('No admin users found.'));
+          }
+          return ListView(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            children: snapshot.data!.map((user.UserDesa user) {
+              return CustomContainer(
+                color: Color(0xFF60AD77),
+                text: user.nama,
+                additionalText: user.jabatan,
+                icon1: Icons.edit,
+                onTapIcon1: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AddAkun()),
+                  );
+                },
+                icon2: Icons.delete,
+                onTapIcon2: () async {
+                  String email = user.email; // Replace with the user's email
+                  String password =
+                      user.password; // Replace with the user's password
+                  await deleteUser(user.uid, email, password);
+                },
               );
-            },
-            icon2: Icons.delete,
-            onTapIcon2: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        FAQ()), // Ganti dengan halaman yang sesuai
-              );
-            },
-          )
-        ],
+            }).toList(),
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
