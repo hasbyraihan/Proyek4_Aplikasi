@@ -10,6 +10,7 @@ class AdminDetailPengajuan extends StatefulWidget {
 
 class _AdminDetailPengajuanState extends State<AdminDetailPengajuan> {
   int _selectedIndex = 1;
+
   // Metode untuk menavigasi ke halaman Timeline
 
   @override
@@ -367,7 +368,7 @@ class CustomContainer extends StatelessWidget {
                   ),
                   Expanded(
                     child: Text(
-                      'Tujuan Kegiatan : \naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', // Isian teks di sini
+                      'Tujuan Kegiatan : \naaaaaaaaaaaaaa', // Isian teks di sini
                       softWrap: true,
                       overflow: TextOverflow
                           .visible, // Mengizinkan teks meluas di luar batas kontainer

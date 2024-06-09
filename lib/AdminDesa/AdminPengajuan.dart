@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_helloo_world/AdminDesa/AdminDetailPengajuan.dart';
-
 import 'package:flutter_helloo_world/Faq.dart';
-
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
 
@@ -21,6 +20,26 @@ class AdminPengajuan extends StatefulWidget {
 class _AdminPengajuanState extends State<AdminPengajuan> {
   int _selectedIndex = 2;
   TemplateStatus _templateStatus = TemplateStatus.BelumDiverifikasi;
+  final DatabaseReference _databaseRef =
+      FirebaseDatabase.instance.ref().child('pengajuan');
+
+  Future<List<Map<String, dynamic>>> _fetchData() async {
+    DatabaseEvent event = await _databaseRef.once();
+    DataSnapshot snapshot = event.snapshot;
+    List<Map<String, dynamic>> dataList = [];
+    if (snapshot.value != null) {
+      Map<dynamic, dynamic> values = snapshot.value as Map<dynamic, dynamic>;
+      values.forEach((key, value) {
+        Map<String, dynamic> item = {};
+        value.forEach((k, v) {
+          item[k.toString()] = v;
+        });
+        item['id'] = key.toString();
+        dataList.add(item);
+      });
+    }
+    return dataList;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,18 +47,14 @@ class _AdminPengajuanState extends State<AdminPengajuan> {
       appBar: AppBar(
         backgroundColor: Color(0xFFC5E0CD),
         automaticallyImplyLeading: false,
-        leading: Row(
-          children: [
-            IconButton(
-              icon: Icon(Icons.question_answer_outlined),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => FAQ()),
-                ); // Fungsi untuk menu FAQ
-              },
-            ),
-          ],
+        leading: IconButton(
+          icon: Icon(Icons.question_answer_outlined),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => FAQ()),
+            ); // Fungsi untuk menu FAQ
+          },
         ),
         actions: [
           Padding(
@@ -53,28 +68,44 @@ class _AdminPengajuanState extends State<AdminPengajuan> {
         ],
       ),
       backgroundColor: Color(0xFFE9F0EB),
-      body: ListView(
-        padding: EdgeInsets.symmetric(
-            horizontal: 16), // Tambahkan padding horizontal di sini
-        children: [
-          CustomContainer(
-            color: _getColorForStatus(_templateStatus),
-            text: 'ANANTARA',
-            topLeftText: 'Politeknik Negeri Bandung',
-            additionalText: 'Sinumbra',
-            TanggalText: '21 Maret - 24 Maret',
-            TahunText: '2023',
-            Link: '',
-            logoPath:
-                'assets/images/logopolban.png', // Memberikan path gambar logo
-            templateStatus: _templateStatus,
-            onStatusChanged: (status) {
-              setState(() {
-                _templateStatus = status!;
-              });
-            },
-          ),
-        ],
+      body: FutureBuilder<List<Map<String, dynamic>>>(
+        future: _fetchData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text('No data available'));
+          } else {
+            List<Map<String, dynamic>> data = snapshot.data!;
+            return ListView.builder(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              itemCount: data.length,
+              itemBuilder: (context, index) {
+                Map<String, dynamic> item = data[index];
+                return CustomContainer(
+                  color: _getColorForStatus(_templateStatus),
+                  text: item['namaProgram'] ?? 'Unknown',
+                  topLeftText: item['perguruanTinggi'] ?? 'Unknown',
+                  additionalText: item['rw'] ?? 'Unknown',
+                  TanggalText: item['tanggalAwal'] ?? 'Unknown',
+                  TahunText: item['tanggalSelesai'] ?? 'Unknown',
+                  Link: '',
+                  logoPath: 'assets/images/logopolban.png',
+                  templateStatus: _templateStatus,
+                  onStatusChanged: (status) {
+                    setState(() {
+                      _templateStatus = status!;
+                    });
+                  },
+                  pengajuanId:
+                      item['id'], // Pass the pengajuan ID to detail page
+                );
+              },
+            );
+          }
+        },
       ),
       bottomNavigationBar: BarNavigasi.NavigationBar(
         currentIndex: _selectedIndex,
@@ -112,6 +143,7 @@ class CustomContainer extends StatelessWidget {
   final String logoPath;
   final TemplateStatus? templateStatus;
   final ValueChanged<TemplateStatus?> onStatusChanged;
+  final String pengajuanId; // Add pengajuan ID
 
   const CustomContainer({
     Key? key,
@@ -125,6 +157,7 @@ class CustomContainer extends StatelessWidget {
     required this.logoPath,
     required this.templateStatus,
     required this.onStatusChanged,
+    required this.pengajuanId, // Initialize pengajuan ID
   }) : super(key: key);
 
   final double _width = 200; // Atur lebar container di sini
@@ -269,7 +302,8 @@ class CustomContainer extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => AdminDetailPengajuan(), // Ganti dengan halaman tujuan
+                    builder: (context) =>
+                        AdminDetailPengajuan(), // Pass the pengajuan ID
                   ),
                 );
               },

@@ -1,10 +1,13 @@
 import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
 import 'package:flutter_helloo_world/Mahasiswa/MahasiwaDashboard.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class Pengajuan extends StatefulWidget {
   @override
@@ -12,6 +15,11 @@ class Pengajuan extends StatefulWidget {
 }
 
 class _PengajuanState extends State<Pengajuan> {
+  final DatabaseReference _database =
+      FirebaseDatabase.instance.ref().child("pengajuan");
+
+  // Get the current user
+  final User? user = FirebaseAuth.instance.currentUser;
   int _selectedIndex = 0;
 
   TextEditingController perguruanTinggiController = TextEditingController();
@@ -20,6 +28,7 @@ class _PengajuanState extends State<Pengajuan> {
   TextEditingController jumlahLakiLakiController = TextEditingController();
   TextEditingController jumlahPerempuanController = TextEditingController();
   TextEditingController dateController = TextEditingController();
+  TextEditingController dateAkhirController = TextEditingController();
 
   final List<String> rwOptions = [
     'RW 1',
@@ -60,16 +69,63 @@ class _PengajuanState extends State<Pengajuan> {
     }
   }
 
+  Future<void> _selectDate2(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (pickedDate != null) {
+      setState(() {
+        dateAkhirController.text =
+            "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+      });
+    }
+  }
+
+  Future<String?> _submitForm() async {
+    if (_validateFields()) {
+      try {
+        DatabaseReference newRef = _database.push();
+        await newRef.set({
+          'uid': user?.uid,
+          'perguruanTinggi': perguruanTinggiController.text,
+          'jurusan': jurusanController.text,
+          'namaProgram': namaProgramController.text,
+          'bidangPengabdian': selectedBidangPengabdian,
+          'jumlahLakiLaki': jumlahLakiLakiController.text,
+          'jumlahPerempuan': jumlahPerempuanController.text,
+          'tanggalAwal': dateController.text,
+          'tanggalSelesai': dateAkhirController.text,
+          'rw': selectedRW,
+          'staatusPengajuan': "verifikasi",
+        });
+
+        return newRef.key; // Return the generated ID
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error saving data: $e'),
+          ),
+        );
+        return null;
+      }
+    }
+    return null;
+  }
+
   bool _validateFields() {
     if (perguruanTinggiController.text.isEmpty ||
         jurusanController.text.isEmpty ||
         namaProgramController.text.isEmpty ||
         jumlahLakiLakiController.text.isEmpty ||
         jumlahPerempuanController.text.isEmpty ||
-        dateController.text.isEmpty) {
+        dateController.text.isEmpty ||
+        dateAkhirController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Isi dulu yaa temen temen :p'),
+          content: Text('Isi dulu yaa temen temen'),
         ),
       );
       return false;
@@ -152,10 +208,18 @@ class _PengajuanState extends State<Pengajuan> {
               SizedBox(height: 10),
               CustomContainer(
                 hintText: 'DD/MM/YY',
-                label: 'DD/MM/YY',
+                label: 'Tanggal Awal Pengabdian',
                 icon: Icons.calendar_today,
                 controller: dateController,
                 onTap: () => _selectDate(context),
+              ),
+              SizedBox(height: 10),
+              CustomContainer(
+                hintText: 'DD/MM/YY',
+                label: 'Tanggal Selesai Pengabdian',
+                icon: Icons.calendar_today,
+                controller: dateAkhirController,
+                onTap: () => _selectDate2(context),
               ),
               SizedBox(height: 10),
               CustomContainer(
@@ -184,8 +248,10 @@ class _PengajuanState extends State<Pengajuan> {
                           bidangPengabdian: selectedBidangPengabdian!,
                           jumlahLakiLaki: jumlahLakiLakiController.text,
                           jumlahPerempuan: jumlahPerempuanController.text,
-                          tanggal: dateController.text,
+                          tanggalAwal: dateController.text,
+                          tanggalSelesai: dateAkhirController.text,
                           rw: selectedRW,
+                          submitFormCallback: _submitForm, // Pass the callback
                         ),
                       ),
                     );
@@ -221,8 +287,10 @@ class PengajuanUploadFile extends StatefulWidget {
   final String bidangPengabdian;
   final String jumlahLakiLaki;
   final String jumlahPerempuan;
-  final String tanggal;
+  final String tanggalAwal;
+  final String tanggalSelesai;
   final String? rw;
+  final Future<String?> Function() submitFormCallback; // Add this line
 
   PengajuanUploadFile({
     required this.perguruanTinggi,
@@ -231,8 +299,10 @@ class PengajuanUploadFile extends StatefulWidget {
     required this.bidangPengabdian,
     required this.jumlahLakiLaki,
     required this.jumlahPerempuan,
-    required this.tanggal,
+    required this.tanggalAwal,
+    required this.tanggalSelesai,
     this.rw,
+    required this.submitFormCallback, // Add this line
   });
 
   @override
@@ -274,24 +344,64 @@ class _PengajuanUploadFileState extends State<PengajuanUploadFile> {
     }
   }
 
-  void _saveAllFiles() {
+  Future<void> _uploadFile(String pengajuanId, String key, File file) async {
+    try {
+      // Create a reference to the file location in Firebase Storage
+      final storageRef = FirebaseStorage.instance
+          .ref()
+          .child('dokumen-pendukung/$pengajuanId/$key.pdf');
+
+      // Upload the file
+      await storageRef.putFile(file);
+
+      // Get the download URL
+      String downloadURL = await storageRef.getDownloadURL();
+
+      // Save the download URL in Firebase Realtime Database
+      await FirebaseDatabase.instance
+          .ref()
+          .child('dokumen-pendukung')
+          .child(pengajuanId)
+          .child(key)
+          .set(downloadURL);
+    } catch (e) {
+      print("Error uploading file: $e");
+    }
+  }
+
+  void _saveAllFiles() async {
     bool allFilesUploaded = templateFiles.values.every((file) => file != null);
 
     if (allFilesUploaded) {
-      // Simpan data dan file PDF ke database atau penyimpanan lokal di sini
+      try {
+        // Get the pengajuan ID by submitting the form via the callback
+        String? pengajuanId = await widget.submitFormCallback();
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Yeayy, data berhasil dikirim!'),
-        ),
-      );
+        if (pengajuanId != null) {
+          for (var entry in templateFiles.entries) {
+            await _uploadFile(pengajuanId, entry.key, entry.value!);
+          }
 
-      // Navigate to the dashboard page and remove all previous routes
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => MahasiswaDashboard()),
-        (Route<dynamic> route) => false,
-      );
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Yeayy, data berhasil dikirim!'),
+            ),
+          );
+
+          // Navigate to the dashboard page and remove all previous routes
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => MahasiswaDashboard()),
+            (Route<dynamic> route) => false,
+          );
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error uploading files: $e'),
+          ),
+        );
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -373,39 +483,39 @@ class _PengajuanUploadFileState extends State<PengajuanUploadFile> {
             children: [
               Expanded(
                 child: uploadedFileNames[key] == null
-                  ? ElevatedButton.icon(
-                      onPressed: () => _pickFile(key),
-                      icon: Icon(
-                        Icons.upload_file,
-                        color: Colors.white,
-                      ),
-                      label: Text(
-                        'Unggah File PDF',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
+                    ? ElevatedButton.icon(
+                        onPressed: () => _pickFile(key),
+                        icon: Icon(
+                          Icons.upload_file,
+                          color: Colors.white,
+                        ),
+                        label: Text(
+                          'Unggah File PDF',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          padding: EdgeInsets.symmetric(vertical: 16),
+                        ),
+                      )
+                    : Container(
                         padding: EdgeInsets.symmetric(vertical: 16),
+                        decoration: BoxDecoration(
+                            color: Colors.green,
+                            borderRadius: BorderRadius.circular(20)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.file_present, color: Colors.white),
+                            SizedBox(width: 8),
+                            Text(
+                              uploadedFileNames[key]!,
+                              style: TextStyle(color: Colors.white),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
                       ),
-                    )
-                  : Container(
-                      padding: EdgeInsets.symmetric(vertical: 16),
-                      decoration: BoxDecoration(
-                          color: Colors.green,
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.file_present, color: Colors.white),
-                          SizedBox(width: 8),
-                          Text(
-                            uploadedFileNames[key]!,
-                            style: TextStyle(color: Colors.white),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ),
-                    ),
               ),
             ],
           ),
