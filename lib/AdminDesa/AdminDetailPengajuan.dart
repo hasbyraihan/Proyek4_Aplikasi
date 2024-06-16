@@ -368,7 +368,7 @@ class CustomContainer extends StatelessWidget {
                   ),
                   Expanded(
                     child: Text(
-                      'Tujuan Kegiatan : \naaaaaaaaaaaaaa', // Isian teks di sini
+                      'Tujuan Kegiatan : \naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', // Isian teks di sini
                       softWrap: true,
                       overflow: TextOverflow
                           .visible, // Mengizinkan teks meluas di luar batas kontainer

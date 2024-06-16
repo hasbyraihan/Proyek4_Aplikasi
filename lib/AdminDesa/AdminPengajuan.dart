@@ -19,7 +19,7 @@ class AdminPengajuan extends StatefulWidget {
 
 class _AdminPengajuanState extends State<AdminPengajuan> {
   int _selectedIndex = 2;
-  TemplateStatus _templateStatus = TemplateStatus.BelumDiverifikasi;
+  Map<String, TemplateStatus> _pengajuanStatus = {};
   final DatabaseReference _databaseRef =
       FirebaseDatabase.instance.ref().child('pengajuan');
 
@@ -35,10 +35,30 @@ class _AdminPengajuanState extends State<AdminPengajuan> {
           item[k.toString()] = v;
         });
         item['id'] = key.toString();
+        String status = item['statuspengajuan'];
+        TemplateStatus templateStatus = TemplateStatus.values.firstWhere(
+            (e) => e.toString() == 'TemplateStatus.' + status,
+            orElse: () => TemplateStatus.BelumDiverifikasi);
+        _pengajuanStatus[key.toString()] = templateStatus;
         dataList.add(item);
       });
     }
     return dataList;
+  }
+
+  Future<void> _updateStatus(String id, TemplateStatus status) async {
+    await _databaseRef.child(id).update({
+      'statuspengajuan': status.toString().split('.').last,
+    });
+  }
+
+  void _onStatusChanged(String id, TemplateStatus? status) {
+    setState(() {
+      _pengajuanStatus[id] = status!;
+    });
+    if (status != null) {
+      _updateStatus(id, status);
+    }
   }
 
   @override
@@ -85,7 +105,7 @@ class _AdminPengajuanState extends State<AdminPengajuan> {
               itemBuilder: (context, index) {
                 Map<String, dynamic> item = data[index];
                 return CustomContainer(
-                  color: _getColorForStatus(_templateStatus),
+                  color: _getColorForStatus(_pengajuanStatus[item['id']]!),
                   text: item['namaProgram'] ?? 'Unknown',
                   topLeftText: item['perguruanTinggi'] ?? 'Unknown',
                   additionalText: item['rw'] ?? 'Unknown',
@@ -93,14 +113,11 @@ class _AdminPengajuanState extends State<AdminPengajuan> {
                   TahunText: item['tanggalSelesai'] ?? 'Unknown',
                   Link: '',
                   logoPath: 'assets/images/logopolban.png',
-                  templateStatus: _templateStatus,
+                  templateStatus: _pengajuanStatus[item['id']],
                   onStatusChanged: (status) {
-                    setState(() {
-                      _templateStatus = status!;
-                    });
+                    _onStatusChanged(item['id'], status);
                   },
-                  pengajuanId:
-                      item['id'], // Pass the pengajuan ID to detail page
+                  pengajuanId: item['id'],
                 );
               },
             );
@@ -272,7 +289,7 @@ class CustomContainer extends StatelessWidget {
             top: 120,
             child: DropdownButton<TemplateStatus>(
               value: templateStatus,
-              onChanged: onStatusChanged,
+              onChanged: (status) => onStatusChanged(status),
               items: [
                 DropdownMenuItem(
                   value: TemplateStatus.BelumDiverifikasi,
