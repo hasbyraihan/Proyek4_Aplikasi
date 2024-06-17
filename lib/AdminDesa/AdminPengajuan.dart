@@ -109,8 +109,8 @@ class _AdminPengajuanState extends State<AdminPengajuan> {
                   text: item['namaProgram'] ?? 'Unknown',
                   topLeftText: item['perguruanTinggi'] ?? 'Unknown',
                   additionalText: item['rw'] ?? 'Unknown',
-                  TanggalText: item['tanggalAwal'] ?? 'Unknown',
-                  TahunText: item['tanggalSelesai'] ?? 'Unknown',
+                  TanggalAwal: item['tanggalAwal'] ?? 'Unknown',
+                  TanggalSelesai: item['tanggalSelesai'] ?? 'Unknown',
                   Link: '',
                   logoPath: 'assets/images/logopolban.png',
                   templateStatus: _pengajuanStatus[item['id']],
@@ -140,11 +140,11 @@ class _AdminPengajuanState extends State<AdminPengajuan> {
       case TemplateStatus.BelumDiverifikasi:
         return Colors.grey;
       case TemplateStatus.Diterima:
-        return Colors.green;
+        return Colors.lightGreen;
       case TemplateStatus.PerluDirevisi:
-        return Colors.red;
+        return Colors.redAccent;
       case TemplateStatus.Pending:
-        return Colors.orange;
+        return Color.fromARGB(255, 255, 187, 85);
     }
   }
 }
@@ -154,8 +154,8 @@ class CustomContainer extends StatelessWidget {
   final String text;
   final String topLeftText;
   final String additionalText;
-  final String TanggalText;
-  final String TahunText;
+  final String TanggalAwal;
+  final String TanggalSelesai;
   final String Link;
   final String logoPath;
   final TemplateStatus? templateStatus;
@@ -168,8 +168,8 @@ class CustomContainer extends StatelessWidget {
     required this.text,
     required this.topLeftText,
     required this.additionalText,
-    required this.TanggalText,
-    required this.TahunText,
+    required this.TanggalAwal,
+    required this.TanggalSelesai,
     required this.Link,
     required this.logoPath,
     required this.templateStatus,
@@ -241,7 +241,7 @@ class CustomContainer extends StatelessWidget {
           ),
           Positioned(
             left: (_width) / 2,
-            top: 12 + 20 + 8 + 20 + 8 + 18 + 8,
+            top: 12 + 20 + 8 + 20 + 8,
             child: Align(
               alignment: Alignment.center,
               child: Text(
@@ -256,26 +256,11 @@ class CustomContainer extends StatelessWidget {
           ),
           Positioned(
             left: (_width) / 2,
-            top: 12 + 20 + 8 + 20 + 8,
-            child: Align(
-              alignment: Alignment.center,
-              child: Text(
-                'Tanggal : ' + TanggalText,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            left: (_width) + 45,
             top: 12 + 20 + 8 + 20 + 8 + 18 + 8,
             child: Align(
               alignment: Alignment.center,
               child: Text(
-                'Tahun : ' + TahunText,
+                'Tanggal : ' + TanggalAwal + ' - ' + TanggalSelesai,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16,
@@ -324,12 +309,19 @@ class CustomContainer extends StatelessWidget {
                   ),
                 );
               },
-              child: Align(
-                alignment: Alignment.center,
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 5), // Menambahkan padding di dalam container
+                decoration: BoxDecoration(
+                  color: Colors.white, // Warna latar belakang putih
+                  borderRadius: BorderRadius.circular(
+                      15), // Menambahkan radius border agar sudutnya melengkung
+                ),
                 child: Text(
-                  'Detail Pengajuan >',
+                  'Detail Selengkapnya',
                   style: TextStyle(
-                    color: Color.fromARGB(255, 167, 235, 111),
+                    color: Colors.green,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),

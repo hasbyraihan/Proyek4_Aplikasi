@@ -11,7 +11,11 @@ class AdminDetailPengajuan extends StatefulWidget {
 class _AdminDetailPengajuanState extends State<AdminDetailPengajuan> {
   int _selectedIndex = 1;
 
-  // Metode untuk menavigasi ke halaman Timeline
+  void _onDownloadPressed(String fileName) {
+    // Tambahkan logika mendownload di sini
+    print('Download $fileName');
+    // Misalnya, Anda bisa menggunakan plugin seperti 'dio' atau 'http' untuk mendownload file
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +62,25 @@ class _AdminDetailPengajuanState extends State<AdminDetailPengajuan> {
             logoPath:
                 'assets/images/logopolban.png', // Memberikan path gambar logo
           ),
+          SizedBox(height: 20),
+          Container(
+            child: Wrap(
+              spacing: 70.0,
+              runSpacing: 10.0,
+              children: [
+                _buildDownloadContainer('Surat Izin Desa'),
+                _buildDownloadContainer('Surat Izin Kec.'),
+                _buildDownloadContainer('Surat Izin PTPN'),
+                _buildDownloadContainer('Surat Izin Kor.'),
+                Padding(
+                  padding: const EdgeInsets.only(
+                      left: 110.0), // Tambahkan padding kiri
+                  child: _buildDownloadContainer('Surat Izin Kep.'),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 20),
         ],
       ),
       bottomNavigationBar: BarNavigasi.NavigationBar(
@@ -67,6 +90,42 @@ class _AdminDetailPengajuanState extends State<AdminDetailPengajuan> {
             _selectedIndex = index;
           });
         },
+      ),
+    );
+  }
+
+  Widget _buildDownloadContainer(String text) {
+    return InkWell(
+      onTap: () => _onDownloadPressed(text),
+      borderRadius: BorderRadius.circular(
+          10), // Pastikan borderRadius sama dengan yang ada di container
+      child: Ink(
+        width: 151,
+        height: 69,
+        decoration: BoxDecoration(
+          color: Color(0xFF60AD77),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              text,
+              textAlign: TextAlign
+                  .center, // Menambahkan textAlign agar teks berada di tengah secara horizontal
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
+            SizedBox(height: 5),
+            Icon(
+              Icons.download,
+              color: Colors.white,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -92,25 +151,23 @@ class CustomContainer extends StatelessWidget {
     required this.logoPath, // Menambahkan path gambar logo
   }) : super(key: key);
 
-  final double _width = 200; // Atur lebar container di sini
-  final double _height = 840; // Atur tinggi container di sini
-
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return Container(
-      width: _width,
-      height: _height,
+      width: screenWidth *
+          0.9, // Mengatur lebar container menjadi 90% dari lebar layar
       margin: EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Stack(
+      child: Column(
         children: [
-          Positioned(
-            left: 17, // Padding dari sisi kiri
-            top: 36, // Padding dari atas
-
+          Padding(
+            padding: const EdgeInsets.only(
+                left: 17, top: 36), // Padding dari sisi kiri dan atas
             child: Image.asset(
               // Menambahkan gambar logo
               logoPath,
@@ -118,10 +175,8 @@ class CustomContainer extends StatelessWidget {
               height: 70,
             ),
           ),
-          Positioned(
-            left: (_width) /
-                2, // Menempatkan teks di tengah horizontal berdasarkan lebar container dan lebar gambar logo
-            top: 12, // Padding dari atas
+          Padding(
+            padding: EdgeInsets.only(top: 12),
             child: Align(
               alignment: Alignment
                   .center, // Menyatukan teks ke tengah horizontal dari container
@@ -135,12 +190,8 @@ class CustomContainer extends StatelessWidget {
               ),
             ),
           ),
-          Positioned(
-            left: (_width) /
-                2, // Menempatkan teks di tengah horizontal berdasarkan lebar container dan lebar gambar logo
-            top: 12 +
-                20 +
-                8, // Padding dari atas + tinggi teks topLeftText + padding tambahan
+          Padding(
+            padding: EdgeInsets.only(top: 20),
             child: Align(
               alignment: Alignment
                   .center, // Menyatukan teks ke tengah horizontal dari container
@@ -154,9 +205,8 @@ class CustomContainer extends StatelessWidget {
               ),
             ),
           ),
-          Positioned(
-            left: (_width) / 2,
-            top: 12 + 20 + 8 + 20 + 8 + 18 + 8,
+          Padding(
+            padding: EdgeInsets.only(top: 20),
             child: Align(
               alignment: Alignment.center,
               child: Text(
@@ -169,9 +219,8 @@ class CustomContainer extends StatelessWidget {
               ),
             ),
           ),
-          Positioned(
-            left: (_width) / 2,
-            top: 12 + 20 + 8 + 20 + 8,
+          Padding(
+            padding: EdgeInsets.only(top: 20),
             child: Align(
               alignment: Alignment.center,
               child: Text(
@@ -184,9 +233,8 @@ class CustomContainer extends StatelessWidget {
               ),
             ),
           ),
-          Positioned(
-            left: (_width) + 45,
-            top: 12 + 20 + 8 + 20 + 8 + 18 + 8,
+          Padding(
+            padding: EdgeInsets.only(top: 20),
             child: Align(
               alignment: Alignment.center,
               child: Text(
@@ -199,11 +247,11 @@ class CustomContainer extends StatelessWidget {
               ),
             ),
           ),
-          Positioned(
-            left: 15,
-            top: 150,
+          Padding(
+            padding: EdgeInsets.only(top: 20),
             child: Container(
-              width: 350,
+              width: screenWidth *
+                  0.8, // Mengatur lebar container menjadi 80% dari lebar layar
               height: 52,
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -233,11 +281,11 @@ class CustomContainer extends StatelessWidget {
               ),
             ),
           ),
-          Positioned(
-            left: 15,
-            top: 220,
+          Padding(
+            padding: EdgeInsets.only(top: 20),
             child: Container(
-              width: 350,
+              width: screenWidth *
+                  0.8, // Mengatur lebar container menjadi 80% dari lebar layar
               height: 52,
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -267,89 +315,91 @@ class CustomContainer extends StatelessWidget {
               ),
             ),
           ),
-          Positioned(
-            left: 15,
-            top: 290,
-            child: Container(
-              width: 163,
-              height: 102,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Icon(
-                      Icons.person_2_sharp,
-                      size: 30,
-                      color: Colors.grey,
-                    ),
+          Padding(
+            padding: EdgeInsets.only(top: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Container(
+                  width: screenWidth *
+                      0.4, // Mengatur lebar container menjadi 40% dari lebar layar
+                  height: 102,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                  SizedBox(
-                      height: 8), // Spacer untuk jarak antara ikon dan teks
-                  Center(
-                    child: Text(
-                      'Jumlah Laki Laki \n .. Orang', // Isian teks di sini
-                      textAlign: TextAlign.center,
-                      softWrap: true,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Icon(
+                          Icons.person_2_sharp,
+                          size: 30,
+                          color: Colors.grey,
+                        ),
                       ),
-                    ),
+                      SizedBox(
+                          height: 8), // Spacer untuk jarak antara ikon dan teks
+                      Center(
+                        child: Text(
+                          'Jumlah Laki Laki \n .. Orang', // Isian teks di sini
+                          textAlign: TextAlign.center,
+                          softWrap: true,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                Container(
+                  width: screenWidth *
+                      0.4, // Mengatur lebar container menjadi 40% dari lebar layar
+                  height: 102,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Icon(
+                          Icons.person_4_sharp,
+                          size: 30,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      SizedBox(
+                          height: 8), // Spacer untuk jarak antara ikon dan teks
+                      Center(
+                        child: Text(
+                          'Jumlah Perempuan \n .. Orang', // Isian teks di sini
+                          textAlign: TextAlign.center,
+                          softWrap: true,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
-          Positioned(
-            left: 202,
-            top: 290,
+          Padding(
+            padding: EdgeInsets.only(top: 20),
             child: Container(
-              width: 163,
-              height: 102,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Icon(
-                      Icons.person_4_sharp,
-                      size: 30,
-                      color: Colors.grey,
-                    ),
-                  ),
-                  SizedBox(
-                      height: 8), // Spacer untuk jarak antara ikon dan teks
-                  Center(
-                    child: Text(
-                      'Jumlah Perempuan \n .. Orang', // Isian teks di sini
-                      textAlign: TextAlign.center,
-                      softWrap: true,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Positioned(
-            left: 15,
-            top: 410,
-            child: Container(
-              width: 350,
+              width: screenWidth *
+                  0.8, // Mengatur lebar container menjadi 80% dari lebar layar
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
@@ -368,7 +418,7 @@ class CustomContainer extends StatelessWidget {
                   ),
                   Expanded(
                     child: Text(
-                      'Tujuan Kegiatan : \naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', // Isian teks di sini
+                      'Tujuan Kegiatan : \naaaaaaaaaaaaaaaaaaaaa', // Isian teks di sini
                       softWrap: true,
                       overflow: TextOverflow
                           .visible, // Mengizinkan teks meluas di luar batas kontainer
@@ -383,6 +433,7 @@ class CustomContainer extends StatelessWidget {
               ),
             ),
           ),
+          SizedBox(height: 20), // Spacer tambahan jika dibutuhkan
         ],
       ),
     );

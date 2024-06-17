@@ -99,7 +99,7 @@ class _PengajuanState extends State<Pengajuan> {
           'tanggalAwal': dateController.text,
           'tanggalSelesai': dateAkhirController.text,
           'rw': selectedRW,
-          'staatusPengajuan': "verifikasi",
+          'statuspengajuan': "BelumDiverifikasi",
         });
 
         return newRef.key; // Return the generated ID
