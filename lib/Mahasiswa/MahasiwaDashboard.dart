@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_helloo_world/Auth/login.dart';
-import 'package:flutter_helloo_world/Dashboard.dart';
 import 'package:flutter_helloo_world/Faq.dart';
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
 import 'package:flutter_helloo_world/Mahasiswa/ContactPerson.dart';
 import 'package:flutter_helloo_world/Mahasiswa/Pengajuan.dart';
+import 'package:flutter_helloo_world/Mahasiswa/ProgresPengajuan.dart';
 import 'package:flutter_helloo_world/Mahasiswa/RatingPengabdian.dart';
 import 'package:flutter_helloo_world/Mahasiswa/TemplatePengajuan.dart';
 
@@ -72,7 +71,7 @@ class _MahasiswaDashboardState extends State<MahasiswaDashboard> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Login()),
+                MaterialPageRoute(builder: (context) => ProgresPengajuan()),
               );
             },
           ),
@@ -84,7 +83,7 @@ class _MahasiswaDashboardState extends State<MahasiswaDashboard> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Login()),
+                MaterialPageRoute(builder: (context) => FAQ()),
               );
             },
           ),
@@ -109,18 +108,6 @@ class _MahasiswaDashboardState extends State<MahasiswaDashboard> {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => RatingPengabdian()),
-              );
-            },
-          ),
-          CustomContainer(
-            color: Color(0xFF60AD77),
-            text: 'Informasi',
-            additionalText: 'Desa',
-            icon: Icons.other_houses,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Dashboard()),
               );
             },
           ),
@@ -184,16 +171,18 @@ class CustomContainer extends StatelessWidget {
         child: Stack(
           children: [
             Positioned(
-              left: _width / 4 - 20, // Posisi ikon pada 1/4 bagian dari panjang container
+              left: _width / 4 -
+                  20, // Posisi ikon pada 1/4 bagian dari panjang container
               top: _height / 2 - 40, // Posisi ikon di tengah secara vertikal
               child: Icon(
                 icon,
                 size: 80, // Atur ukuran ikon sesuai kebutuhan
-                color: Color.fromARGB(255, 16, 80, 8), // Atur warna ikon sesuai kebutuhan
+                color: Color.fromARGB(
+                    255, 16, 80, 8), // Atur warna ikon sesuai kebutuhan
               ),
             ),
             Positioned(
-              left: _width * 3/4,
+              left: _width * 3 / 4,
               top: _height / 2 - 25,
               child: Text(
                 text,
@@ -205,7 +194,7 @@ class CustomContainer extends StatelessWidget {
               ),
             ),
             Positioned(
-              left: _width * 3/4,
+              left: _width * 3 / 4,
               top: _height / 2 - 5,
               child: Text(
                 additionalText,

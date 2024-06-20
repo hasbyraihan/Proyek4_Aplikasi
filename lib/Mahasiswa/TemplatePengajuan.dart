@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_helloo_world/Auth/login.dart';
 import 'package:flutter_helloo_world/Mahasiswa/MahasiwaDashboard.dart';
-import 'package:flutter_helloo_world/Faq.dart';
 
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
@@ -21,25 +20,12 @@ class _TemplatePengajuanState extends State<TemplatePengajuan> {
       MaterialPageRoute(builder: (context) => MahasiswaDashboard()),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFFC5E0CD),
-        automaticallyImplyLeading: false,
-        leading: Row(
-          children: [
-            IconButton(
-              icon: Icon(Icons.question_answer_outlined),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => FAQ()),
-                ); // Fungsi untuk menu FAQ
-              },
-            ),
-          ],
-        ),
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 20.0),
@@ -157,12 +143,13 @@ class CustomContainer extends StatelessWidget {
         child: Stack(
           children: [
             Positioned(
-              left: _width + 60, // 
+              left: _width + 60, //
               top: _height / 2 - 30, // Posisi ikon di tengah secara vertikal
               child: Icon(
                 icon,
                 size: 60, // Atur ukuran ikon sesuai kebutuhan
-                color: Color.fromARGB(255, 16, 80, 8), // Atur warna ikon sesuai kebutuhan
+                color: Color.fromARGB(
+                    255, 16, 80, 8), // Atur warna ikon sesuai kebutuhan
               ),
             ),
             Positioned(

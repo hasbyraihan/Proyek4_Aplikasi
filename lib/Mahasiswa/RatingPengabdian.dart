@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_helloo_world/Mahasiswa/MahasiwaDashboard.dart';
-import 'package:flutter_helloo_world/Faq.dart';
 
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
@@ -12,7 +11,7 @@ class RatingPengabdian extends StatefulWidget {
   _RatingPengabdianState createState() => _RatingPengabdianState();
 }
 
-class _RatingPengabdianState extends State<RatingPengabdian>{
+class _RatingPengabdianState extends State<RatingPengabdian> {
   int _selectedIndex = 0;
   void navigateToDashboard(BuildContext context) {
     Navigator.push(
@@ -20,25 +19,12 @@ class _RatingPengabdianState extends State<RatingPengabdian>{
       MaterialPageRoute(builder: (context) => MahasiswaDashboard()),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFFC5E0CD),
-        automaticallyImplyLeading: false,
-        leading: Row(
-          children: [
-            IconButton(
-              icon: Icon(Icons.question_answer_outlined),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => FAQ()),
-                ); // Fungsi untuk menu FAQ
-              },
-            ),
-          ],
-        ),
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 20.0),
@@ -118,7 +104,8 @@ class CustomContainer extends StatelessWidget {
           Container(
             height: 1, // Lebar garis vertikal
             color: Colors.black, // Warna garis vertikal
-            margin: EdgeInsets.symmetric(vertical: 5), // Jarak antara garis vertikal dengan teks
+            margin: EdgeInsets.symmetric(
+                vertical: 5), // Jarak antara garis vertikal dengan teks
           ),
           Text(
             description,

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_helloo_world/daftar.dart';
-import 'package:flutter_helloo_world/Component/NavigationBar.dart'
-    as BarNavigasi;
 
 class Login extends StatefulWidget {
   @override
@@ -102,7 +100,6 @@ class _LoginState extends State<Login> {
           ),
         ),
       ),
-      
     );
   }
 }

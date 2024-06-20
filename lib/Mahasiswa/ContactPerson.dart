@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart'; // Import library untuk membuka URL
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_helloo_world/Mahasiswa/MahasiwaDashboard.dart';
-import 'package:flutter_helloo_world/Faq.dart';
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
 
@@ -70,16 +69,6 @@ class _ContactPersonState extends State<ContactPerson> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFFC5E0CD),
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          icon: Icon(Icons.question_answer_outlined),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => FAQ()),
-            );
-          },
-        ),
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 20.0),
