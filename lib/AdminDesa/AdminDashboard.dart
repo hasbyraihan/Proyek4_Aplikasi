@@ -9,8 +9,7 @@ import 'package:flutter_helloo_world/AdminDesa/AdminUploadTemplatePage.dart';
 
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
-
-import '../Dashboard.dart';
+import 'package:flutter_helloo_world/Faq.dart';
 
 class AdminDashboard extends StatefulWidget {
   @override
@@ -24,6 +23,16 @@ class _AdminDashboardState extends State<AdminDashboard> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFFC5E0CD),
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon: Icon(Icons.question_answer_outlined),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => FAQ()),
+            ); // Fungsi untuk menu FAQ
+          },
+        ),
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 20.0),
@@ -40,18 +49,18 @@ class _AdminDashboardState extends State<AdminDashboard> {
         padding: EdgeInsets.symmetric(
             horizontal: 16), // Tambahkan padding horizontal di sini
         children: [
-          CustomContainer(
-            color: Color(0xFF60AD77),
-            text: 'Informasi',
-            additionalText: 'Desa',
-            icon: Icons.other_houses,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Dashboard()),
-              );
-            },
-          ),
+          // CustomContainer(
+          //   color: Color(0xFF60AD77),
+          //   text: 'Informasi',
+          //   additionalText: 'Desa',
+          //   icon: Icons.other_houses,
+          //   onTap: () {
+          //     Navigator.push(
+          //       context,
+          //       MaterialPageRoute(builder: (context) => Dashboard()),
+          //     );
+          //   },
+          // ),
           CustomContainer(
             color: Color(0xFF60AD77),
             text: 'Manage Akun',

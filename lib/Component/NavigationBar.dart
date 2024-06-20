@@ -84,13 +84,34 @@ class _NavigationBarState extends State<NavigationBar> {
       child: IconButton(
         icon: Icon(icon, color: Colors.black),
         onPressed: () {
-          setState(() {
-            _selectedIndex = index;
-          });
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => FAQ()),
-          );
+          // Fungsi untuk menangani ketika item "Home" ditekan
+          if (_user != null && _user.nama != 'Loading...') {
+            // Periksa apakah _user sudah diinisialisasi dengan data pengguna yang valid
+            if (_user.role == 'admin') {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AdminDashboard()),
+              );
+            } else if (_user.role == 'mahasiswa') {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MahasiswaDashboard()),
+              );
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Dashboard()),
+              );
+            }
+          } else {
+            // Tunggu hingga data pengguna dimuat sebelum menavigasi
+            // Atau tampilkan pesan kesalahan
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Dashboard()),
+            );
+            print('Error: User data is not yet loaded');
+          }
         },
       ),
     );
@@ -130,35 +151,10 @@ class _NavigationBarState extends State<NavigationBar> {
           icon: IconButton(
             icon: Icon(Icons.home),
             onPressed: () {
-              // Fungsi untuk menangani ketika item "Home" ditekan
-              if (_user != null && _user.nama != 'Loading...') {
-                // Periksa apakah _user sudah diinisialisasi dengan data pengguna yang valid
-                if (_user.role == 'admin') {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => AdminDashboard()),
-                  );
-                } else if (_user.role == 'mahasiswa') {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => MahasiswaDashboard()),
-                  );
-                } else {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Dashboard()),
-                  );
-                }
-              } else {
-                // Tunggu hingga data pengguna dimuat sebelum menavigasi
-                // Atau tampilkan pesan kesalahan
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Dashboard()),
-                );
-                print('Error: User data is not yet loaded');
-              }
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Dashboard()),
+              );
             },
           ),
           label: 'Home',

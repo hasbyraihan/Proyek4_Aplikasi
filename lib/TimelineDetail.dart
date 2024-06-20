@@ -19,25 +19,12 @@ class _TimelineDetailState extends State<TimelineDetail> {
       MaterialPageRoute(builder: (context) => Timeline()),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFFC5E0CD),
-        automaticallyImplyLeading: false,
-        leading: Row(
-          children: [
-            IconButton(
-              icon: Icon(Icons.question_answer_outlined),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => FAQ()),
-                ); // Fungsi untuk menu FAQ
-              },
-            ),
-          ],
-        ),
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 20.0),
@@ -61,7 +48,8 @@ class _TimelineDetailState extends State<TimelineDetail> {
             additionalText: 'Sinumbra',
             TanggalText: '21 Maret - 24 Maret',
             TahunText: '2023',
-            logoPath: 'assets/images/logopolban.png', // Memberikan path gambar logo
+            logoPath:
+                'assets/images/logopolban.png', // Memberikan path gambar logo
             onTap: () {
               Navigator.push(
                 context,
@@ -76,7 +64,8 @@ class _TimelineDetailState extends State<TimelineDetail> {
             additionalText: 'Sinumbra',
             TanggalText: '25 Maret - 1 April',
             TahunText: '2023',
-            logoPath: 'assets/images/logougm.png', // Memberikan path gambar logo
+            logoPath:
+                'assets/images/logougm.png', // Memberikan path gambar logo
             onTap: () {
               Navigator.push(
                 context,
@@ -176,7 +165,6 @@ class CustomContainer extends StatelessWidget {
   final String TahunText;
   final String logoPath; // Menambahkan path gambar logo
   final VoidCallback onTap;
-
 
   const CustomContainer({
     Key? key,

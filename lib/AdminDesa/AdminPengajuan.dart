@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_helloo_world/AdminDesa/AdminDetailPengajuan.dart';
-import 'package:flutter_helloo_world/Faq.dart';
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
 
@@ -66,16 +65,6 @@ class _AdminPengajuanState extends State<AdminPengajuan> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFFC5E0CD),
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          icon: Icon(Icons.question_answer_outlined),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => FAQ()),
-            ); // Fungsi untuk menu FAQ
-          },
-        ),
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 20.0),
@@ -304,8 +293,9 @@ class CustomContainer extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        AdminDetailPengajuan(), // Pass the pengajuan ID
+                    builder: (context) => AdminDetailPengajuan(
+                      pengajuanId: pengajuanId,
+                    ), // Pass the pengajuan ID
                   ),
                 );
               },

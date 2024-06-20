@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_helloo_world/Faq.dart';
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
 
@@ -17,20 +16,6 @@ class _AdminRatingHasilState extends State<AdminRatingHasil> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFFC5E0CD),
-        automaticallyImplyLeading: false,
-        leading: Row(
-          children: [
-            IconButton(
-              icon: Icon(Icons.question_answer_outlined),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => FAQ()),
-                ); // Fungsi untuk menu FAQ
-              },
-            ),
-          ],
-        ),
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 20.0),

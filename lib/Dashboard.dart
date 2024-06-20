@@ -3,8 +3,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_helloo_world/Faq.dart';
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:firebase_database/firebase_database.dart';
 
 class MyDashboardApp extends StatelessWidget {
