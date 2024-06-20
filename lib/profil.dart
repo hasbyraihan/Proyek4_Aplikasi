@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_helloo_world/Auth/AuthServices.dart';
 import 'package:flutter_helloo_world/Dashboard.dart';
 import 'package:flutter_helloo_world/Models/User.dart' as user;
+import 'package:flutter_helloo_world/Faq.dart';
+import 'package:flutter_helloo_world/Mahasiswa/ContactPerson.dart';
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
 
@@ -55,48 +57,170 @@ class _ProfilState extends State<Profil> {
     int _selectedIndex = 0;
     return Scaffold(
       appBar: AppBar(
-          // Kode app bar...
+        backgroundColor: Color(0xFFC5E0CD),
+        automaticallyImplyLeading: false,
+        leading: Row(
+          children: [
+            IconButton(
+              icon: Icon(Icons.question_answer_outlined),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => FAQ()),
+                ); // Fungsi untuk menu FAQ
+              },
+            ),
+          ],
+        ),
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: 20.0),
+            child: Image.asset(
+              'assets/images/logo.png',
+              width: 54,
+              height: 52,
+            ),
           ),
+        ],
+      ),
       backgroundColor: Color(0xFFE9F0EB),
-      body: Center(
-        child: _user != null
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+      body: _user != null
+          ? Padding(
+              padding: const EdgeInsets.only(
+                  top: 50.0), // Push content towards the top
+              child: Column(
                 children: [
                   _user.fotoProfil.isNotEmpty
                       ? CircleAvatar(
                           backgroundImage: NetworkImage(_user.fotoProfil),
-                          radius: 50,
+                          radius: 100,
                         )
                       : Icon(
                           Icons.person,
                           size: 100,
                         ),
                   SizedBox(height: 20),
-                  Text('${_user.nama}'),
-                  Text('${_user.nim}'),
-                  Text(
-                    ' ${_user.namaPerguruanTinggi}',
-                  ),
-                  SizedBox(height: 60, width: 40),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 40),
+                    padding: EdgeInsets.symmetric(horizontal: 120),
+                    child: ElevatedButton(
+                      onPressed: () {
+
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFF60AD77),
+                        minimumSize: Size(double.infinity, 40),
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(20), // More square shape
+                        ),
+                      ),
+                      child: Text('Edit Foto',
+                          style: TextStyle(color: Colors.white, fontSize: 20)),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 20), // Horizontal padding
+                    child: Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(vertical: 10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.white,
+                      ),
+                      child: Column(
+                        children: [
+                          Text(
+                            '${_user.nama}',
+                            style: TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center,
+                          ),
+                          Text(
+                            '${_user.nim}',
+                            style: TextStyle(fontSize: 16),
+                            textAlign: TextAlign.center,
+                          ),
+                          Text(
+                            '${_user.namaPerguruanTinggi}',
+                            style: TextStyle(fontSize: 16),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
                     child: ElevatedButton(
                       onPressed: () {
                         handleLogout();
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xFF60AD77),
-                        minimumSize: Size(double.infinity, 50),
+                        minimumSize: Size(double.infinity, 60),
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(20), // More square shape
+                        ),
                       ),
-                      child:
-                          Text('Logout', style: TextStyle(color: Colors.black)),
+                      child: Text('Logout',
+                          style: TextStyle(color: Colors.white, fontSize: 20)),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => FAQ()),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFF60AD77),
+                        minimumSize: Size(double.infinity, 60),
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(20), // More square shape
+                        ),
+                      ),
+                      child: Text('Kegiatan Pengabdian',
+                          style: TextStyle(color: Colors.white, fontSize: 20)),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ContactPerson()),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFF60AD77),
+                        minimumSize: Size(double.infinity, 60),
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(20), // More square shape
+                        ),
+                      ),
+                      child: Text('Orang yang dapat dihubungi',
+                          style: TextStyle(color: Colors.white, fontSize: 20)),
                     ),
                   ),
                 ],
-              )
-            : CircularProgressIndicator(), // Loading indicator saat memuat data
-      ),
+              ),
+            )
+          : Center(
+              child:
+                  CircularProgressIndicator(), // Loading indicator when data is loading
+            ),
       bottomNavigationBar: BarNavigasi.NavigationBar(
         currentIndex: _selectedIndex,
         onTap: (index) {
