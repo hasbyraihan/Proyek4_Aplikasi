@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_helloo_world/Dashboard.dart';
 import 'package:flutter_helloo_world/Faq.dart';
-
+import 'package:flutter_helloo_world/Loading.dart';
+import 'dart:async';
 
 
 class OnboardingScreen extends StatefulWidget {
@@ -14,6 +15,13 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController(initialPage: 0);
   int currentIndex = 0;
+  bool _isLoading = false; // Variabel loading
+
+  void _showLoading() {
+    setState(() {
+      _isLoading = true;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +36,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             child: InkWell(
               onTap: () {
                 Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => FAQ()));
+                    context, MaterialPageRoute(builder: (_) => FAQ()));
               }, //to login screen. We will update later
               child: const Text(
                 'Skip',
@@ -94,8 +100,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               curve: Curves.easeIn);
                         }
                       } else {
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (_) => Dashboard()));
+                        _showLoading(); // Menampilkan loading saat tombol ditekan
+                        Timer(Duration(seconds: 3), () {
+                          Navigator.pushReplacement(context,
+                              MaterialPageRoute(builder: (_) => Dashboard()));
+                        });
                       }
                     });
                   },
@@ -111,6 +120,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ),
           ),
+          LoadingScreen(
+              isLoading: _isLoading), // Menambahkan LoadingScreen di sini
         ],
       ),
     );
@@ -132,7 +143,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
-//Create the indicator list
+  //Create the indicator list
   List<Widget> _buildIndicator() {
     List<Widget> indicators = [];
 

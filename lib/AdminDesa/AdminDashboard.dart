@@ -6,10 +6,12 @@ import 'package:flutter_helloo_world/AdminDesa/AdminManageInfo.dart';
 import 'package:flutter_helloo_world/AdminDesa/AdminPengajuan.dart';
 import 'package:flutter_helloo_world/AdminDesa/AdminRatingHasil.dart';
 import 'package:flutter_helloo_world/AdminDesa/AdminUploadTemplatePage.dart';
+import 'dart:async';
 
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
 import 'package:flutter_helloo_world/Faq.dart';
+import 'package:flutter_helloo_world/Loading.dart';
 
 class AdminDashboard extends StatefulWidget {
   @override
@@ -18,6 +20,14 @@ class AdminDashboard extends StatefulWidget {
 
 class _AdminDashboardState extends State<AdminDashboard> {
   int _selectedIndex = 0;
+  bool _isLoading = false; // Variabel loading
+
+  void _showLoading() {
+    setState(() {
+      _isLoading = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,10 +101,11 @@ class _AdminDashboardState extends State<AdminDashboard> {
             additionalText: 'Pengajuan',
             icon: Icons.bar_chart,
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => AdminPengajuan()),
-              );
+              _showLoading();
+              Timer(Duration(seconds: 3), () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => AdminPengajuan()));
+              });
             },
           ),
           CustomContainer(
@@ -153,6 +164,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
               );
             },
           ),
+          LoadingScreen(isLoading: _isLoading),
         ],
       ),
       bottomNavigationBar: BarNavigasi.NavigationBar(
