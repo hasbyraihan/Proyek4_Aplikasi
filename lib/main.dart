@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_helloo_world/Onboarding.dart';
 import 'Dashboard.dart';
 
 Future<void> main() async {
@@ -18,7 +19,7 @@ class MyDashboardApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: DashboardScreen(),
+      home: OnboardingScreen(),
       routes: {
         '/Dashboard': (context) => Dashboard(),
       },
@@ -136,3 +137,5 @@ class MyPainter extends CustomPainter {
     return false;
   }
 }
+
+
