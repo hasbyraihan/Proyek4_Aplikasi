@@ -85,136 +85,141 @@ class _ProfilState extends State<Profil> {
       ),
       backgroundColor: Color(0xFFE9F0EB),
       body: _user != null
-          ? Padding(
-              padding: const EdgeInsets.only(
-                  top: 50.0), // Push content towards the top
-              child: Column(
-                children: [
-                  _user.fotoProfil.isNotEmpty
-                      ? CircleAvatar(
-                          backgroundImage: NetworkImage(_user.fotoProfil),
-                          radius: 100,
-                        )
-                      : Icon(
-                          Icons.person,
-                          size: 100,
-                        ),
-                  SizedBox(height: 20),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 120),
-                    child: ElevatedButton(
-                      onPressed: () {
-
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF60AD77),
-                        minimumSize: Size(double.infinity, 40),
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(20), // More square shape
-                        ),
-                      ),
-                      child: Text('Edit Foto',
-                          style: TextStyle(color: Colors.white, fontSize: 20)),
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 20), // Horizontal padding
-                    child: Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.white,
-                      ),
-                      child: Column(
-                        children: [
-                          Text(
-                            '${_user.nama}',
-                            style: TextStyle(
-                                fontSize: 24, fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.center,
+          ? SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    top: 50.0), // Push content towards the top
+                child: Column(
+                  children: [
+                    _user.fotoProfil.isNotEmpty
+                        ? CircleAvatar(
+                            backgroundImage: NetworkImage(_user.fotoProfil),
+                            radius: 100,
+                          )
+                        : Icon(
+                            Icons.person,
+                            size: 100,
                           ),
-                          Text(
-                            '${_user.nim}',
-                            style: TextStyle(fontSize: 16),
-                            textAlign: TextAlign.center,
+                    SizedBox(height: 20),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 120),
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFF60AD77),
+                          minimumSize: Size(double.infinity, 40),
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(20), // More square shape
                           ),
-                          Text(
-                            '${_user.namaPerguruanTinggi}',
-                            style: TextStyle(fontSize: 16),
-                            textAlign: TextAlign.center,
+                        ),
+                        child: Text('Edit Foto',
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 20)),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 20), // Horizontal padding
+                      child: Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.symmetric(vertical: 10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.white,
+                        ),
+                        child: Column(
+                          children: [
+                            Text(
+                              '${_user.nama}',
+                              style: TextStyle(
+                                  fontSize: 24, fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center,
+                            ),
+                            Text(
+                              '${_user.nim}',
+                              style: TextStyle(fontSize: 16),
+                              textAlign: TextAlign.center,
+                            ),
+                            Text(
+                              '${_user.namaPerguruanTinggi}',
+                              style: TextStyle(fontSize: 16),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          handleLogout();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFF60AD77),
+                          minimumSize: Size(double.infinity, 60),
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(20), // More square shape
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        handleLogout();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF60AD77),
-                        minimumSize: Size(double.infinity, 60),
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(20), // More square shape
                         ),
+                        child: Text('Logout',
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 20)),
                       ),
-                      child: Text('Logout',
-                          style: TextStyle(color: Colors.white, fontSize: 20)),
                     ),
-                  ),
-                  SizedBox(height: 20),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => FAQ()),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF60AD77),
-                        minimumSize: Size(double.infinity, 60),
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(20), // More square shape
+                    SizedBox(height: 20),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => FAQ()),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFF60AD77),
+                          minimumSize: Size(double.infinity, 60),
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(20), // More square shape
+                          ),
                         ),
+                        child: Text('Kegiatan Pengabdian',
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 20)),
                       ),
-                      child: Text('Kegiatan Pengabdian',
-                          style: TextStyle(color: Colors.white, fontSize: 20)),
                     ),
-                  ),
-                  SizedBox(height: 20),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => ContactPerson()),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF60AD77),
-                        minimumSize: Size(double.infinity, 60),
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(20), // More square shape
+                    SizedBox(height: 20),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ContactPerson()),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFF60AD77),
+                          minimumSize: Size(double.infinity, 60),
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(20), // More square shape
+                          ),
                         ),
+                        child: Text('Orang yang dapat dihubungi',
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 20)),
                       ),
-                      child: Text('Orang yang dapat dihubungi',
-                          style: TextStyle(color: Colors.white, fontSize: 20)),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             )
           : Center(

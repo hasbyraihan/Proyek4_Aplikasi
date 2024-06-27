@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_helloo_world/Auth/login.dart';
-import 'package:flutter_helloo_world/Mahasiswa/MahasiwaDashboard.dart';
+import 'package:dio/dio.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'dart:io';
 
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
@@ -12,13 +15,34 @@ class TemplatePengajuan extends StatefulWidget {
   _TemplatePengajuanState createState() => _TemplatePengajuanState();
 }
 
+class TemplatePengajuanItem {
+  final String name;
+  final String url;
+
+  TemplatePengajuanItem({required this.name, required this.url});
+}
+
 class _TemplatePengajuanState extends State<TemplatePengajuan> {
   int _selectedIndex = 0;
-  void navigateToDashboard(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => MahasiswaDashboard()),
-    );
+
+  Future<List<TemplatePengajuanItem>> fetchTemplates() async {
+    List<TemplatePengajuanItem> templates = [];
+    try {
+      final userRef = FirebaseDatabase.instance.ref('template-doc');
+      final snapshot = await userRef.get();
+
+      if (snapshot.value != null) {
+        Map<dynamic, dynamic> data = snapshot.value as Map<dynamic, dynamic>;
+        data.forEach((key, value) {
+          final name = value['name'] ?? '';
+          final url = value['url'] ?? '';
+          templates.add(TemplatePengajuanItem(name: name, url: url));
+        });
+      }
+    } catch (e) {
+      print('Error fetching templates: $e');
+    }
+    return templates;
   }
 
   @override
@@ -38,66 +62,33 @@ class _TemplatePengajuanState extends State<TemplatePengajuan> {
         ],
       ),
       backgroundColor: Color(0xFFE9F0EB),
-      body: ListView(
-        padding: EdgeInsets.symmetric(
-            horizontal: 16), // Tambahkan padding horizontal di sini
-        children: [
-          CustomContainer(
-            color: Color(0xFF60AD77),
-            text: 'Surat Izin Kapolsek',
-            icon: Icons.file_download,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Login()),
-              );
-            },
-          ),
-          CustomContainer(
-            color: Color(0xFF60AD77),
-            text: 'Surat Izin Koramil',
-            icon: Icons.file_download,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Login()),
-              );
-            },
-          ),
-          CustomContainer(
-            color: Color(0xFF60AD77),
-            text: 'Surat Izin PT',
-            icon: Icons.file_download,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Login()),
-              );
-            },
-          ),
-          CustomContainer(
-            color: Color(0xFF60AD77),
-            text: 'Surat Izin Kecamatan',
-            icon: Icons.file_download,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Login()),
-              );
-            },
-          ),
-          CustomContainer(
-            color: Color(0xFF60AD77),
-            text: 'Surat Izin Desa',
-            icon: Icons.file_download,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Login()),
-              );
-            },
-          ),
-        ],
+      body: FutureBuilder<List<TemplatePengajuanItem>>(
+        future: fetchTemplates(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError || !snapshot.hasData) {
+            return Center(
+              child: Text('Error fetching templates'),
+            );
+          } else {
+            final templates = snapshot.data!;
+            return ListView.builder(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              itemCount: templates.length,
+              itemBuilder: (context, index) {
+                return CustomContainer(
+                  color: Color(0xFF60AD77),
+                  text: templates[index].name,
+                  url: templates[index].url,
+                  icon: Icons.file_download,
+                );
+              },
+            );
+          }
+        },
       ),
       bottomNavigationBar: BarNavigasi.NavigationBar(
         currentIndex: _selectedIndex,
@@ -114,24 +105,90 @@ class _TemplatePengajuanState extends State<TemplatePengajuan> {
 class CustomContainer extends StatelessWidget {
   final Color color;
   final String text;
-  final VoidCallback onTap;
+  final String url;
   final IconData icon;
 
   const CustomContainer({
     Key? key,
     required this.color,
     required this.text,
-    required this.onTap,
+    required this.url,
     required this.icon,
   }) : super(key: key);
 
-  final double _width = 207; // Atur lebar container di sini
-  final double _height = 100; // Atur tinggi container di sini
+  final double _width = 207;
+  final double _height = 100;
+
+  Future<void> downloadFile(BuildContext context, String url, String fileName) async {
+    try {
+      if (await Permission.storage.request().isGranted) {
+        Dio dio = Dio();
+        var dir = await getExternalStorageDirectory();
+        String newPath = "";
+        List<String> paths = dir!.path.split("/");
+        for (int x = 1; x < paths.length; x++) {
+          String folder = paths[x];
+          if (folder != "Android") {
+            newPath += "/" + folder;
+          } else {
+            break;
+          }
+        }
+        newPath = newPath + "/Download";
+        dir = Directory(newPath);
+
+        if (!await dir.exists()) {
+          await dir.create(recursive: true);
+        }
+
+        await dio.download(url, "${dir.path}/$fileName");
+        print("File downloaded to ${dir.path}/$fileName");
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Download Successful"),
+              content: Text("File has been downloaded to ${dir?.path}/$fileName"),
+              actions: [
+                TextButton(
+                  child: Text("OK"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        print("Permission denied");
+      }
+    } catch (e) {
+      print("Error downloading file: $e");
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Download Failed"),
+            content: Text("Error downloading file: $e"),
+            actions: [
+              TextButton(
+                child: Text("OK"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () => downloadFile(context, url, text + ".pdf"),
       child: Container(
         width: _width,
         height: _height,
@@ -143,13 +200,12 @@ class CustomContainer extends StatelessWidget {
         child: Stack(
           children: [
             Positioned(
-              left: _width + 60, //
-              top: _height / 2 - 30, // Posisi ikon di tengah secara vertikal
+              left: _width + 60,
+              top: _height / 2 - 30,
               child: Icon(
                 icon,
-                size: 60, // Atur ukuran ikon sesuai kebutuhan
-                color: Color.fromARGB(
-                    255, 16, 80, 8), // Atur warna ikon sesuai kebutuhan
+                size: 60,
+                color: Color.fromARGB(255, 16, 80, 8),
               ),
             ),
             Positioned(
