@@ -3,7 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
-import 'package:flutter_helloo_world/Faq.dart';
+import 'package:flutter_helloo_world/Mahasiswa/HasilPengabdian.dart';
 
 enum TemplateStatus {
   BelumDiverifikasi,
@@ -231,7 +231,7 @@ class CustomContainer extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => FAQ(),
+                    builder: (context) => HasilPengabdian(),
                   ),
                 );
               },

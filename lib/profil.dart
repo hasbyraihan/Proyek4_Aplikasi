@@ -84,6 +84,7 @@ class _ProfilState extends State<Profil> {
         ],
       ),
       backgroundColor: Color(0xFFE9F0EB),
+      // ignore: unnecessary_null_comparison
       body: _user != null
           ? SingleChildScrollView(
               child: Padding(
