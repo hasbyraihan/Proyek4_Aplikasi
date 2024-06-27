@@ -4,6 +4,8 @@ import 'package:flutter_helloo_world/Faq.dart';
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 
 class MyDashboardApp extends StatelessWidget {
   @override
@@ -128,8 +130,11 @@ class _DashboardState extends State<Dashboard> {
             children: [
               SizedBox(height: 10),
               ContainerCard(
-                title: 'Lokasi Indragiri',
-                imagePath: 'assets/images/peta.png',
+                // title: 'Lokasi Indragiri',
+                // imagePath: 'assets/images/peta.png',
+                lat: -7.130000,
+                leng: 107.340000,
+                zoom: 13.0,
               ),
               SizedBox(height: 10),
               ContainerCardPopulation(
@@ -179,14 +184,15 @@ class _DashboardState extends State<Dashboard> {
 }
 
 class ContainerCard extends StatelessWidget {
-  final String title;
-  final String? imagePath;
+  // final String title;
+  // final String? imagePath;
+  final double lat;
+  final double leng;
+  final double zoom;
 
-  const ContainerCard({
-    Key? key,
-    required this.title,
-    this.imagePath,
-  }) : super(key: key);
+  const ContainerCard(
+      {Key? key, required this.lat, required this.leng, required this.zoom})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -197,27 +203,14 @@ class ContainerCard extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(20.0),
       ),
-      child: Stack(
+      child: FlutterMap(
+        options: MapOptions(
+          initialCenter: LatLng(lat, leng),
+          initialZoom: zoom,
+        ),
         children: [
-          if (imagePath != null)
-            Positioned.fill(
-              child: Image.asset(
-                imagePath!,
-                fit: BoxFit.cover,
-              ),
-            ),
-          Align(
-            alignment: Alignment.topLeft,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                title,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-            ),
+          TileLayer(
+            urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
           ),
         ],
       ),
