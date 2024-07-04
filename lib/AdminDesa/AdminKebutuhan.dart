@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
 
@@ -8,7 +9,15 @@ class AdminKebutuhan extends StatefulWidget {
 }
 
 class _AdminKebutuhanState extends State<AdminKebutuhan> {
+  late Future<List<RWData>> rwDataFuture;
   int _selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    rwDataFuture = fetchRWDataFromFirebase();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,53 +34,35 @@ class _AdminKebutuhanState extends State<AdminKebutuhan> {
           ),
         ],
       ),
-      backgroundColor: Color(0xFFE9F0EB),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              SizedBox(height: 10),
-              SizedBox(height: 10),
-              ContainerCardRW(
-                rwDataList: [
-                  RWData(
-                    rwNumber: 1,
-                    needs: [
-                      'Kurang Guru',
-                      'Lingkungan Kotor',
-                      'Keterbatasan Fasilitas',
-                    ],
-                  ),
-                  RWData(
-                    rwNumber: 2,
-                    needs: [],
-                  ),
-                  RWData(
-                    rwNumber: 3,
-                    needs: [],
-                  ),
-                  RWData(
-                    rwNumber: 4,
-                    needs: [],
-                  ),
-                  RWData(
-                    rwNumber: 5,
-                    needs: [],
-                  ),
-                  RWData(
-                    rwNumber: 6,
-                    needs: [],
-                  ),
-                  RWData(
-                    rwNumber: 7,
-                    needs: [],
-                  ),
-                ],
-              )
-            ],
-          ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: FutureBuilder<List<RWData>>(
+          future: rwDataFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Text('Error: ${snapshot.error}'),
+              );
+            } else {
+              return ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index) {
+                  return _buildRWCard(snapshot.data![index]);
+                },
+              );
+            }
+          },
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _showAddDialog();
+        },
+        child: Icon(Icons.add),
       ),
       bottomNavigationBar: BarNavigasi.NavigationBar(
         currentIndex: _selectedIndex,
@@ -83,77 +74,12 @@ class _AdminKebutuhanState extends State<AdminKebutuhan> {
       ),
     );
   }
-}
-
-class ContainerCardRW extends StatefulWidget {
-  final List<RWData> rwDataList;
-
-  const ContainerCardRW({
-    Key? key,
-    required this.rwDataList,
-  }) : super(key: key);
-
-  @override
-  _ContainerCardRWState createState() => _ContainerCardRWState();
-}
-
-class _ContainerCardRWState extends State<ContainerCardRW> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 380,
-      height: 500,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: widget.rwDataList.length,
-              itemBuilder: (context, index) {
-                return Container(
-                  width: 350,
-                  margin: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: _buildRWCard(widget.rwDataList[index]),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _buildRWCard(RWData rwData) {
-    TextEditingController _editController = TextEditingController();
-
-    void _editNeeds(int index, String newValue) {
-      setState(() {
-        rwData.needs[index] = newValue;
-      });
-    }
-
-    void _addNeed() {
-      setState(() {
-        rwData.needs.add('');
-      });
-    }
-
-    void _returnData() {
-      // Implementasi untuk mengembalikan data RW dan kebutuhannya
-      print('Data RW ${rwData.rwNumber}: ${rwData.needs}');
-    }
-
-    return Container(
+    return Card(
       margin: EdgeInsets.symmetric(vertical: 8.0),
-      padding: EdgeInsets.all(8.0),
-      width: 500,
-      // Mengubah jenis perutean dari Column menjadi SingleChildScrollView
-      child: SingleChildScrollView(
+      child: Padding(
+        padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -161,66 +87,224 @@ class _ContainerCardRWState extends State<ContainerCardRW> {
               'RW ${rwData.rwNumber}',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(
+              'Kebutuhan:',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
                 fontSize: 16,
               ),
             ),
-            SizedBox(height: 12),
-            Text(
-              'Kebutuhan',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
-              ),
-            ),
-            SizedBox(height: 5),
+            SizedBox(height: 4),
             Column(
-              children: rwData.needs.asMap().entries.map((entry) {
-                int index = entry.key;
-                String need = entry.value;
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: List.generate(rwData.needs.length, (index) {
+                return Row(
                   children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: TextEditingController(text: need),
-                            onChanged: (newValue) {
-                              _editNeeds(index, newValue);
-                            },
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              hintText: 'Kebutuhan ${index + 1}',
-                            ),
-                          ),
+                    Expanded(
+                      child: Text(
+                        '- ${rwData.needs[index]}',
+                        style: TextStyle(
+                          fontSize: 14,
                         ),
-                        IconButton(
-                          icon: Icon(Icons.delete),
-                          onPressed: () {
-                            setState(() {
-                              rwData.needs.removeAt(index);
-                            });
-                          },
-                        ),
-                      ],
+                      ),
                     ),
-                    SizedBox(height: 8),
+                    IconButton(
+                      icon: Icon(Icons.edit),
+                      onPressed: () {
+                        _showEditDialog(
+                            rwData.rwNumber, index, rwData.needs[index]);
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.delete),
+                      onPressed: () {
+                        _showDeleteConfirmationDialog(rwData.rwNumber, index);
+                      },
+                    ),
                   ],
                 );
-              }).toList(),
+              }),
             ),
+            SizedBox(height: 8),
             ElevatedButton(
-              onPressed: _addNeed,
+              onPressed: () {
+                _showAddDialogRW(rwData.rwNumber);
+              },
               child: Text('Tambah Kebutuhan'),
-            ),
-            ElevatedButton(
-              onPressed: _returnData,
-              child: Text('Return Data'),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Future<void> _showEditDialog(
+      int rwNumber, int needIndex, String currentNeed) async {
+    TextEditingController _controller =
+        TextEditingController(text: currentNeed);
+
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Edit Kebutuhan RW'),
+          content: TextField(
+            controller: _controller,
+            decoration: InputDecoration(hintText: 'Masukkan kebutuhan baru'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Batal'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                String newNeed = _controller.text.trim();
+                if (newNeed.isNotEmpty) {
+                  await updateRWNeedInFirebase(rwNumber, needIndex, newNeed);
+                  setState(() {
+                    rwDataFuture =
+                        fetchRWDataFromFirebase(); // Refresh data setelah update
+                  });
+                  Navigator.of(context).pop();
+                }
+              },
+              child: Text('Simpan'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showAddDialogRW(int rwNumber) async {
+    TextEditingController _controller = TextEditingController();
+
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Tambah Kebutuhan RW'),
+          content: TextField(
+            controller: _controller,
+            decoration: InputDecoration(hintText: 'Masukkan kebutuhan baru'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Batal'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                String newNeed = _controller.text.trim();
+                if (newNeed.isNotEmpty) {
+                  await addRWNeedToFirebase(rwNumber, newNeed);
+                  setState(() {
+                    rwDataFuture =
+                        fetchRWDataFromFirebase(); // Refresh data setelah tambah kebutuhan baru
+                  });
+                  Navigator.of(context).pop();
+                }
+              },
+              child: Text('Tambah'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showAddDialog() async {
+    int? rwNumber;
+    String newNeed = '';
+
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Tambah Kebutuhan RW'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                decoration: InputDecoration(hintText: 'Masukkan nomor RW'),
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  rwNumber = int.tryParse(value);
+                },
+              ),
+              TextField(
+                decoration:
+                    InputDecoration(hintText: 'Masukkan kebutuhan baru'),
+                onChanged: (value) {
+                  newNeed = value.trim();
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Batal'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                if (rwNumber != null && newNeed.isNotEmpty) {
+                  await addRWNeedToFirebase(rwNumber!, newNeed);
+                  setState(() {
+                    rwDataFuture =
+                        fetchRWDataFromFirebase(); // Refresh data setelah update
+                  });
+                  Navigator.of(context).pop();
+                }
+              },
+              child: Text('Simpan'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showDeleteConfirmationDialog(
+      int rwNumber, int needIndex) async {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Hapus Kebutuhan RW'),
+          content: Text('Apakah Anda yakin ingin menghapus kebutuhan ini?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Batal'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                await deleteRWNeedFromFirebase(rwNumber, needIndex);
+                setState(() {
+                  rwDataFuture =
+                      fetchRWDataFromFirebase(); // Refresh data setelah update
+                });
+                Navigator.of(context).pop();
+              },
+              child: Text('Hapus'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -229,8 +313,80 @@ class RWData {
   final int rwNumber;
   final List<String> needs;
 
-  RWData({
-    required this.rwNumber,
-    required this.needs,
-  });
+  RWData({required this.rwNumber, required this.needs});
+}
+
+Future<List<RWData>> fetchRWDataFromFirebase() async {
+  try {
+    final userRef = FirebaseDatabase.instance.ref('info-desa/kebutuhan-rw');
+    final userSnapshot = await userRef.get();
+
+    List<RWData> rwDataList = [];
+    if (userSnapshot.value != null) {
+      Map<dynamic, dynamic> data = userSnapshot.value as Map<dynamic, dynamic>;
+      data.forEach((key, value) {
+        final rwNumber = value['rw'];
+        if (rwNumber is int) {
+          // Validate rwNumber is int
+          final needs = List<String>.from(value['kebutuhan'] ?? []);
+          rwDataList.add(RWData(rwNumber: rwNumber, needs: needs));
+        }
+      });
+      return rwDataList;
+    } else {
+      throw 'Data not found';
+    }
+  } catch (e) {
+    throw 'Error: $e';
+  }
+}
+
+Future<void> updateRWNeedInFirebase(
+    int rwNumber, int needIndex, String newNeed) async {
+  try {
+    final userRef = FirebaseDatabase.instance
+        .ref('info-desa/kebutuhan-rw/rw-$rwNumber/kebutuhan/$needIndex');
+    await userRef.set(newNeed);
+  } catch (e) {
+    throw 'Error updating RW need: $e';
+  }
+}
+
+Future<void> addRWNeedToFirebase(int rwNumber, String newNeed) async {
+  try {
+    final userRef = FirebaseDatabase.instance
+        .ref('info-desa/kebutuhan-rw/rw-$rwNumber/kebutuhan');
+
+    final userSnapshot = await userRef.get();
+    int nextIndex;
+
+    if (userSnapshot.value != null) {
+      if (userSnapshot.value is Map<dynamic, dynamic>) {
+        Map<dynamic, dynamic> data =
+            userSnapshot.value as Map<dynamic, dynamic>;
+        nextIndex = data.length; 
+      } else if (userSnapshot.value is List) {
+        List data = userSnapshot.value as List;
+        nextIndex = data.length; 
+      } else {
+        throw 'Unknown data structure';
+      }
+    } else {
+      nextIndex = 0;
+    }
+
+    await userRef.child('$nextIndex').set(newNeed);
+  } catch (e) {
+    throw 'Error adding RW need: $e';
+  }
+}
+
+Future<void> deleteRWNeedFromFirebase(int rwNumber, int needIndex) async {
+  try {
+    final userRef = FirebaseDatabase.instance
+        .ref('info-desa/kebutuhan-rw/rw-$rwNumber/kebutuhan/$needIndex');
+    await userRef.remove();
+  } catch (e) {
+    throw 'Error deleting RW need: $e';
+  }
 }

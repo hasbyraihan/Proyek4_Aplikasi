@@ -5,7 +5,6 @@ import 'package:flutter_helloo_world/AdminDesa/AdminFAQEditPage.dart';
 import 'package:flutter_helloo_world/AdminDesa/AdminManageAkun.dart';
 import 'package:flutter_helloo_world/AdminDesa/AdminManageInfo.dart';
 import 'package:flutter_helloo_world/AdminDesa/AdminPengajuan.dart';
-import 'package:flutter_helloo_world/AdminDesa/AdminRatingHasil.dart';
 import 'package:flutter_helloo_world/AdminDesa/AdminUploadTemplatePage.dart';
 import 'dart:async';
 
@@ -142,7 +141,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => AdminFAQEditPage()),
+                MaterialPageRoute(builder: (context) => AdminFaqEditPage()),
               );
             },
           ),

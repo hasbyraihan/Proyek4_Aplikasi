@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_helloo_world/Dashboard.dart';
-import 'package:flutter_helloo_world/Faq.dart';
 import 'package:flutter_helloo_world/Loading.dart';
 import 'dart:async';
 

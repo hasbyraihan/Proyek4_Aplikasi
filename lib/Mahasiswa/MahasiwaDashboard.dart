@@ -7,7 +7,6 @@ import 'package:flutter_helloo_world/Mahasiswa/ContactPerson.dart';
 import 'package:flutter_helloo_world/Mahasiswa/KegiatanPengabdian.dart';
 import 'package:flutter_helloo_world/Mahasiswa/Pengajuan.dart';
 import 'package:flutter_helloo_world/Mahasiswa/ProgresPengajuan.dart';
-import 'package:flutter_helloo_world/Mahasiswa/RatingPengabdian.dart';
 import 'package:flutter_helloo_world/Mahasiswa/TemplatePengajuan.dart';
 
 class MahasiswaDashboard extends StatefulWidget {

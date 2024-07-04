@@ -3,26 +3,164 @@ import 'package:flutter/material.dart';
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
 
-class FAQItem {
-  String? key;
-  String question;
-  String answer;
-
-  FAQItem({this.key, required this.question, required this.answer});
-}
-
-class AdminFAQEditPage extends StatefulWidget {
+class AdminFaqEditPage extends StatefulWidget {
   @override
-  _AdminFAQEditPageState createState() => _AdminFAQEditPageState();
+  _AdminFaqEditPageState createState() => _AdminFaqEditPageState();
 }
 
-class _AdminFAQEditPageState extends State<AdminFAQEditPage> {
-  final DatabaseReference faqRef = FirebaseDatabase.instance.ref().child('faq');
-  List<FAQItem> faqItems = [];
+class FAQItem {
+  final String key;
+  final String question;
+  final String answer;
+
+  FAQItem({required this.key, required this.question, required this.answer});
+}
+
+class _AdminFaqEditPageState extends State<AdminFaqEditPage> {
+  final DatabaseReference _faqRef = FirebaseDatabase.instance.ref('faq');
+  int _selectedIndex = 0;
+
+  Future<List<FAQItem>> fetchFAQFromFirebase() async {
+    List<FAQItem> faqList = [];
+    try {
+      final snapshot = await _faqRef.get();
+
+      if (snapshot.value != null) {
+        Map<dynamic, dynamic> data = snapshot.value as Map<dynamic, dynamic>;
+        data.forEach((key, value) {
+          final question = value['pertanyaan'] ?? '';
+          final answer = value['jawab'] ?? '';
+          faqList.add(FAQItem(key: key, question: question, answer: answer));
+        });
+      }
+    } catch (e) {
+      print('Error fetching FAQ: $e');
+    }
+    return faqList;
+  }
+
+  Future<void> _addFAQ(String question, String answer) async {
+    try {
+      final newFaqRef = _faqRef.push();
+      await newFaqRef.set({
+        'pertanyaan': question,
+        'jawab': answer,
+      });
+    } catch (e) {
+      print('Error adding FAQ: $e');
+    }
+  }
+
+  Future<void> _updateFAQ(String key, String question, String answer) async {
+    try {
+      await _faqRef.child(key).update({
+        'pertanyaan': question,
+        'jawab': answer,
+      });
+    } catch (e) {
+      print('Error updating FAQ: $e');
+    }
+  }
+
+  Future<void> _deleteFAQ(String key) async {
+    try {
+      await _faqRef.child(key).remove();
+    } catch (e) {
+      print('Error deleting FAQ: $e');
+    }
+  }
+
+  void _showEditDialog(FAQItem faq) {
+    final TextEditingController questionController =
+        TextEditingController(text: faq.question);
+    final TextEditingController answerController =
+        TextEditingController(text: faq.answer);
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Edit FAQ'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: questionController,
+                decoration: InputDecoration(labelText: 'Pertanyaan'),
+              ),
+              TextField(
+                controller: answerController,
+                decoration: InputDecoration(labelText: 'Jawaban'),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                _updateFAQ(
+                    faq.key, questionController.text, answerController.text);
+                Navigator.of(context).pop();
+                setState(() {});
+              },
+              child: Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showAddDialog() {
+    final TextEditingController questionController = TextEditingController();
+    final TextEditingController answerController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Add FAQ'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: questionController,
+                decoration: InputDecoration(labelText: 'Pertanyaan'),
+              ),
+              TextField(
+                controller: answerController,
+                decoration: InputDecoration(labelText: 'Jawaban'),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                _addFAQ(questionController.text, answerController.text);
+                Navigator.of(context).pop();
+                setState(() {});
+              },
+              child: Text('Add'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    int _selectedIndex = 0;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFFC5E0CD),
@@ -38,54 +176,53 @@ class _AdminFAQEditPageState extends State<AdminFAQEditPage> {
         ],
       ),
       backgroundColor: Color(0xFFE9F0EB),
-      body: ListView(
-        padding: EdgeInsets.all(16.0),
-        children: [
-          for (int i = 0; i < faqItems.length; i++)
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextField(
-                  controller: TextEditingController(text: faqItems[i].question),
-                  onChanged: (value) => faqItems[i].question = value,
-                  decoration: InputDecoration(
-                    labelText: 'Pertanyaan ${i + 1}',
+      body: FutureBuilder<List<FAQItem>>(
+        future: fetchFAQFromFirebase(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError || snapshot.data == null) {
+            return Center(
+              child: Text('Error fetching FAQ'),
+            );
+          } else {
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                final faq = snapshot.data![index];
+                return ListTile(
+                  title: Text(faq.question),
+                  subtitle: Text(faq.answer),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.edit),
+                        onPressed: () {
+                          _showEditDialog(faq);
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () {
+                          _deleteFAQ(faq.key);
+                          setState(() {});
+                        },
+                      ),
+                    ],
                   ),
-                ),
-                TextField(
-                  controller: TextEditingController(text: faqItems[i].answer),
-                  onChanged: (value) => faqItems[i].answer = value,
-                  decoration: InputDecoration(
-                    labelText: 'Jawaban ${i + 1}',
-                  ),
-                ),
-                SizedBox(height: 16.0),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      faqItems.removeAt(i);
-                    });
-                  },
-                  child: Text('Hapus Pertanyaan'),
-                ),
-              ],
-            ),
-          ElevatedButton(
-            onPressed: () {
-              setState(() {
-                faqItems.add(FAQItem(question: '', answer: ''));
-              });
-            },
-            child: Text('Tambah Pertanyaan'),
-          ),
-          SizedBox(height: 16.0),
-          ElevatedButton(
-            onPressed: () {
-              saveFAQsToFirebase();
-            },
-            child: Text('Simpan Perubahan'),
-          ),
-        ],
+                );
+              },
+            );
+          }
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _showAddDialog,
+        child: Icon(Icons.add),
+        backgroundColor: Color(0xFFC5E0CD),
       ),
       bottomNavigationBar: BarNavigasi.NavigationBar(
         currentIndex: _selectedIndex,
@@ -96,37 +233,5 @@ class _AdminFAQEditPageState extends State<AdminFAQEditPage> {
         },
       ),
     );
-  }
-
-  Future<void> saveFAQsToFirebase() async {
-    try {
-      for (var faq in faqItems) {
-        if (faq.key == null) {
-          final ref = await faqRef.push();
-          await ref.set({
-            'pertanyaan': faq.question,
-            'jawab': faq.answer,
-          });
-          faq.key = ref.key;
-        } else {
-          await faqRef.child(faq.key!).set({
-            'pertanyaan': faq.question,
-            'jawab': faq.answer,
-          });
-        }
-      }
-    } catch (e) {
-      print('Error saving FAQs: $e');
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 }

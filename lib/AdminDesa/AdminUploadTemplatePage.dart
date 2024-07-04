@@ -19,6 +19,7 @@ class _AdminUploadTemplatePageState extends State<AdminUploadTemplatePage> {
     'Surat Izin PT',
     'Surat Izin Kecamatan',
     'Surat Izin Desa',
+    'Dokumen Hasil Pengabdian'
   ];
 
   Map<String, File?> templateFiles = {};

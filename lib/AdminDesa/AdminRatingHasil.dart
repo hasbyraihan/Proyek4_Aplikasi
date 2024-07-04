@@ -225,17 +225,8 @@ class _AdminRatingHasilState extends State<AdminRatingHasil> {
               : Center(child: CircularProgressIndicator()),
           SizedBox(height: 20),
           Container(
-            child: Wrap(
-              spacing: 25.0,
-              runSpacing: 10.0,
-              children: [
-                _buildDownloadContainer('Surat Izin Desa'),
-                _buildDownloadContainer('Surat Izin Kecamatan'),
-                _buildDownloadContainer('Surat Izin PT'),
-                _buildDownloadContainer('Surat Izin Koramil'),
-                _buildDownloadContainer('Surat Izin Kapolsek'),
-                _buildDownloadContainer('Dokumen Hasil Pengabdian'),
-              ],
+            child: Center(
+              child: _buildDownloadContainer('Dokumen Hasil Pengabdian'),
             ),
           ),
           SizedBox(height: 20),
@@ -270,17 +261,18 @@ class _AdminRatingHasilState extends State<AdminRatingHasil> {
   }
 
   Widget _buildDownloadContainer(String text) {
+    double screenWidth = MediaQuery.of(context).size.width;
     return InkWell(
       onTap: () => _onDownloadPressed(text + '.pdf'),
       borderRadius: BorderRadius.circular(10),
       child: Ink(
-        width: 161,
+        width: screenWidth * 0.9,
         height: 75,
         decoration: BoxDecoration(
           color: Color(0xFF60AD77),
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(30),
         ),
-        child: Column(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
@@ -292,7 +284,7 @@ class _AdminRatingHasilState extends State<AdminRatingHasil> {
                 fontSize: 16,
               ),
             ),
-            SizedBox(height: 5),
+            SizedBox(width: 30),
             Icon(
               Icons.download,
               color: Colors.white,

@@ -34,9 +34,12 @@ Future<List<RWData>> fetchRWDataFromFirebase() async {
     if (userSnapshot.value != null) {
       Map<dynamic, dynamic> data = userSnapshot.value as Map<dynamic, dynamic>;
       data.forEach((key, value) {
-        final rwNumber = value['rw'] as int;
-        final needs = List<String>.from(value['kebutuhan'] ?? []);
-        rwDataList.add(RWData(rwNumber: rwNumber, needs: needs));
+        final rwNumber = value['rw'];
+        if (rwNumber is int) {
+          // Validate rwNumber is int
+          final needs = List<String>.from(value['kebutuhan'] ?? []);
+          rwDataList.add(RWData(rwNumber: rwNumber, needs: needs));
+        }
       });
       return rwDataList;
     } else {
@@ -384,6 +387,8 @@ class ContainerCardRW extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    rwDataList.sort((a, b) => a.rwNumber.compareTo(b.rwNumber));
+
     return Container(
       width: 380,
       height: 237,

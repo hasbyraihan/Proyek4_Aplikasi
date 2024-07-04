@@ -7,7 +7,6 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  int _selectedIndex = 2; // Deklarasi dan inisialisasi _selectedIndex
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -200,7 +200,7 @@ class CustomContainer extends StatelessWidget {
         child: Stack(
           children: [
             Positioned(
-              left: _width + 60,
+              left: _width + 90,
               top: _height / 2 - 30,
               child: Icon(
                 icon,
