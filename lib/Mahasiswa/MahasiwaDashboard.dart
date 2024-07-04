@@ -4,6 +4,7 @@ import 'package:flutter_helloo_world/Faq.dart';
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
 import 'package:flutter_helloo_world/Mahasiswa/ContactPerson.dart';
+import 'package:flutter_helloo_world/Mahasiswa/KegiatanPengabdian.dart';
 import 'package:flutter_helloo_world/Mahasiswa/Pengajuan.dart';
 import 'package:flutter_helloo_world/Mahasiswa/ProgresPengajuan.dart';
 import 'package:flutter_helloo_world/Mahasiswa/RatingPengabdian.dart';
@@ -77,18 +78,6 @@ class _MahasiswaDashboardState extends State<MahasiswaDashboard> {
           ),
           CustomContainer(
             color: Color(0xFF60AD77),
-            text: 'Upload Hasil',
-            additionalText: 'Pengabdian',
-            icon: Icons.upload_file,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => FAQ()),
-              );
-            },
-          ),
-          CustomContainer(
-            color: Color(0xFF60AD77),
             text: 'Template Laporan',
             additionalText: 'Pengajuan',
             icon: Icons.file_present,
@@ -101,13 +90,13 @@ class _MahasiswaDashboardState extends State<MahasiswaDashboard> {
           ),
           CustomContainer(
             color: Color(0xFF60AD77),
-            text: 'Rating Hasil',
+            text: 'Kegiatan',
             additionalText: 'Pengabdian',
             icon: Icons.star_border,
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => RatingPengabdian()),
+                MaterialPageRoute(builder: (context) => KegiatanPengabdian()),
               );
             },
           ),

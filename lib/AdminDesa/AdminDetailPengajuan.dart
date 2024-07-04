@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -5,7 +6,9 @@ import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
 import 'package:flutter_helloo_world/Models/pengajuan.dart';
 import 'package:path_provider/path_provider.dart'; // Add this for getting local directory
-import 'dart:io'; // Add this for file operations
+import 'dart:io';
+
+import 'package:permission_handler/permission_handler.dart'; // Add this for file operations
 
 class AdminDetailPengajuan extends StatefulWidget {
   final String pengajuanId;
@@ -46,7 +49,7 @@ class _AdminDetailPengajuanState extends State<AdminDetailPengajuan> {
     }
   }
 
-  void _onDownloadPressed(String fileName) async {
+  Future<void> _onDownloadPressed(String fileName) async {
     try {
       final Reference ref = FirebaseStorage.instance
           .ref()
@@ -54,35 +57,80 @@ class _AdminDetailPengajuanState extends State<AdminDetailPengajuan> {
           .child(widget.pengajuanId)
           .child(fileName);
 
-      // Getting the directory to save the file
-      final Directory appDocDir = await getApplicationDocumentsDirectory();
-      final File downloadToFile = File('${appDocDir.path}/$fileName');
-
-      // Initiate the download task
-      final downloadTask = ref.writeToFile(downloadToFile);
-
-      // Add listeners to the download task
-      downloadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
-        // You can add progress updates here if needed
-      }, onError: (e) {
-        print('Error during download: $e');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error during download: $e')),
-        );
-      });
-
-      // Wait for the download to complete
-      await downloadTask.whenComplete(() {
-        print('File downloaded to ${downloadToFile.path}');
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Succses Download file')),
-        );
-      });
+      String url = await ref.getDownloadURL();
+      await downloadFile(context, url, fileName);
     } catch (e) {
-      print('Error downloading file: $e');
-      // ignore: use_build_context_synchronously
+      print('Error during download: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error downloading file: $e')),
+        SnackBar(content: Text('Error during download: $e')),
+      );
+    }
+  }
+
+  Future<void> downloadFile(
+      BuildContext context, String url, String fileName) async {
+    try {
+      if (await Permission.storage.request().isGranted) {
+        Dio dio = Dio();
+        var dir = await getExternalStorageDirectory();
+        String newPath = "";
+        List<String> paths = dir!.path.split("/");
+        for (int x = 1; x < paths.length; x++) {
+          String folder = paths[x];
+          if (folder != "Android") {
+            newPath += "/" + folder;
+          } else {
+            break;
+          }
+        }
+        newPath = newPath + "/Download";
+        dir = Directory(newPath);
+
+        if (!await dir.exists()) {
+          await dir.create(recursive: true);
+        }
+
+        await dio.download(url, "${dir.path}/$fileName");
+        print("File downloaded to ${dir.path}/$fileName");
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Download Successful"),
+              content:
+                  Text("File has been downloaded to ${dir?.path}/$fileName"),
+              actions: [
+                TextButton(
+                  child: Text("OK"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        print("Permission denied");
+      }
+    } catch (e) {
+      print("Error downloading file: $e");
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Download Failed"),
+            content: Text("Error downloading file: $e"),
+            actions: [
+              TextButton(
+                child: Text("OK"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
       );
     }
   }

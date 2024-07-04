@@ -3,6 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_helloo_world/Auth/AuthServices.dart';
 import 'package:flutter_helloo_world/Dashboard.dart';
+import 'package:flutter_helloo_world/Mahasiswa/KegiatanPengabdian.dart';
 import 'package:flutter_helloo_world/Models/User.dart' as user;
 import 'package:flutter_helloo_world/Faq.dart';
 import 'package:flutter_helloo_world/Mahasiswa/ContactPerson.dart';
@@ -179,7 +180,8 @@ class _ProfilState extends State<Profil> {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => FAQ()),
+                            MaterialPageRoute(
+                                builder: (context) => KegiatanPengabdian()),
                           );
                         },
                         style: ElevatedButton.styleFrom(

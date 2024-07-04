@@ -8,6 +8,7 @@ class Pengajuan {
   final String perempuan;
   final String totalPeserta;
   final String bidangPengabdian;
+  final String hasilPengabdian;
   final List<String> documents;
 
   Pengajuan({
@@ -20,6 +21,7 @@ class Pengajuan {
     required this.perempuan,
     required this.totalPeserta,
     required this.bidangPengabdian,
+    required this.hasilPengabdian,
     required this.documents,
   });
 
@@ -38,6 +40,7 @@ class Pengajuan {
       perempuan: map['jumlahPerempuan'] ?? '',
       totalPeserta: totalPesertaInt.toString(),
       bidangPengabdian: map['bidangPengabdian'] ?? '',
+      hasilPengabdian: map['deskripsiHasil'] ?? '',
       documents: List<String>.from(map['documents'] ?? []),
     );
   }

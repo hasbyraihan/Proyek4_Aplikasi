@@ -4,7 +4,6 @@ import 'package:flutter_helloo_world/Faq.dart';
 import 'package:flutter_helloo_world/Loading.dart';
 import 'dart:async';
 
-
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({Key? key}) : super(key: key);
 
@@ -36,7 +35,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             child: InkWell(
               onTap: () {
                 Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (_) => FAQ()));
+                    context, MaterialPageRoute(builder: (_) => Dashboard()));
               }, //to login screen. We will update later
               child: const Text(
                 'Skip',

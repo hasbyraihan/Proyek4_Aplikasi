@@ -1,18 +1,51 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_helloo_world/Mahasiswa/MahasiwaDashboard.dart';
-
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
 
 class RatingPengabdian extends StatefulWidget {
+  final String pengabdianId;
+
+  RatingPengabdian({required this.pengabdianId});
+
   @override
   _RatingPengabdianState createState() => _RatingPengabdianState();
 }
 
 class _RatingPengabdianState extends State<RatingPengabdian> {
   int _selectedIndex = 0;
+  late DatabaseReference _databaseReference;
+  String _evaluasi = '';
+  int _rating = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _databaseReference = FirebaseDatabase.instance
+        .ref()
+        .child('evaluasi')
+        .child(widget.pengabdianId);
+    _fetchEvaluasiData();
+  }
+
+  void _fetchEvaluasiData() async {
+    try {
+      DataSnapshot snapshot = await _databaseReference.get();
+      if (snapshot.value != null) {
+        Map<dynamic, dynamic> data = snapshot.value as Map<dynamic, dynamic>;
+        setState(() {
+          _rating = data['rating'];
+          _evaluasi = data['evaluasi'];
+        });
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
+    }
+  }
+
   void navigateToDashboard(BuildContext context) {
     Navigator.push(
       context,
@@ -38,23 +71,18 @@ class _RatingPengabdianState extends State<RatingPengabdian> {
       ),
       backgroundColor: Color(0xFFE9F0EB),
       body: ListView(
-        padding: EdgeInsets.symmetric(
-            horizontal: 16), // Tambahkan padding horizontal di sini
+        padding: EdgeInsets.symmetric(horizontal: 16),
         children: [
-          CustomContainer(
+          RatingContainer(
             color: Color.fromARGB(255, 255, 255, 255),
             text: 'Rating',
-            description: 'abogoboga',
+            rating: _rating,
           ),
+          SizedBox(height: 20),
           CustomContainer(
             color: Color.fromARGB(255, 255, 255, 255),
             text: 'Evaluasi',
-            description: 'bagus',
-          ),
-          CustomContainer(
-            color: Color.fromARGB(255, 255, 255, 255),
-            text: 'Saran',
-            description: 'testing aja inimah',
+            description: _evaluasi,
           ),
         ],
       ),
@@ -65,6 +93,59 @@ class _RatingPengabdianState extends State<RatingPengabdian> {
             _selectedIndex = index;
           });
         },
+      ),
+    );
+  }
+}
+
+class RatingContainer extends StatelessWidget {
+  final String text;
+
+  final Color color;
+  final int rating;
+
+  const RatingContainer({
+    Key? key,
+    required this.text,
+    required this.color,
+    required this.rating,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(10),
+      margin: EdgeInsets.symmetric(vertical: 10),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        children: [
+          Text(
+            text,
+            style: TextStyle(
+              color: const Color.fromARGB(255, 0, 0, 0),
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Container(
+            height: 1,
+            color: Colors.black,
+            margin: EdgeInsets.symmetric(vertical: 5),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(5, (index) {
+              return Icon(
+                index < rating ? Icons.star : Icons.star_border,
+                color: index < rating ? Colors.orange : Colors.orange,
+                size: 30,
+              );
+            }),
+          ),
+        ],
       ),
     );
   }
@@ -102,10 +183,9 @@ class CustomContainer extends StatelessWidget {
             ),
           ),
           Container(
-            height: 1, // Lebar garis vertikal
-            color: Colors.black, // Warna garis vertikal
-            margin: EdgeInsets.symmetric(
-                vertical: 5), // Jarak antara garis vertikal dengan teks
+            height: 1,
+            color: Colors.black,
+            margin: EdgeInsets.symmetric(vertical: 5),
           ),
           Text(
             description,

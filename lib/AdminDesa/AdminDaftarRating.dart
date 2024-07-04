@@ -1,73 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_helloo_world/AdminDesa/AdminRatingHasil.dart';
+
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
-import 'package:flutter_helloo_world/Mahasiswa/HasilPengabdian.dart';
 
 enum TemplateStatus {
   BelumDiverifikasi,
   Diterima,
   PerluDirevisi,
   Pending,
+  Selesai,
 }
 
-class ProgresPengajuan extends StatefulWidget {
+class AdminDaftarRating extends StatefulWidget {
   @override
-  _ProgresPengajuanState createState() => _ProgresPengajuanState();
+  _AdminDaftarRatingState createState() => _AdminDaftarRatingState();
 }
 
-class _ProgresPengajuanState extends State<ProgresPengajuan> {
+class _AdminDaftarRatingState extends State<AdminDaftarRating> {
   int _selectedIndex = 2;
   Map<String, TemplateStatus> _pengajuanStatus = {};
   final DatabaseReference _databaseRef =
       FirebaseDatabase.instance.ref().child('pengajuan');
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  String? _uid;
 
   @override
   void initState() {
     super.initState();
-    _getCurrentUser();
-  }
-
-  Future<void> _getCurrentUser() async {
-    User? user = _auth.currentUser;
-    setState(() {
-      _uid = user?.uid;
-    });
   }
 
   Future<List<Map<String, dynamic>>> _fetchData() async {
     DatabaseEvent event = await _databaseRef.once();
     DataSnapshot snapshot = event.snapshot;
     List<Map<String, dynamic>> dataList = [];
-
     if (snapshot.value != null) {
       Map<dynamic, dynamic> values = snapshot.value as Map<dynamic, dynamic>;
       values.forEach((key, value) {
-        if (value['uid'] == _uid &&
-            value['statuspengajuan'] != 'Selesai' &&
-            value['statuspengajuan'] != 'Selesai_Direview') {
+        if (value['statuspengajuan'] == 'Selesai') {
           Map<String, dynamic> item = {};
           value.forEach((k, v) {
             item[k.toString()] = v;
           });
           item['id'] = key.toString();
-
-          // Convert statuspengajuan to TemplateStatus
           String status = item['statuspengajuan'];
           TemplateStatus templateStatus = TemplateStatus.values.firstWhere(
               (e) => e.toString() == 'TemplateStatus.' + status,
-              orElse: () => TemplateStatus.Pending // Handle unknown status case
-              );
+              orElse: () => TemplateStatus.BelumDiverifikasi);
           _pengajuanStatus[key.toString()] = templateStatus;
-
           dataList.add(item);
         }
       });
     }
-
     return dataList;
   }
 
@@ -140,6 +123,8 @@ class _ProgresPengajuanState extends State<ProgresPengajuan> {
         return Colors.redAccent;
       case TemplateStatus.Pending:
         return Color.fromARGB(255, 255, 187, 85);
+      case TemplateStatus.Selesai:
+        return Color(0xFF60AD77);
     }
   }
 }
@@ -233,15 +218,14 @@ class CustomContainer extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 16),
-          if (templateStatus == TemplateStatus.Diterima)
+          if (templateStatus == TemplateStatus.Selesai)
             GestureDetector(
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => HasilPengabdian(
-                      pengajuanId: pengajuanId,
-                    ),
+                    builder: (context) =>
+                        AdminRatingHasil(pengajuanId: pengajuanId),
                   ),
                 );
               },
@@ -252,7 +236,7 @@ class CustomContainer extends StatelessWidget {
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: Text(
-                  'Upload Hasil Pengabdian',
+                  'Berikan Rating & Evaluasi',
                   style: TextStyle(
                     color: Colors.green,
                     fontSize: 16,

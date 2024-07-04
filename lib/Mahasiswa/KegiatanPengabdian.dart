@@ -4,20 +4,23 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
 import 'package:flutter_helloo_world/Mahasiswa/HasilPengabdian.dart';
+import 'package:flutter_helloo_world/Mahasiswa/RatingPengabdian.dart';
 
 enum TemplateStatus {
   BelumDiverifikasi,
   Diterima,
   PerluDirevisi,
   Pending,
+  Selesai,
+  Selesai_Direview,
 }
 
-class ProgresPengajuan extends StatefulWidget {
+class KegiatanPengabdian extends StatefulWidget {
   @override
-  _ProgresPengajuanState createState() => _ProgresPengajuanState();
+  _KegiatanPengabdianState createState() => _KegiatanPengabdianState();
 }
 
-class _ProgresPengajuanState extends State<ProgresPengajuan> {
+class _KegiatanPengabdianState extends State<KegiatanPengabdian> {
   int _selectedIndex = 2;
   Map<String, TemplateStatus> _pengajuanStatus = {};
   final DatabaseReference _databaseRef =
@@ -42,32 +45,24 @@ class _ProgresPengajuanState extends State<ProgresPengajuan> {
     DatabaseEvent event = await _databaseRef.once();
     DataSnapshot snapshot = event.snapshot;
     List<Map<String, dynamic>> dataList = [];
-
     if (snapshot.value != null) {
       Map<dynamic, dynamic> values = snapshot.value as Map<dynamic, dynamic>;
       values.forEach((key, value) {
-        if (value['uid'] == _uid &&
-            value['statuspengajuan'] != 'Selesai' &&
-            value['statuspengajuan'] != 'Selesai_Direview') {
+        if (value['uid'] == _uid) {
           Map<String, dynamic> item = {};
           value.forEach((k, v) {
             item[k.toString()] = v;
           });
           item['id'] = key.toString();
-
-          // Convert statuspengajuan to TemplateStatus
           String status = item['statuspengajuan'];
           TemplateStatus templateStatus = TemplateStatus.values.firstWhere(
               (e) => e.toString() == 'TemplateStatus.' + status,
-              orElse: () => TemplateStatus.Pending // Handle unknown status case
-              );
+              orElse: () => TemplateStatus.BelumDiverifikasi);
           _pengajuanStatus[key.toString()] = templateStatus;
-
           dataList.add(item);
         }
       });
     }
-
     return dataList;
   }
 
@@ -140,6 +135,10 @@ class _ProgresPengajuanState extends State<ProgresPengajuan> {
         return Colors.redAccent;
       case TemplateStatus.Pending:
         return Color.fromARGB(255, 255, 187, 85);
+      case TemplateStatus.Selesai:
+        return Color.fromARGB(255, 105, 107, 255);
+      case TemplateStatus.Selesai_Direview:
+        return Color(0xFF60AD77);
     }
   }
 }
@@ -253,6 +252,35 @@ class CustomContainer extends StatelessWidget {
                 ),
                 child: Text(
                   'Upload Hasil Pengabdian',
+                  style: TextStyle(
+                    color: Colors.green,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          if (templateStatus == TemplateStatus.Selesai_Direview)
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RatingPengabdian(
+                      pengabdianId: pengajuanId,
+                    ),
+                  ),
+                );
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Text(
+                  'Lihat Hasil Evaluasi',
                   style: TextStyle(
                     color: Colors.green,
                     fontSize: 16,
