@@ -92,13 +92,26 @@ class _ContactPersonState extends State<ContactPerson> {
                   text: _contactPerson!.phoneNumber,
                   name: _contactPerson!.name,
                 ),
-
-                // Tombol untuk membuka link
-                ElevatedButton(
-                  onPressed: () {
-                    _launchURL(_contactPerson!.url);
-                  },
-                  child: Text('Visit Website'),
+                
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 30),
+                    child: ElevatedButton(
+                    onPressed: () {
+                      _launchURL(_contactPerson!.url);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xff60ac76),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5)
+                      ),
+                    ),
+                    child: Text(
+                      'Visit Website',
+                      style: TextStyle(
+                        color: Colors.white
+                      ),
+                    ),
+                  ),
                 ),
               ],
             )

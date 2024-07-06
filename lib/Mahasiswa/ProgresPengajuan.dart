@@ -135,7 +135,7 @@ class _ProgresPengajuanState extends State<ProgresPengajuan> {
       case TemplateStatus.BelumDiverifikasi:
         return Colors.grey;
       case TemplateStatus.Diterima:
-        return Colors.lightGreen;
+        return Color(0xff60ac76);
       case TemplateStatus.PerluDirevisi:
         return Colors.redAccent;
       case TemplateStatus.Pending:
@@ -196,7 +196,7 @@ class CustomContainer extends StatelessWidget {
           Text(
             '"' + text + '"',
             style: TextStyle(
-              color: Color.fromARGB(255, 89, 255, 0),
+              color: Color.fromARGB(255,0,255,0),
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
@@ -249,7 +249,7 @@ class CustomContainer extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(5),
                 ),
                 child: Text(
                   'Upload Hasil Pengabdian',
