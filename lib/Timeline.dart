@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_helloo_world/Faq.dart';
-
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
 import 'package:flutter_helloo_world/TimelineDetail.dart';
+// Import History
 
 class Timeline extends StatefulWidget {
   @override
@@ -13,6 +12,29 @@ class Timeline extends StatefulWidget {
 
 class _TimelineState extends State<Timeline> {
   int _selectedIndex = 1; // Deklarasi dan inisialisasi _selectedIndex
+
+  final List<Map<String, String>> rwData = [
+    {'rw': 'RW 1', 'name': 'Sinumbra'},
+    {'rw': 'RW 2', 'name': 'Ciparay'},
+    {'rw': 'RW 3', 'name': 'Persil'},
+    {'rw': 'RW 4', 'name': 'Nyampay'},
+    {'rw': 'RW 5', 'name': 'Stamplat'},
+    {'rw': 'RW 6', 'name': 'Kanaan'},
+    {'rw': 'RW 7', 'name': 'Lokasi 7'},
+    {'rw': 'RW 8', 'name': 'Lokasi 8'},
+    {'rw': 'RW 9', 'name': 'Lokasi 9'},
+    {'rw': 'RW 10', 'name': 'Lokasi 10'},
+  ];
+
+  void _onItemTapped(String rw) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TimelineDetail(rw: rw), // Pass RW to History
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,77 +66,18 @@ class _TimelineState extends State<Timeline> {
         ],
       ),
       backgroundColor: Color(0xFFE9F0EB),
-      body: ListView(
+      body: ListView.builder(
         padding: EdgeInsets.symmetric(
             horizontal: 16), // Tambahkan padding horizontal di sini
-        children: [
-          CustomContainer(
+        itemCount: rwData.length,
+        itemBuilder: (context, index) {
+          return CustomContainer(
             color: Color(0xFF60AD77),
-            text: 'Sinumbra',
-            topLeftText: 'RW 1',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => TimelineDetail()),
-              );
-            },
-          ),
-          CustomContainer(
-            color: Color(0xFF60AD77),
-            text: 'Ciparay',
-            topLeftText: 'RW 2',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => TimelineDetail()),
-              );
-            },
-          ),
-          CustomContainer(
-            color: Color(0xFF60AD77),
-            text: 'Persil',
-            topLeftText: 'RW 3',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => TimelineDetail()),
-              );
-            },
-          ),
-          CustomContainer(
-            color: Color(0xFF60AD77),
-            text: 'Nyampay',
-            topLeftText: 'RW 4',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => TimelineDetail()),
-              );
-            },
-          ),
-          CustomContainer(
-            color: Color(0xFF60AD77),
-            text: 'Stamplat',
-            topLeftText: 'RW 5',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => TimelineDetail()),
-              );
-            },
-          ),
-          CustomContainer(
-            color: Color(0xFF60AD77),
-            text: 'Kanaan',
-            topLeftText: 'RW 6',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => TimelineDetail()),
-              );
-            },
-          ),
-        ],
+            text: rwData[index]['name']!,
+            topLeftText: rwData[index]['rw']!,
+            onTap: () => _onItemTapped(rwData[index]['rw']!),
+          );
+        },
       ),
       bottomNavigationBar: BarNavigasi.NavigationBar(
         currentIndex: _selectedIndex,
@@ -142,16 +105,18 @@ class CustomContainer extends StatelessWidget {
     required this.onTap,
   }) : super(key: key);
 
-  final double _width = 207; // Atur lebar container di sini
-  final double _height = 130; // Atur tinggi container di sini
-
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double containerWidth = screenWidth * 0.9; // 90% of screen width
+    double containerHeight = containerWidth *
+        0.2; // Adjust height based on width, maintaining aspect ratio
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: _width,
-        height: _height,
+        width: containerWidth,
+        height: containerHeight,
         margin: EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
           color: color,
@@ -179,6 +144,7 @@ class CustomContainer extends StatelessWidget {
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
+                textAlign: TextAlign.center,
               ),
             ),
           ],
