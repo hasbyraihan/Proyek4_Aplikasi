@@ -181,7 +181,6 @@ class _HasilPengabdianState extends State<HasilPengabdian> {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
               Padding(
                 padding: EdgeInsets.only(left: 30, top: 20),
                 child: Align(

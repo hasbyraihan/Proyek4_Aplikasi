@@ -157,28 +157,24 @@ class _PengajuanState extends State<Pengajuan> {
             children: [
               SizedBox(height: 20),
               CustomContainer(
-                hintText: 'Perguruan Tinggi',
                 label: 'Perguruan Tinggi',
                 icon: Icons.assured_workload,
                 controller: perguruanTinggiController,
               ),
               SizedBox(height: 10),
               CustomContainer(
-                hintText: 'Jurusan',
                 label: 'Jurusan',
                 icon: Icons.school_outlined,
                 controller: jurusanController,
               ),
               SizedBox(height: 10),
               CustomContainer(
-                hintText: 'Nama Program',
                 label: 'Nama Program',
                 icon: Icons.webhook_rounded,
                 controller: namaProgramController,
               ),
               SizedBox(height: 10),
               CustomContainer(
-                hintText: 'Bidang Pengabdian',
                 label: 'Bidang Pengabdian',
                 icon: Icons.group_work_sharp,
                 options: bidangPengabdianOptions,
@@ -191,7 +187,6 @@ class _PengajuanState extends State<Pengajuan> {
               ),
               SizedBox(height: 10),
               CustomContainer(
-                hintText: 'Jumlah Peserta Laki-Laki',
                 label: 'Jumlah Peserta Laki-Laki',
                 icon: Icons.person,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -199,7 +194,6 @@ class _PengajuanState extends State<Pengajuan> {
               ),
               SizedBox(height: 10),
               CustomContainer(
-                hintText: 'Jumlah Peserta Perempuan',
                 label: 'Jumlah Peserta Perempuan',
                 icon: Icons.person_2,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -207,7 +201,6 @@ class _PengajuanState extends State<Pengajuan> {
               ),
               SizedBox(height: 10),
               CustomContainer(
-                hintText: 'DD/MM/YY',
                 label: 'Tanggal Awal Pengabdian',
                 icon: Icons.calendar_today,
                 controller: dateController,
@@ -215,7 +208,6 @@ class _PengajuanState extends State<Pengajuan> {
               ),
               SizedBox(height: 10),
               CustomContainer(
-                hintText: 'DD/MM/YY',
                 label: 'Tanggal Selesai Pengabdian',
                 icon: Icons.calendar_today,
                 controller: dateAkhirController,
@@ -223,7 +215,6 @@ class _PengajuanState extends State<Pengajuan> {
               ),
               SizedBox(height: 10),
               CustomContainer(
-                hintText: 'RW',
                 label: 'RW',
                 icon: Icons.maps_home_work,
                 options: rwOptions,
@@ -258,8 +249,8 @@ class _PengajuanState extends State<Pengajuan> {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  foregroundColor: Colors.black,
+                  backgroundColor: Color(0xff60ac76),
+                  foregroundColor: Colors.white,
                 ),
                 child: Text('Halaman Selanjutnya'),
               ),
@@ -526,7 +517,6 @@ class _PengajuanUploadFileState extends State<PengajuanUploadFile> {
 }
 
 class CustomContainer extends StatelessWidget {
-  final String hintText;
   final String label;
   final IconData icon;
   final List<String>? options;
@@ -538,7 +528,6 @@ class CustomContainer extends StatelessWidget {
 
   const CustomContainer({
     Key? key,
-    required this.hintText,
     required this.label,
     required this.icon,
     this.options,
@@ -601,7 +590,6 @@ class CustomContainer extends StatelessWidget {
             Expanded(
               child: TextFormField(
                 decoration: InputDecoration(
-                  hintText: hintText,
                   labelText: label,
                   border: InputBorder.none,
                 ),

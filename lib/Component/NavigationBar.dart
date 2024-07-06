@@ -85,7 +85,7 @@ class _NavigationBarState extends State<NavigationBar> {
         icon: Icon(icon, color: Colors.black),
         onPressed: () {
           // Fungsi untuk menangani ketika item "Home" ditekan
-          if (_user != null && _user.nama != 'Loading...') {
+          if (_user.nama != 'Loading...') {
             // Periksa apakah _user sudah diinisialisasi dengan data pengguna yang valid
             if (_user.role == 'admin') {
               Navigator.push(
@@ -199,7 +199,7 @@ class _NavigationBarState extends State<NavigationBar> {
           icon: IconButton(
             icon: const Icon(Icons.person),
             onPressed: () async {
-              if (_user != null && _user.nama != 'Loading...') {
+              if (_user.nama != 'Loading...') {
                 // Periksa apakah _user sudah diinisialisasi dengan data pengguna yang valid
                 Navigator.push(
                   context,

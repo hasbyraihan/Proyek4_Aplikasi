@@ -210,7 +210,7 @@ class CustomContainer extends StatelessWidget {
             ),
             Positioned(
               left: _width / 4 - 20,
-              top: _height / 2 - 10,
+              top: _height / 2 - 15,
               child: Text(
                 text,
                 style: TextStyle(
