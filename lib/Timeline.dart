@@ -11,7 +11,7 @@ class Timeline extends StatefulWidget {
 }
 
 class _TimelineState extends State<Timeline> {
-  int _selectedIndex = 1; // Deklarasi dan inisialisasi _selectedIndex
+  int _selectedIndex = 0; // Deklarasi dan inisialisasi _selectedIndex
 
   final List<Map<String, String>> rwData = [
     {'rw': 'RW 1', 'name': 'Sinumbra'},

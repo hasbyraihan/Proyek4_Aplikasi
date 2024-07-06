@@ -19,7 +19,7 @@ class AdminDaftarRating extends StatefulWidget {
 }
 
 class _AdminDaftarRatingState extends State<AdminDaftarRating> {
-  int _selectedIndex = 2;
+  int _selectedIndex = 1;
   Map<String, TemplateStatus> _pengajuanStatus = {};
   final DatabaseReference _databaseRef =
       FirebaseDatabase.instance.ref().child('pengajuan');

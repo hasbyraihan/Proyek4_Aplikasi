@@ -10,7 +10,7 @@ class AdminKebutuhan extends StatefulWidget {
 
 class _AdminKebutuhanState extends State<AdminKebutuhan> {
   late Future<List<RWData>> rwDataFuture;
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
 
   @override
   void initState() {
@@ -364,10 +364,10 @@ Future<void> addRWNeedToFirebase(int rwNumber, String newNeed) async {
       if (userSnapshot.value is Map<dynamic, dynamic>) {
         Map<dynamic, dynamic> data =
             userSnapshot.value as Map<dynamic, dynamic>;
-        nextIndex = data.length; 
+        nextIndex = data.length;
       } else if (userSnapshot.value is List) {
         List data = userSnapshot.value as List;
-        nextIndex = data.length; 
+        nextIndex = data.length;
       } else {
         throw 'Unknown data structure';
       }

@@ -22,7 +22,7 @@ class TimelineDetail extends StatefulWidget {
 }
 
 class _TimelineDetailState extends State<TimelineDetail> {
-  int _selectedIndex = 2;
+  int _selectedIndex = 0;
   Map<String, TemplateStatus> _pengajuanStatus = {};
   final DatabaseReference _databaseRef =
       FirebaseDatabase.instance.ref().child('pengajuan');

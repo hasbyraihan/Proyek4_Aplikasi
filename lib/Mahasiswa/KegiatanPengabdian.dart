@@ -21,7 +21,7 @@ class KegiatanPengabdian extends StatefulWidget {
 }
 
 class _KegiatanPengabdianState extends State<KegiatanPengabdian> {
-  int _selectedIndex = 2;
+  int _selectedIndex = 1;
   Map<String, TemplateStatus> _pengajuanStatus = {};
   final DatabaseReference _databaseRef =
       FirebaseDatabase.instance.ref().child('pengajuan');

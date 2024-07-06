@@ -18,7 +18,7 @@ class ProgresPengajuan extends StatefulWidget {
 }
 
 class _ProgresPengajuanState extends State<ProgresPengajuan> {
-  int _selectedIndex = 2;
+  int _selectedIndex = 1;
   Map<String, TemplateStatus> _pengajuanStatus = {};
   final DatabaseReference _databaseRef =
       FirebaseDatabase.instance.ref().child('pengajuan');

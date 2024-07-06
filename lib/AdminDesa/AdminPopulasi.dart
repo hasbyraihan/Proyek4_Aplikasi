@@ -9,7 +9,7 @@ class AdminPopulasi extends StatefulWidget {
 }
 
 class _AdminPopulasiState extends State<AdminPopulasi> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
   late TextEditingController _malePopulationController;
   late TextEditingController _femalePopulationController;
   int _malePopulation = 0;

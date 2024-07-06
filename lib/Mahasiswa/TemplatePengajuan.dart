@@ -23,7 +23,7 @@ class TemplatePengajuanItem {
 }
 
 class _TemplatePengajuanState extends State<TemplatePengajuan> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
 
   Future<List<TemplatePengajuanItem>> fetchTemplates() async {
     List<TemplatePengajuanItem> templates = [];
@@ -119,7 +119,8 @@ class CustomContainer extends StatelessWidget {
   final double _width = 207;
   final double _height = 100;
 
-  Future<void> downloadFile(BuildContext context, String url, String fileName) async {
+  Future<void> downloadFile(
+      BuildContext context, String url, String fileName) async {
     try {
       if (await Permission.storage.request().isGranted) {
         Dio dio = Dio();
@@ -148,7 +149,8 @@ class CustomContainer extends StatelessWidget {
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text("Download Successful"),
-              content: Text("File has been downloaded to ${dir?.path}/$fileName"),
+              content:
+                  Text("File has been downloaded to ${dir?.path}/$fileName"),
               actions: [
                 TextButton(
                   child: Text("OK"),

@@ -19,7 +19,7 @@ class AdminDashboard extends StatefulWidget {
 }
 
 class _AdminDashboardState extends State<AdminDashboard> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
   bool _isLoading = false; // Variabel loading
 
   void _showLoading() {

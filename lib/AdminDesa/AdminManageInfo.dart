@@ -11,7 +11,7 @@ class AdminManageInfo extends StatefulWidget {
 }
 
 class _AdminManageInfoState extends State<AdminManageInfo> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
   @override
   Widget build(BuildContext context) {
     return Scaffold(

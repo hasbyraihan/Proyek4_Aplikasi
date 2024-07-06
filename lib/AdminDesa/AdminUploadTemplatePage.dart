@@ -24,7 +24,7 @@ class _AdminUploadTemplatePageState extends State<AdminUploadTemplatePage> {
 
   Map<String, File?> templateFiles = {};
 
-    Future<void> _pickFile(String templateName) async {
+  Future<void> _pickFile(String templateName) async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     if (result != null) {
       File file = File(result.files.single.path!);
@@ -57,8 +57,10 @@ class _AdminUploadTemplatePageState extends State<AdminUploadTemplatePage> {
     }
   }
 
-  Future<void> _saveFileInfoToDatabase(String templateName, String downloadURL) async {
-    DatabaseReference databaseRef = FirebaseDatabase.instance.reference().child('template-doc');
+  Future<void> _saveFileInfoToDatabase(
+      String templateName, String downloadURL) async {
+    DatabaseReference databaseRef =
+        FirebaseDatabase.instance.reference().child('template-doc');
     await databaseRef.child(templateName).update({
       'name': templateName,
       'url': downloadURL,
@@ -66,7 +68,7 @@ class _AdminUploadTemplatePageState extends State<AdminUploadTemplatePage> {
     });
   }
 
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
   @override
   Widget build(BuildContext context) {
     return Scaffold(

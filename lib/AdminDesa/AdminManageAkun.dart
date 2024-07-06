@@ -12,7 +12,7 @@ class AdminManageAkun extends StatefulWidget {
 }
 
 class _AdminManageAkunState extends State<AdminManageAkun> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
   final DatabaseReference _database =
       FirebaseDatabase.instance.ref().child('Users');
   final FirebaseAuth _auth = FirebaseAuth.instance;

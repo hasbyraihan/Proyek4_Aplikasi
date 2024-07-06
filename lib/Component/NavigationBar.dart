@@ -1,18 +1,14 @@
+import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_helloo_world/AdminDesa/AdminDashboard.dart';
 import 'package:flutter_helloo_world/Auth/login.dart';
 import 'package:flutter_helloo_world/Dashboard.dart';
-import 'package:flutter_helloo_world/Faq.dart';
-import 'package:flutter_helloo_world/History.dart';
-import 'package:flutter_helloo_world/Mahasiswa/MahasiwaDashboard.dart';
-import 'package:flutter_helloo_world/Timeline.dart';
-import 'package:flutter_helloo_world/profil.dart';
-import 'package:flutter_helloo_world/Models/User.dart' as user;
-import 'package:shared_preferences/shared_preferences.dart';
 
-enum UserRole { admin, mahasiswa }
+import 'package:flutter_helloo_world/Mahasiswa/MahasiwaDashboard.dart';
+import 'package:flutter_helloo_world/Models/User.dart' as user;
+import 'package:flutter_helloo_world/profil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NavigationBar extends StatefulWidget {
   final int currentIndex;
@@ -28,14 +24,14 @@ class NavigationBar extends StatefulWidget {
 }
 
 class _NavigationBarState extends State<NavigationBar> {
-  int _selectedIndex = 0;
-
-  late user.User _user; // Mendeklarasikan _user
+  late int _selectedIndex;
+  user.User? _user;
 
   @override
   void initState() {
     super.initState();
-    _loadUserData(); // Memuat data pengguna saat widget diinisialisasi
+    _selectedIndex = widget.currentIndex.clamp(0, 2); // Validasi currentIndex
+    _loadUserData();
   }
 
   Future<void> _loadUserData() async {
@@ -72,148 +68,123 @@ class _NavigationBarState extends State<NavigationBar> {
     }
   }
 
-  Widget _buildCircularIcon(IconData icon, int index) {
-    bool isSelected = _selectedIndex == index;
-    return Container(
-      width: 40,
-      height: 40,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: isSelected ? Colors.lightGreenAccent : Colors.lightGreen[100],
-      ),
-      child: IconButton(
-        icon: Icon(icon, color: Colors.black),
-        onPressed: () {
-          // Fungsi untuk menangani ketika item "Home" ditekan
-          if (_user != null && _user.nama != 'Loading...') {
-            // Periksa apakah _user sudah diinisialisasi dengan data pengguna yang valid
-            if (_user.role == 'admin') {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => AdminDashboard()),
-              );
-            } else if (_user.role == 'mahasiswa') {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => MahasiswaDashboard()),
-              );
-            } else {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Dashboard()),
-              );
-            }
-          } else {
-            // Tunggu hingga data pengguna dimuat sebelum menavigasi
-            // Atau tampilkan pesan kesalahan
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Dashboard()),
-            );
-            print('Error: User data is not yet loaded');
-          }
-        },
-      ),
-    );
-  }
-
   Future<bool> _checkUserLoggedIn() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool('isLoggedIn') ?? false;
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    if (index == 0) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Dashboard()),
+      );
+    } else if (index == 1) {
+      if (_user != null) {
+        if (_user!.role == 'admin') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AdminDashboard()),
+          );
+        } else if (_user!.role == 'mahasiswa') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => MahasiswaDashboard()),
+          );
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Login()),
+          );
+        }
+      }
+    } else if (index == 2) {
+      if (_user != null && _user!.nama != 'Loading...') {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Profil()),
+        );
+      } else {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Login()),
+        );
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       currentIndex: _selectedIndex,
-      backgroundColor: Color(0xFFC5E0CD),
-      selectedItemColor: Color(0xFFC5E0CD),
-      unselectedItemColor: Colors.grey,
-      onTap: (index) {
-        // Navigasi ke halaman yang sesuai berdasarkan index
-        if (index == 3) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => Login()),
-          ).then((_) {
-            // Setelah navigasi selesai, perbarui _selectedIndex jika diperlukan
-            setState(() {
-              _selectedIndex = index;
-            });
-          });
-        } else {
-          // Implementasi navigasi ke halaman lain jika diperlukan
-          widget.onTap(index); // Panggil onTap dari widget induk
-        }
-      },
+      backgroundColor: Color.fromARGB(255, 255, 255, 255),
+      selectedItemColor: Colors.white,
+      unselectedItemColor: Colors.black,
+      onTap: _onItemTapped,
       items: [
         BottomNavigationBarItem(
-          icon: IconButton(
-            icon: Icon(Icons.home),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Dashboard()),
-              );
-            },
-          ),
-          label: 'Home',
+          icon: _selectedIndex == 0
+              ? Container(
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  margin: EdgeInsets.symmetric(horizontal: 8),
+                  child: Row(
+                    children: [
+                      Icon(Icons.home, color: Colors.white),
+                      SizedBox(width: 4),
+                      Text('Home', style: TextStyle(color: Colors.white)),
+                    ],
+                  ),
+                )
+              : Icon(Icons.home),
+          label: '',
         ),
         BottomNavigationBarItem(
-          icon: IconButton(
-            icon: Icon(Icons.calendar_today),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Timeline()),
-              );
-            },
-          ),
-          label: 'Timeline',
+          icon: _selectedIndex == 1
+              ? Container(
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  margin: EdgeInsets.symmetric(horizontal: 8),
+                  child: Row(
+                    children: [
+                      Icon(Icons.menu, color: Colors.white),
+                      SizedBox(width: 4),
+                      Text('Menu', style: TextStyle(color: Colors.white)),
+                    ],
+                  ),
+                )
+              : Icon(Icons.menu),
+          label: '',
         ),
         BottomNavigationBarItem(
-          icon: IconButton(
-            icon: _buildCircularIcon(Icons.menu, 2),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => FAQ()),
-              );
-            },
-          ),
-          label: 'Menu',
-        ),
-        BottomNavigationBarItem(
-          icon: IconButton(
-            icon: Icon(Icons.history),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => History()),
-              );
-            },
-          ),
-          label: 'History',
-        ),
-        BottomNavigationBarItem(
-          icon: IconButton(
-            icon: const Icon(Icons.person),
-            onPressed: () async {
-              if (_user != null && _user.nama != 'Loading...') {
-                // Periksa apakah _user sudah diinisialisasi dengan data pengguna yang valid
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Profil()),
-                );
-              } else {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Login()),
-                );
-              }
-            },
-          ),
-          label: 'Profile',
+          icon: _selectedIndex == 2
+              ? Container(
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  margin: EdgeInsets.symmetric(horizontal: 8),
+                  child: Row(
+                    children: [
+                      Icon(Icons.person, color: Colors.white),
+                      SizedBox(width: 4),
+                      Text('Profile', style: TextStyle(color: Colors.white)),
+                    ],
+                  ),
+                )
+              : Icon(Icons.person),
+          label: '',
         ),
       ],
     );

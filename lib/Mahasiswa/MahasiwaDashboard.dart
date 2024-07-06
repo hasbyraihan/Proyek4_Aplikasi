@@ -15,7 +15,7 @@ class MahasiswaDashboard extends StatefulWidget {
 }
 
 class _MahasiswaDashboardState extends State<MahasiswaDashboard> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -18,7 +18,7 @@ class FAQItem {
 
 class _AdminFaqEditPageState extends State<AdminFaqEditPage> {
   final DatabaseReference _faqRef = FirebaseDatabase.instance.ref('faq');
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
 
   Future<List<FAQItem>> fetchFAQFromFirebase() async {
     List<FAQItem> faqList = [];

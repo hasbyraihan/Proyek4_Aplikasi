@@ -17,7 +17,7 @@ class HasilPengabdian extends StatefulWidget {
 }
 
 class _HasilPengabdianState extends State<HasilPengabdian> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
 
   final DatabaseReference _database =
       FirebaseDatabase.instance.ref().child("pengajuan");

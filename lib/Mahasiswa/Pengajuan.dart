@@ -20,7 +20,7 @@ class _PengajuanState extends State<Pengajuan> {
 
   // Get the current user
   final User? user = FirebaseAuth.instance.currentUser;
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
 
   TextEditingController perguruanTinggiController = TextEditingController();
   TextEditingController jurusanController = TextEditingController();
@@ -310,7 +310,7 @@ class PengajuanUploadFile extends StatefulWidget {
 }
 
 class _PengajuanUploadFileState extends State<PengajuanUploadFile> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 2;
   Map<String, File?> templateFiles = {
     'Surat Izin Desa': null,
     'Surat Izin Kecamatan': null,

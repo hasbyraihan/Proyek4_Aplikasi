@@ -17,7 +17,7 @@ class AdminPengajuan extends StatefulWidget {
 }
 
 class _AdminPengajuanState extends State<AdminPengajuan> {
-  int _selectedIndex = 2;
+  int _selectedIndex = 1;
   Map<String, TemplateStatus> _pengajuanStatus = {};
   final DatabaseReference _databaseRef =
       FirebaseDatabase.instance.ref().child('pengajuan');

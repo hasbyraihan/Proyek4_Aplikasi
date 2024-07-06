@@ -16,7 +16,7 @@ class RatingPengabdian extends StatefulWidget {
 }
 
 class _RatingPengabdianState extends State<RatingPengabdian> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
   late DatabaseReference _databaseReference;
   String _evaluasi = '';
   int _rating = 0;

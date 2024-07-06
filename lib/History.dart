@@ -20,7 +20,7 @@ class History extends StatefulWidget {
 }
 
 class _HistoryState extends State<History> {
-  int _selectedIndex = 2;
+  int _selectedIndex = 0;
   Map<String, TemplateStatus> _pengajuanStatus = {};
   final DatabaseReference _databaseRef =
       FirebaseDatabase.instance.ref().child('pengajuan');
