@@ -63,7 +63,7 @@ class _LoginState extends State<Login> {
                 size: 100, // Ukuran besar icon person
               ),
               SizedBox(height: 40),
-               Padding(
+              Padding(
                 padding: EdgeInsets.symmetric(horizontal: 40),
                 child: TextField(
                   keyboardType: TextInputType.emailAddress,

@@ -116,6 +116,7 @@ class _DaftarState extends State<Daftar> {
               hintText: "NIM",
               prefixIcon: Icon(Icons.numbers_rounded),
               controller: _nimController,
+              keyboardType: TextInputType.number,
             ),
             SizedBox(height: 20.0),
             RoundedInputField(
@@ -187,6 +188,21 @@ class _DaftarState extends State<Daftar> {
   }
 
   _Signup() async {
+    if (_namaController.text.isEmpty ||
+        _nimController.text.isEmpty ||
+        _perguruanTinggiController.text.isEmpty ||
+        _emailController.text.isEmpty ||
+        _passwordController.text.isEmpty ||
+        _fotoController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('isi dulu yaa temen temen'),
+          backgroundColor: Colors.grey,
+        ),
+      );
+      return;
+    }
+
     try {
       await AuthServices().signup(
           _emailController.text,
@@ -195,8 +211,7 @@ class _DaftarState extends State<Daftar> {
           _nimController.text,
           _perguruanTinggiController.text,
           _fotoController.text,
-          "mahasiswa" // Assuming _fotoController holds the image path
-          );
+          "mahasiswa");
 
       Navigator.push(
         context,
@@ -207,6 +222,12 @@ class _DaftarState extends State<Daftar> {
     } catch (e) {
       // Display an error message to the user based on the exception type
       print('Error during signup: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Gagal mendaftar. Silakan coba lagi.'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 }
@@ -216,6 +237,7 @@ class RoundedInputField extends StatelessWidget {
   final TextEditingController controller;
   final Icon prefixIcon;
   final bool obscureText;
+  final TextInputType? keyboardType;
 
   const RoundedInputField({
     Key? key,
@@ -223,6 +245,7 @@ class RoundedInputField extends StatelessWidget {
     required this.controller,
     required this.prefixIcon,
     this.obscureText = false,
+    this.keyboardType,
   }) : super(key: key);
 
   @override
@@ -237,6 +260,7 @@ class RoundedInputField extends StatelessWidget {
       child: TextField(
         controller: controller,
         obscureText: obscureText,
+        keyboardType: keyboardType,
         decoration: InputDecoration(
           hintText: hintText,
           prefixIcon: prefixIcon,
