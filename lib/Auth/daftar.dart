@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_helloo_world/Auth/AuthServices.dart';
 import 'package:flutter_helloo_world/Auth/login.dart';
@@ -131,32 +132,53 @@ class _DaftarState extends State<Daftar> {
             SizedBox(height: 20.0),
             RoundedPasswordField(
               hintText: "Password",
-              prefixIcon: Icon(Icons.key),
+              prefixIcon: Icon(Icons.lock_outline),
               controller: _passwordController,
             ),
             SizedBox(height: 40.0),
             ElevatedButton(
               onPressed: () {
                 _Signup();
-              },
+              },              
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xff60ac76),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
               child: Text(
                 "Daftar",
-                style: TextStyle(fontSize: 18),
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.white,
+                ),
               ),
             ),
             SizedBox(height: 40.0),
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Login()),
-                );
-              },
-              style: TextButton.styleFrom(
-                backgroundColor: Color(0xFFE9F0EB),
+            Center(
+              child: RichText(
+                text: TextSpan(
+                  text: 'Sudah punya akun? ',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  children: [
+                    TextSpan(
+                      text: 'MASUK',
+                      style: TextStyle(color: Colors.green),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => Login()),
+                          );
+                        },
+                    ),
+                  ],
+                )
               ),
-              child: Text('Sudah mempunyai akun? MASUK',
-                  style: TextStyle(color: Colors.green)),
             ),
           ],
         ),

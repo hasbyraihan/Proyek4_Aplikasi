@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_helloo_world/AdminDesa/AdminDashboard.dart';
 import 'package:flutter_helloo_world/Auth/AuthServices.dart';
@@ -17,6 +18,8 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   late TextEditingController _email;
   late TextEditingController _password;
+  bool _emailError = false;
+  bool _passwordError = false;
 
   @override
   void initState() {
@@ -59,25 +62,58 @@ class _LoginState extends State<Login> {
                 Icons.person,
                 size: 100, // Ukuran besar icon person
               ),
-              SizedBox(height: 20),
-              Padding(
+              SizedBox(height: 40),
+               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 40),
                 child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Email',
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(                    
+                    prefixIcon: Icon(Icons.email),
+                    iconColor: Colors.grey,
                     labelText: 'Email',
+                    errorText: _emailError ? 'Invalid email' : null,
+                    fillColor: Colors.white,
+                    filled: true,
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blue),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.red),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                   ),
                   controller: _email,
                 ),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: 20),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 40),
                 child: TextField(
                   obscureText: true, // Masking untuk password
                   decoration: InputDecoration(
-                    hintText: 'Password',
+                    prefixIcon: Icon(Icons.lock_outline),
+                    iconColor: Colors.grey,
                     labelText: 'Password',
+                    errorText: _passwordError ? 'Invalid password' : null,
+                    fillColor: Colors.white,
+                    filled: true,
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blue),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.red),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                   ),
                   controller: _password,
                 ),
@@ -93,7 +129,7 @@ class _LoginState extends State<Login> {
                 child: Text('Lupa Kata Sandi?',
                     style: TextStyle(color: Colors.green)),
               ),
-              SizedBox(height: 60, width: 40),
+              SizedBox(height: 40, width: 40),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 40),
                 child: ElevatedButton(
@@ -103,27 +139,47 @@ class _LoginState extends State<Login> {
                     await handleLogin(email, password);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(
-                        0xFF60AD77), // Mengatur warna latar belakang tombol menjadi hijau
-                    minimumSize: Size(double.infinity,
-                        50), // Mengatur lebar dan tinggi tombol
+                    backgroundColor: Color(0xFF60AD77),
+                    minimumSize: Size(double.infinity, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    )
                   ),
-                  child: Text('Login', style: TextStyle(color: Colors.black)),
+                  child: Text(
+                    'Login', 
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700
+                    )
+                  ),
                 ),
               ),
               SizedBox(height: 40),
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Daftar()),
-                  );
-                },
-                style: TextButton.styleFrom(
-                  backgroundColor: Color(0xFFE9F0EB),
+              Center(
+                child : RichText(
+                  text: TextSpan(
+                    text: 'Belum punya akun? ',
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    children: [
+                      TextSpan(
+                        text: 'DAFTAR',
+                        style: TextStyle(color: Colors.green),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => Daftar()),
+                            );
+                          },
+                      ),
+                    ],
+                  )
                 ),
-                child: Text('Belum mempunyai akun? DAFTAR',
-                    style: TextStyle(color: Colors.green)),
               ),
             ],
           ),
@@ -133,6 +189,11 @@ class _LoginState extends State<Login> {
   }
 
   Future<void> handleLogin(String email, String password) async {
+    setState(() {
+      _emailError = false;
+      _passwordError = false;
+    });
+
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -157,24 +218,44 @@ class _LoginState extends State<Login> {
       if (userData != null && userData['role'] != null) {
         final userRole = UserRole.values.byName(userData['role'] as String);
 
-        // Navigate based on user role
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) {
-            if (userRole == UserRole.admin) {
-              return AdminDashboard();
-            } else {
-              return MahasiswaDashboard();
-            }
-          }),
+        // Show success notification
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Berhasil Login :)'),
+            duration: Duration(seconds: 2),
+          ),
         );
+
+        // Navigate based on user role after the SnackBar duration
+        Future.delayed(Duration(seconds: 2), () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) {
+              if (userRole == UserRole.admin) {
+                return AdminDashboard();
+              } else {
+                return MahasiswaDashboard();
+              }
+            }),
+          );
+        });
       } else {
         print('Error: Failed to retrieve user data or role is missing');
         // Handle error (e.g., display message to user)
       }
     } else {
       log('Firebase Auth Error');
-      // Handle login failure (e.g., display error message)
+      setState(() {
+        _emailError = true;
+        _passwordError = true;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Ada yang salah gaes:('),
+            duration: Duration(seconds: 2),
+          ),
+        );
     }
   }
 }
