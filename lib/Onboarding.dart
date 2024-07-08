@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_helloo_world/Dashboard.dart';
 import 'package:flutter_helloo_world/Loading.dart';
 import 'dart:async';
+
+import 'package:flutter_helloo_world/pages/Dashboardbaru.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({Key? key}) : super(key: key);
@@ -34,7 +35,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             child: InkWell(
               onTap: () {
                 Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (_) => Dashboard()));
+                    context, MaterialPageRoute(builder: (_) => DashboardBaru()));
               }, //to login screen. We will update later
               child: const Text(
                 'Skip',
@@ -101,7 +102,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         _showLoading(); // Menampilkan loading saat tombol ditekan
                         Timer(Duration(seconds: 3), () {
                           Navigator.pushReplacement(context,
-                              MaterialPageRoute(builder: (_) => Dashboard()));
+                              MaterialPageRoute(builder: (_) => DashboardBaru()));
                         });
                       }
                     });

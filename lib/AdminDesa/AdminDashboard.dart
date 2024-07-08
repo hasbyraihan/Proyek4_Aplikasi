@@ -10,6 +10,7 @@ import 'dart:async';
 
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
+import 'package:flutter_helloo_world/Dashboard.dart';
 import 'package:flutter_helloo_world/Faq.dart';
 import 'package:flutter_helloo_world/Loading.dart';
 
@@ -142,6 +143,18 @@ class _AdminDashboardState extends State<AdminDashboard> {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => AdminFaqEditPage()),
+              );
+            },
+          ),
+          CustomContainer(
+            color: Color(0xFF60AD77),
+            text: 'Dashboard',
+            additionalText: 'Lama',
+            icon: Icons.question_answer_outlined,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Dashboard()),
               );
             },
           ),

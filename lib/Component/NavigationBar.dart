@@ -3,10 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_helloo_world/AdminDesa/AdminDashboard.dart';
 import 'package:flutter_helloo_world/Auth/login.dart';
-import 'package:flutter_helloo_world/Dashboard.dart';
 
 import 'package:flutter_helloo_world/Mahasiswa/MahasiwaDashboard.dart';
 import 'package:flutter_helloo_world/Models/User.dart' as user;
+import 'package:flutter_helloo_world/pages/Dashboardbaru.dart';
 import 'package:flutter_helloo_world/profil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -81,7 +81,7 @@ class _NavigationBarState extends State<NavigationBar> {
     if (index == 0) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => Dashboard()),
+        MaterialPageRoute(builder: (context) => DashboardBaru()),
       );
     } else if (index == 1) {
       if (_user != null) {
