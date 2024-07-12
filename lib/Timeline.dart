@@ -40,20 +40,6 @@ class _TimelineState extends State<Timeline> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFFC5E0CD),
-        automaticallyImplyLeading: false,
-        leading: Row(
-          children: [
-            IconButton(
-              icon: Icon(Icons.question_answer_outlined),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => FAQ()),
-                ); // Fungsi untuk menu FAQ
-              },
-            ),
-          ],
-        ),
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 20.0),

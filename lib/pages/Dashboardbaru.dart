@@ -19,7 +19,7 @@ class _DashboardbaruState extends State<DashboardBaru> {
   int _selectedIndex = 0;
   int pria = 0;
   int wanita = 0;
-  String total = '';
+  int total = 0;
 
   Future<void> fetchPopulasi() async {
     try {
@@ -32,23 +32,23 @@ class _DashboardbaruState extends State<DashboardBaru> {
           setState(() {
             pria = data['pria'] as int;
             wanita = data['wanita'] as int;
-            total = data['total'] as String? ?? 'Data not available';
+            total = pria + wanita;
           });
         } else {
           setState(() {
             pria = 100;
             wanita = 10;
+            total = 110;
           });
         }
       } else {
         setState(() {
-          total = 'Failed to fetch data: Data not found';
           print('Failed to fetch data: Data not found');
         });
       }
     } catch (e) {
       setState(() {
-        total = 'Error: $e';
+        print('Error: $e');
       });
     }
   }
@@ -164,16 +164,16 @@ class _DashboardbaruState extends State<DashboardBaru> {
                             color: const Color(0xFF60AD77),
                             borderRadius: BorderRadius.circular(30),
                           ),
-                          child: const Row(
+                          child: Row(
                             children: [
-                              SizedBox(width: 5),
-                              Icon(Icons.people_alt_sharp,
+                              const SizedBox(width: 5),
+                              const Icon(Icons.people_alt_sharp,
                                   size: 20,
                                   color: Color.fromARGB(255, 49, 49, 49)),
-                              SizedBox(width: 8),
+                              const SizedBox(width: 8),
                               Text(
-                                'Populasi ' + '# total',
-                                style: TextStyle(
+                                'Populasi $total',
+                                style: const TextStyle(
                                     fontSize: 10,
                                     fontWeight: FontWeight.bold,
                                     color: Color(0xFFFFFFFF)),
@@ -185,20 +185,20 @@ class _DashboardbaruState extends State<DashboardBaru> {
                   const SizedBox(
                     height: 15,
                   ),
-                  const Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       InfoCard(
                         title: 'Laki - Laki',
-                        value: '9.323',
+                        value: pria.toString(),
                         icon: Icons.person_2_rounded,
-                        color: Color(0xFF7B90FD),
+                        color: const Color(0xFF7B90FD),
                       ),
                       InfoCard(
                         title: 'Perempuan',
-                        value: '11.372',
+                        value: wanita.toString(),
                         icon: Icons.person_4,
-                        color: Color(0xFFF37575),
+                        color: const Color(0xFFF37575),
                       ),
                     ],
                   ),
@@ -315,7 +315,7 @@ class InfoCard extends StatelessWidget {
           Icon(
             icon,
             size: 30,
-            color: Color.fromARGB(255, 49, 49, 49),
+            color: const Color.fromARGB(255, 49, 49, 49),
           ),
           const SizedBox(height: 8),
           Text(
@@ -401,7 +401,7 @@ class MenuCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 36, color: Color.fromARGB(255, 49, 49, 49)),
+            Icon(icon, size: 36, color: const Color.fromARGB(255, 49, 49, 49)),
             const SizedBox(height: 8),
             Text(
               title,
@@ -433,7 +433,7 @@ class ContainerCardCarousel extends StatelessWidget {
       height: 237,
       margin: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Color(0xFFC5E0CD),
+        color: const Color(0xFFC5E0CD),
         borderRadius: BorderRadius.circular(20.0),
       ),
       child: Column(
@@ -443,7 +443,7 @@ class ContainerCardCarousel extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               title,
-              style: TextStyle(
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
               ),
@@ -465,7 +465,7 @@ class ContainerCardCarousel extends StatelessWidget {
                 viewportFraction: 0.8,
                 enlargeCenterPage: true,
                 autoPlay: true,
-                autoPlayInterval: Duration(seconds: 3),
+                autoPlayInterval: const Duration(seconds: 3),
                 autoPlayCurve: Curves.fastOutSlowIn,
                 scrollDirection: Axis.horizontal,
               ),
