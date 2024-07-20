@@ -59,11 +59,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               });
             },
             controller: _pageController,
-            children: [
+            children: const [
               createPage(
                 image: 'assets/images/logo.png',
-                title: 'Constants.titleOne',
-                description: 'Constants.descriptionOne',
+                title: 'Simpemas',
+                description: 'Sistem Manajemen Pengabdian Masyarakat',
               ),
               createPage(
                 image: 'assets/images/logo.png',
@@ -100,7 +100,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         }
                       } else {
                         _showLoading(); // Menampilkan loading saat tombol ditekan
-                        Timer(Duration(seconds: 3), () {
+                        Timer(const Duration(seconds: 3), () {
                           Navigator.pushReplacement(context,
                               MaterialPageRoute(builder: (_) => DashboardBaru()));
                         });
@@ -113,7 +113,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     color: Colors.white,
                   )),
               padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.black,
               ),
@@ -136,7 +136,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       width: isActive ? 20 : 8,
       margin: const EdgeInsets.only(right: 5.0),
       decoration: BoxDecoration(
-        color: Color(0xff296e48),
+        color: const Color(0xff296e48),
         borderRadius: BorderRadius.circular(5),
       ),
     );
@@ -187,7 +187,7 @@ class createPage extends StatelessWidget {
           Text(
             title,
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
               color: Color(0xff296e48),
               fontSize: 30,
               fontWeight: FontWeight.bold,

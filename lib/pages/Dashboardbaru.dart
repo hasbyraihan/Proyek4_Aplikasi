@@ -5,6 +5,7 @@ import 'package:flutter_helloo_world/Component/NavigationBar.dart'
 import 'package:flutter_helloo_world/Faq.dart';
 import 'package:flutter_helloo_world/History.dart';
 import 'package:flutter_helloo_world/Timeline.dart';
+import 'package:flutter_helloo_world/DokumentasiRw.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -210,33 +211,25 @@ class _DashboardbaruState extends State<DashboardBaru> {
                     leng: 107.340000,
                     zoom: 13.0,
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  KebutuhanCard(
+                    icon: Icons.home,
+                    title: 'Dokumentasi dan Kebutuhan RW',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => DokumentasiRW()),
+                      );
+                    },
+                  ),
                   GridView.count(
                     crossAxisCount: 2,
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     childAspectRatio: 3 / 2,
                     children: [
-                      MenuCard(
-                        icon: Icons.home,
-                        title: 'Kebutuhan RW',
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => FAQ()),
-                          );
-                        },
-                      ),
-                      MenuCard(
-                        icon: Icons.image,
-                        title: 'Dokumentasi RW',
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => FAQ()),
-                          );
-                        },
-                      ),
                       MenuCard(
                         icon: Icons.timeline,
                         title: 'Timeline Pengabdian',
@@ -394,6 +387,49 @@ class MenuCard extends StatelessWidget {
         margin: const EdgeInsets.all(8),
         padding: const EdgeInsets.all(16),
         height: 190,
+        decoration: BoxDecoration(
+          color: const Color(0xFF60AD77),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 36, color: const Color.fromARGB(255, 49, 49, 49)),
+            const SizedBox(height: 8),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 12),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class KebutuhanCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final VoidCallback onTap;
+
+  const KebutuhanCard({
+    Key? key,
+    required this.icon,
+    required this.title,
+    required this.onTap,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(16),
+        height: 100,
+        width: screenWidth * 0.9,
         decoration: BoxDecoration(
           color: const Color(0xFF60AD77),
           borderRadius: BorderRadius.circular(12),
