@@ -1,12 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_helloo_world/Auth/login.dart';
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
 import 'package:flutter_helloo_world/Faq.dart';
 import 'package:flutter_helloo_world/History.dart';
 import 'package:flutter_helloo_world/Timeline.dart';
-import 'package:flutter_helloo_world/DokumentasiRw.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -14,12 +14,12 @@ import 'package:latlong2/latlong.dart';
 import 'package:flutter_helloo_world/Models/User.dart' as user;
 import 'package:flutter_helloo_world/Models/UserDesa.dart' as userDesa;
 
-class DashboardBaru extends StatefulWidget {
+class DashboardNanudz extends StatefulWidget {
   @override
-  _DashboardbaruState createState() => _DashboardbaruState();
+  _DashboardNanudzState createState() => _DashboardNanudzState();
 }
 
-class _DashboardbaruState extends State<DashboardBaru> {
+class _DashboardNanudzState extends State<DashboardNanudz> {
   dynamic _user;
   int _selectedIndex = 0;
   int pria = 0;
@@ -102,6 +102,7 @@ class _DashboardbaruState extends State<DashboardBaru> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFFC5E0CD),
@@ -143,14 +144,12 @@ class _DashboardbaruState extends State<DashboardBaru> {
                 children: [
                   if (_user != null) ...[
                     if (_user.role == 'admin') ...[
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 30),
-                        child: CircleAvatar(
-                          radius: 40,
-                          backgroundImage: NetworkImage(_user.fotoProfil),
-                        ),
+                      const SizedBox(height: 30),
+                      CircleAvatar(
+                        radius: 40,
+                        backgroundImage: NetworkImage(_user.fotoProfil),
                       ),
-                      const SizedBox(width: 10),
+                      const SizedBox(width: 30),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -310,25 +309,33 @@ class _DashboardbaruState extends State<DashboardBaru> {
                     leng: 107.340000,
                     zoom: 13.0,
                   ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  KebutuhanCard(
-                    icon: Icons.home,
-                    title: 'Dokumentasi dan Kebutuhan RW',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => DokumentasiRW()),
-                      );
-                    },
-                  ),
+                  const SizedBox(height: 16),
                   GridView.count(
                     crossAxisCount: 2,
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     childAspectRatio: 3 / 2,
                     children: [
+                      MenuCard(
+                        icon: Icons.home,
+                        title: 'Kebutuhan RW',
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => FAQ()),
+                          );
+                        },
+                      ),
+                      MenuCard(
+                        icon: Icons.image,
+                        title: 'Dokumentasi RW',
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => FAQ()),
+                          );
+                        },
+                      ),
                       MenuCard(
                         icon: Icons.timeline,
                         title: 'Timeline Pengabdian',
@@ -486,49 +493,6 @@ class MenuCard extends StatelessWidget {
         margin: const EdgeInsets.all(8),
         padding: const EdgeInsets.all(16),
         height: 190,
-        decoration: BoxDecoration(
-          color: const Color(0xFF60AD77),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 36, color: const Color.fromARGB(255, 49, 49, 49)),
-            const SizedBox(height: 8),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 12),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class KebutuhanCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final VoidCallback onTap;
-
-  const KebutuhanCard({
-    Key? key,
-    required this.icon,
-    required this.title,
-    required this.onTap,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.all(8),
-        padding: const EdgeInsets.all(16),
-        height: 100,
-        width: screenWidth * 0.9,
         decoration: BoxDecoration(
           color: const Color(0xFF60AD77),
           borderRadius: BorderRadius.circular(12),
