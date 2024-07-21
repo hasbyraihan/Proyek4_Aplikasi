@@ -24,34 +24,34 @@ class _ProfilState extends State<Profil> {
     _loadUserData(); // Memuat data pengguna saat widget diinisialisasi
   }
 
-  Future<void> _loadUserData() async {
-    try {
-      final firebaseUser = FirebaseAuth.instance.currentUser;
-      if (firebaseUser != null) {
-        setState(() {
-          _user = user.User.loading();
-        });
-
-        final userId = firebaseUser.uid;
-        final userRef = FirebaseDatabase.instance.ref('/Users/$userId');
-        final userSnapshot = await userRef.get();
-
-        final userData = userSnapshot.value as Map<Object?, Object?>?;
-
-        if (userData != null) {
+    Future<void> _loadUserData() async {
+      try {
+        final firebaseUser = FirebaseAuth.instance.currentUser;
+        if (firebaseUser != null) {
           setState(() {
-            _user = user.User.fromMap(userData);
+            _user = user.User.loading();
           });
+
+          final userId = firebaseUser.uid;
+          final userRef = FirebaseDatabase.instance.ref('/Users/$userId');
+          final userSnapshot = await userRef.get();
+
+          final userData = userSnapshot.value as Map<Object?, Object?>?;
+
+          if (userData != null) {
+            setState(() {
+              _user = user.User.fromMap(userData);
+            });
+          } else {
+            print('Error: User data is null');
+          }
         } else {
-          print('Error: User data is null');
+          print('Error: No user currently logged in');
         }
-      } else {
-        print('Error: No user currently logged in');
+      } catch (e) {
+        print('Error: Failed to load user data: $e');
       }
-    } catch (e) {
-      print('Error: Failed to load user data: $e');
     }
-  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_helloo_world/AdminDesa/AdminDokumentasiRW.dart';
 import 'package:flutter_helloo_world/AdminDesa/AdminKebutuhan.dart';
 import 'package:flutter_helloo_world/AdminDesa/AdminPopulasi.dart';
 import 'package:flutter_helloo_world/Faq.dart';
@@ -54,6 +55,18 @@ class _AdminManageInfoState extends State<AdminManageInfo> {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => FAQ()),
+              );
+            },
+          ),
+          CustomContainer(
+            color: Color(0xFF60AD77),
+            text: 'Dokumentasi',
+            additionalText: 'Per RW',
+            icon: Icons.photo_camera_back_outlined,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AdminDokumentasiRW()),
               );
             },
           ),

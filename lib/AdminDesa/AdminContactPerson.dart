@@ -97,10 +97,16 @@ class _AdminContactPersonState extends State<AdminContactPerson> {
             ),
             SizedBox(height: 20),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green[600],
+              ),
               onPressed: () {
                 saveContactInfoToFirebase();
               },
-              child: Text('Simpan Perubahan'),
+              child: Text(
+                'Simpan Perubahan',
+                style: TextStyle(color: Colors.white)
+              ),
             ),
           ],
         ),

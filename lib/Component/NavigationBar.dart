@@ -30,7 +30,7 @@ class _NavigationBarState extends State<NavigationBar> {
   @override
   void initState() {
     super.initState();
-    _selectedIndex = widget.currentIndex.clamp(0, 2); // Validasi currentIndex
+    _selectedIndex = widget.currentIndex.clamp(0, 2); 
     _loadUserData();
   }
 
