@@ -2,9 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_helloo_world/AdminDesa/AdminAddAkun.dart';
+import 'package:flutter_helloo_world/AdminDesa/AdminEditAkun.dart';
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
-import 'package:flutter_helloo_world/Models/UserDesa.dart' as user;
+import 'package:flutter_helloo_world/Models/UserDesa.dart' as userModel;
 
 class AdminManageAkun extends StatefulWidget {
   @override
@@ -22,11 +23,11 @@ class _AdminManageAkunState extends State<AdminManageAkun> {
   late String currentUserEmail = 'admin@gmail.com';
   late String currentUserPassword = 'admin123';
 
-  Stream<List<user.UserDesa>> getUsers() {
+  Stream<List<userModel.UserDesa>> getUsers() {
     return _database.onValue.map((event) {
       final data = Map<String, dynamic>.from(event.snapshot.value as Map);
       return data.entries
-          .map((entry) => user.UserDesa.fromMap(
+          .map((entry) => userModel.UserDesa.fromMap(
               Map<Object?, Object?>.from(entry.value), entry.key))
           .where((user) => user.role == 'admin')
           .toList();
@@ -84,7 +85,7 @@ class _AdminManageAkunState extends State<AdminManageAkun> {
         ],
       ),
       backgroundColor: Color(0xFFE9F0EB),
-      body: StreamBuilder<List<user.UserDesa>>(
+      body: StreamBuilder<List<userModel.UserDesa>>(
         stream: getUsers(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -98,24 +99,26 @@ class _AdminManageAkunState extends State<AdminManageAkun> {
           }
           return ListView(
             padding: EdgeInsets.symmetric(horizontal: 16),
-            children: snapshot.data!.map((user.UserDesa user) {
+            children: snapshot.data!.map((userModel.UserDesa userData) {
               return CustomContainer(
                 color: Color(0xFF60AD77),
-                text: user.nama,
-                additionalText: user.jabatan,
+                text: userData.nama,
+                additionalText: userData.jabatan,
                 icon1: Icons.edit,
                 onTapIcon1: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => AddAkun()),
+                    MaterialPageRoute(
+                        builder: (context) => EditAkun(user: userData)),
                   );
                 },
                 icon2: Icons.delete,
                 onTapIcon2: () async {
-                  String email = user.email; // Replace with the user's email
+                  String email =
+                      userData.email; // Replace with the user's email
                   String password =
-                      user.password; // Replace with the user's password
-                  await deleteUser(user.uid, email, password);
+                      userData.password; // Replace with the user's password
+                  await deleteUser(userData.uid, email, password);
                 },
               );
             }).toList(),

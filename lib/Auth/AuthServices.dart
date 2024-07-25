@@ -175,6 +175,69 @@ class AuthServices {
       print('Error during signup: ${e.toString()}');
     }
   }
+
+  Future<void> updateAcc(String userId, String email, String nama, String nip,
+      String jabatan, String fotoProfilPath, String role) async {
+    try {
+      // Retrieve existing user data from Realtime Database
+      final userRef = _database.ref('/Users/$userId');
+      final userSnapshot = await userRef.get();
+
+      if (!userSnapshot.exists) {
+        throw Exception('User not found');
+      }
+
+      // Convert the existing user data to Map<String, dynamic>
+      final existingUserData =
+          Map<String, dynamic>.from(userSnapshot.value as Map);
+
+      // Create a user object with updated data
+      final updatedUser = users.UserDesa(
+        uid: userId,
+        nama: nama,
+        nip: nip,
+        jabatan: jabatan,
+        fotoProfil: existingUserData['fotoProfil'] ?? '',
+        role: role,
+        email: email,
+        password: existingUserData['password'] ?? '',
+      );
+
+      // If a new fotoProfilPath is provided, upload the new profile picture
+      if (fotoProfilPath.isNotEmpty) {
+        final fotoProfilFile = File(fotoProfilPath);
+
+        if (fotoProfilFile.existsSync()) {
+          final storageRef =
+              _storage.ref('/user-profile-images/$userId-fotoProfil.jpg');
+          await storageRef.putFile(fotoProfilFile);
+
+          // Update fotoProfilURL after successful upload
+          final fotoProfilURL = await storageRef.getDownloadURL();
+          updatedUser.fotoProfil = fotoProfilURL;
+        } else {
+          print('File does not exist: $fotoProfilPath');
+        }
+      }
+
+      // Update user data in Realtime Database
+      await userRef.update(updatedUser.toMap());
+
+      // Optionally, update the user's email in Firebase Authentication if changed
+      if (email != existingUserData['email']) {
+        final user = _auth.currentUser;
+        if (user != null) {
+          await user.updateEmail(email);
+        }
+      }
+    } on FirebaseAuthException catch (e) {
+      // Handle FirebaseAuthException appropriately (e.g., display error message)
+      print('Firebase Auth Error: ${e.code}');
+    } catch (e) {
+      // Handle other potential errors (e.g., network issues, storage errors)
+      print('Error during update: ${e.toString()}');
+    }
+  }
 }
 
 class User {

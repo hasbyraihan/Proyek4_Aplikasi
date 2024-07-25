@@ -1,14 +1,9 @@
-import 'package:flutter/cupertino.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
-
-import 'package:flutter_helloo_world/Component/NavigationBar.dart'
-    as BarNavigasi;
 
 class TemplatePengajuan extends StatefulWidget {
   @override
@@ -23,8 +18,6 @@ class TemplatePengajuanItem {
 }
 
 class _TemplatePengajuanState extends State<TemplatePengajuan> {
-  int _selectedIndex = 1;
-
   Future<List<TemplatePengajuanItem>> fetchTemplates() async {
     List<TemplatePengajuanItem> templates = [];
     try {
@@ -43,6 +36,32 @@ class _TemplatePengajuanState extends State<TemplatePengajuan> {
       print('Error fetching templates: $e');
     }
     return templates;
+  }
+
+  Future<void> requestPermissions() async {
+    if (Platform.isAndroid) {
+      var status = await Permission.storage.status;
+      if (!status.isGranted) {
+        status = await Permission.storage.request();
+      }
+
+      var manageStatus = await Permission.manageExternalStorage.status;
+      if (!manageStatus.isGranted) {
+        manageStatus = await Permission.manageExternalStorage.request();
+      }
+
+      if (status.isGranted && manageStatus.isGranted) {
+        print('Permissions granted');
+      } else {
+        print('Permissions denied');
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    requestPermissions();
   }
 
   @override
@@ -90,14 +109,6 @@ class _TemplatePengajuanState extends State<TemplatePengajuan> {
           }
         },
       ),
-      bottomNavigationBar: BarNavigasi.NavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
-      ),
     );
   }
 }
@@ -119,52 +130,104 @@ class CustomContainer extends StatelessWidget {
   final double _width = 207;
   final double _height = 100;
 
+  Future<bool> checkAndRequestStoragePermission() async {
+    if (Platform.isAndroid) {
+      var storageStatus = await Permission.storage.status;
+      var manageStatus = await Permission.manageExternalStorage.status;
+
+      if (!storageStatus.isGranted) {
+        storageStatus = await Permission.storage.request();
+      }
+
+      if (!manageStatus.isGranted) {
+        manageStatus = await Permission.manageExternalStorage.request();
+      }
+
+      return storageStatus.isGranted && manageStatus.isGranted;
+    } else {
+      return true;
+    }
+  }
+
+  Future<void> checkPermission(BuildContext context) async {
+    if (await checkAndRequestStoragePermission()) {
+      downloadFile(context, url, text + ".pdf");
+    } else {
+      showPermissionDialog(context);
+    }
+  }
+
+  void showPermissionDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Storage Permission"),
+          content: const Text(
+              "Storage permission is required to download files. Would you like to go to app settings to grant the permission?"),
+          actions: <Widget>[
+            TextButton(
+                child: const Text('No thanks'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                }),
+            TextButton(
+                child: const Text('Ok'),
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  await openAppSettings();
+                })
+          ],
+        );
+      },
+    );
+  }
+
   Future<void> downloadFile(
       BuildContext context, String url, String fileName) async {
     try {
-      if (await Permission.storage.request().isGranted) {
-        Dio dio = Dio();
-        var dir = await getExternalStorageDirectory();
-        String newPath = "";
-        List<String> paths = dir!.path.split("/");
-        for (int x = 1; x < paths.length; x++) {
-          String folder = paths[x];
-          if (folder != "Android") {
-            newPath += "/" + folder;
-          } else {
-            break;
-          }
-        }
-        newPath = newPath + "/Download";
-        dir = Directory(newPath);
-
-        if (!await dir.exists()) {
-          await dir.create(recursive: true);
-        }
-
-        await dio.download(url, "${dir.path}/$fileName");
-        print("File downloaded to ${dir.path}/$fileName");
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Download Successful"),
-              content:
-                  Text("File has been downloaded to ${dir?.path}/$fileName"),
-              actions: [
-                TextButton(
-                  child: Text("OK"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        );
-      } else {
-        print("Permission denied");
+      Dio dio = Dio();
+      var dir = await getExternalStorageDirectory();
+      if (dir == null) {
+        throw Exception("Could not access external storage directory");
       }
+
+      String newPath = "";
+      List<String> paths = dir.path.split("/");
+      for (int x = 1; x < paths.length; x++) {
+        String folder = paths[x];
+        if (folder != "Android") {
+          newPath += "/" + folder;
+        } else {
+          break;
+        }
+      }
+      newPath = newPath + "/Download";
+      dir = Directory(newPath);
+
+      if (!await dir.exists()) {
+        await dir.create(recursive: true);
+      }
+
+      await dio.download(url, "${dir.path}/$fileName");
+      print("File downloaded to ${dir.path}/$fileName");
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Download Successful"),
+            content: Text("File has been downloaded to ${dir?.path}/$fileName"),
+            actions: [
+              TextButton(
+                child: Text("OK"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     } catch (e) {
       print("Error downloading file: $e");
       showDialog(
@@ -190,7 +253,7 @@ class CustomContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => downloadFile(context, url, text + ".pdf"),
+      onTap: () => checkPermission(context),
       child: Container(
         width: _width,
         height: _height,

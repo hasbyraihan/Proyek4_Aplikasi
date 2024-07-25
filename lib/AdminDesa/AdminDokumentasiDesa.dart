@@ -7,17 +7,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'dart:io';
 
-class AdminEditLingkunganRW extends StatefulWidget {
-  final String title;
-
-  const AdminEditLingkunganRW({Key? key, required this.title})
-      : super(key: key);
-
+class AdminDokumentasiDesa extends StatefulWidget {
   @override
-  _AdminEditLingkunganRWState createState() => _AdminEditLingkunganRWState();
+  _AdminDokumentasiDesaState createState() => _AdminDokumentasiDesaState();
 }
 
-class _AdminEditLingkunganRWState extends State<AdminEditLingkunganRW> {
+class _AdminDokumentasiDesaState extends State<AdminDokumentasiDesa> {
   int _selectedIndex = 0;
 
   final picker = ImagePicker();
@@ -32,9 +27,8 @@ class _AdminEditLingkunganRWState extends State<AdminEditLingkunganRW> {
   }
 
   Future<void> _fetchImages() async {
-    final databaseReference = FirebaseDatabase.instance
-        .ref()
-        .child('info-desa/kebutuhan-rw/${widget.title}/dokumentasi/lingkungan');
+    final databaseReference =
+        FirebaseDatabase.instance.ref().child('info-desa/dokumentasi-desa/');
 
     final snapshot = await databaseReference.get();
 
@@ -73,7 +67,7 @@ class _AdminEditLingkunganRWState extends State<AdminEditLingkunganRW> {
     try {
       // Get a reference to the Firebase Storage bucket
       final storageReference = FirebaseStorage.instance.ref().child(
-          'info-desa/kebutuhan-rw/${widget.title}/dokumentasi/lingkungan/${DateTime.now().millisecondsSinceEpoch}.jpg');
+          'info-desa/dokumentasi-desa/${DateTime.now().millisecondsSinceEpoch}.jpg');
 
       // Upload the file to Firebase Storage
       final uploadTask = storageReference.putFile(_image!);
@@ -87,8 +81,7 @@ class _AdminEditLingkunganRWState extends State<AdminEditLingkunganRW> {
       // Save the download URL to Firebase Realtime Database
       final databaseReference = FirebaseDatabase.instance
           .ref()
-          .child(
-              'info-desa/kebutuhan-rw/${widget.title}/dokumentasi/lingkungan')
+          .child('info-desa/dokumentasi-desa')
           .push();
 
       await databaseReference.set({'imageUrl': downloadUrl});
@@ -102,7 +95,7 @@ class _AdminEditLingkunganRWState extends State<AdminEditLingkunganRW> {
       await _fetchImages(); // Untuk memuat ulang gambar yang ada
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Foto telah ditambahkan!')),
+        SnackBar(content: Text('Image uploaded successfully!')),
       );
     } catch (e) {
       setState(() {
@@ -128,8 +121,7 @@ class _AdminEditLingkunganRWState extends State<AdminEditLingkunganRW> {
       // Hapus data gambar dari Firebase Realtime Database
       final databaseReference = FirebaseDatabase.instance
           .ref()
-          .child(
-              'info-desa/kebutuhan-rw/${widget.title}/dokumentasi/lingkungan')
+          .child('info-desa/dokumentasi-desa')
           .child(key);
       await databaseReference.remove();
 
@@ -137,7 +129,7 @@ class _AdminEditLingkunganRWState extends State<AdminEditLingkunganRW> {
       await _fetchImages(); // Untuk memuat ulang gambar yang ada
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Sukses Mendelete Foto!')),
+        SnackBar(content: Text('Image deleted successfully!')),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

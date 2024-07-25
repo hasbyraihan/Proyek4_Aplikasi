@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_helloo_world/Faq.dart';
+
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
 import 'package:firebase_storage/firebase_storage.dart';
@@ -176,16 +176,6 @@ class _AdminEditDokumentasiRWState extends State<AdminEditDokumentasiRW> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFFC5E0CD),
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          icon: const Icon(Icons.question_answer_outlined),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => FAQ()),
-            );
-          },
-        ),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 20.0),

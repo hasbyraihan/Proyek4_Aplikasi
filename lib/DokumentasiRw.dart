@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_helloo_world/DetailKebutuhan.dart';
-import 'package:flutter_helloo_world/Faq.dart';
+// Adjust the path as necessary
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
+import 'package:flutter_helloo_world/DetailKebutuhan.dart';
 
 class DokumentasiRW extends StatefulWidget {
   const DokumentasiRW({Key? key}) : super(key: key);
@@ -18,7 +18,7 @@ class _DokumentasiRWState extends State<DokumentasiRW> {
     {"title": "rw-1", "subtitle": "Sinumbra"},
     {"title": "rw-2", "subtitle": "Sinumbra"},
     {"title": "rw-3", "subtitle": "Sinumbra"},
-    {"title": "rw-4", "subtitle": "Sinumbra"},    
+    {"title": "rw-4", "subtitle": "Sinumbra"},
     {"title": "rw-5", "subtitle": "Sinumbra"},
     {"title": "rw-6", "subtitle": "Sinumbra"},
     {"title": "rw-7", "subtitle": "Sinumbra"},
@@ -32,16 +32,6 @@ class _DokumentasiRWState extends State<DokumentasiRW> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFFC5E0CD),
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          icon: const Icon(Icons.question_answer_outlined),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => FAQ()),
-            );
-          },
-        ),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 20.0),
@@ -70,18 +60,11 @@ class _DokumentasiRWState extends State<DokumentasiRW> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => DetailDokumentasiRW(),
+                    builder: (context) => DetailDokumentasiRW(
+                      title: items[index]['title']!,
+                    ),
                   ),
                 );
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (context) => DetailPage(
-                //       title: items[index]['title']!,
-                //       subtitle: items[index]['subtitle']!,
-                //     ),
-                //   ),
-                // );
               },
               child: Container(
                 decoration: BoxDecoration(
