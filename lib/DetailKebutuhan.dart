@@ -1,11 +1,14 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_helloo_world/Faq.dart';
+
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
 import 'package:carousel_slider/carousel_slider.dart';
 
 class DetailDokumentasiRW extends StatefulWidget {
-  const DetailDokumentasiRW({Key? key}) : super(key: key);
+  final String title;
+
+  const DetailDokumentasiRW({Key? key, required this.title}) : super(key: key);
 
   @override
   _DetailDokumentasiRWState createState() => _DetailDokumentasiRWState();
@@ -13,22 +16,98 @@ class DetailDokumentasiRW extends StatefulWidget {
 
 class _DetailDokumentasiRWState extends State<DetailDokumentasiRW> {
   int _selectedIndex = 0;
+  RWData? rwData;
+  List<String> _imagesFasilitas = [];
+  List<String> _imagesLingkungan = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchRWData();
+    _fetchImagesFasilitas();
+    _fetchImagesLingkungan();
+  }
+
+  Future<void> _fetchRWData() async {
+    try {
+      final data = await fetchSingleRWDataFromFirebase(widget.title);
+      setState(() {
+        rwData = data;
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<RWData> fetchSingleRWDataFromFirebase(String title) async {
+    try {
+      final rwRef =
+          FirebaseDatabase.instance.ref('info-desa/kebutuhan-rw/$title');
+      final rwSnapshot = await rwRef.get();
+
+      if (rwSnapshot.value != null) {
+        Map<dynamic, dynamic> data = rwSnapshot.value as Map<dynamic, dynamic>;
+        final rwNumber = data['rw'];
+        if (rwNumber is int) {
+          // Validate rwNumber is int
+          final needs = List<String>.from(data['kebutuhan'] ?? []);
+          return RWData(rwNumber: rwNumber, needs: needs);
+        } else {
+          throw 'RW number is not an integer';
+        }
+      } else {
+        throw 'Data not found';
+      }
+    } catch (e) {
+      throw 'Error: $e';
+    }
+  }
+
+  Future<void> _fetchImagesFasilitas() async {
+    final databaseReference = FirebaseDatabase.instance
+        .ref()
+        .child('info-desa/kebutuhan-rw/${widget.title}/dokumentasi/fasilitas');
+
+    final snapshot = await databaseReference.get();
+
+    final List<String> fetchedImages = [];
+    if (snapshot.exists) {
+      Map<dynamic, dynamic> imagesMap = snapshot.value as Map<dynamic, dynamic>;
+      imagesMap.forEach((key, value) {
+        fetchedImages.add(value['imageUrl']);
+      });
+    }
+
+    setState(() {
+      _imagesFasilitas = fetchedImages;
+    });
+  }
+
+  Future<void> _fetchImagesLingkungan() async {
+    final databaseReference = FirebaseDatabase.instance
+        .ref()
+        .child('info-desa/kebutuhan-rw/${widget.title}/dokumentasi/lingkungan');
+
+    final snapshot = await databaseReference.get();
+
+    final List<String> fetchedImages = [];
+    if (snapshot.exists) {
+      Map<dynamic, dynamic> imagesMap = snapshot.value as Map<dynamic, dynamic>;
+      imagesMap.forEach((key, value) {
+        fetchedImages.add(value['imageUrl']);
+      });
+    }
+
+    setState(() {
+      _imagesLingkungan = fetchedImages;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFFC5E0CD),
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          icon: const Icon(Icons.question_answer_outlined),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => FAQ()),
-            );
-          },
-        ),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 20.0),
@@ -45,29 +124,18 @@ class _DetailDokumentasiRWState extends State<DetailDokumentasiRW> {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              KebutuhanCard(
-                title: 'Kebutuhan RW 1',
-                needs: [
-                  'Kurangnya minat kuliah bagi anak sma',
-                  'Banyak balita sakit kekurangan gizi',
-                  'Warga yang belum terbiasa dengan iptek',
-                ],
-              ),
+              if (rwData != null)
+                KebutuhanCard(
+                  title: 'Kebutuhan RW ${rwData!.rwNumber}',
+                  needs: rwData!.needs,
+                ),
               ContainerCardCarousel(
                 title: 'Fasilitas RW',
-                imagePaths: [
-                  'assets/images/dokumentasi.png',
-                  'assets/images/dokumentasi.png',
-                  'assets/images/dokumentasi.png',
-                ],
+                imageUrls: _imagesFasilitas,
               ),
               ContainerCardCarousel(
                 title: 'Lingkungan RW',
-                imagePaths: [
-                  'assets/images/dokumentasi.png',
-                  'assets/images/dokumentasi.png',
-                  'assets/images/dokumentasi.png',
-                ],
+                imageUrls: _imagesLingkungan,
               ),
             ],
           ),
@@ -146,12 +214,12 @@ class KebutuhanCard extends StatelessWidget {
 
 class ContainerCardCarousel extends StatelessWidget {
   final String title;
-  final List<String> imagePaths;
+  final List<String> imageUrls;
 
   const ContainerCardCarousel({
     Key? key,
     required this.title,
-    required this.imagePaths,
+    required this.imageUrls,
   }) : super(key: key);
 
   @override
@@ -192,12 +260,15 @@ class ContainerCardCarousel extends StatelessWidget {
           ),
           Expanded(
             child: CarouselSlider(
-              items: imagePaths.map((path) {
-                return Container(
-                  width: double.infinity,
-                  child: Image.asset(
-                    path,
-                    fit: BoxFit.cover,
+              items: imageUrls.map((url) {
+                return GestureDetector(
+                  onTap: () => _showImageDialog(context, url),
+                  child: Container(
+                    width: double.infinity,
+                    child: Image.network(
+                      url,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 );
               }).toList(),
@@ -216,4 +287,34 @@ class ContainerCardCarousel extends StatelessWidget {
       ),
     );
   }
+
+  void _showImageDialog(BuildContext context, String imageUrl) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: GestureDetector(
+            onTap: () => Navigator.of(context).pop(),
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height * 0.75,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(imageUrl),
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class RWData {
+  final int rwNumber;
+  final List<String> needs;
+
+  RWData({required this.rwNumber, required this.needs});
 }

@@ -156,17 +156,22 @@ class _DashboardNanudzState extends State<DashboardNanudz> {
                           const SizedBox(height: 25),
                           Text(
                             '${_user.nama}',
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             '${_user.role}',
-                            style: TextStyle(fontSize: 14, color: Colors.black.withOpacity(0.7)),
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black.withOpacity(0.7)),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             '${_user.jabatan}',
-                            style: TextStyle(fontSize: 14, color: Colors.black.withOpacity(0.7)),
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black.withOpacity(0.7)),
                           ),
                         ],
                       ),
@@ -183,17 +188,22 @@ class _DashboardNanudzState extends State<DashboardNanudz> {
                           const SizedBox(height: 25),
                           Text(
                             '${_user.nama}',
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             '${_user.role}',
-                            style: TextStyle(fontSize: 14, color: Colors.black.withOpacity(0.7)),
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black.withOpacity(0.7)),
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            '${_user.namaPerguruanTinggi}', 
-                            style: TextStyle(fontSize: 14, color: Colors.black.withOpacity(0.7)),
+                            '${_user.namaPerguruanTinggi}',
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black.withOpacity(0.7)),
                           ),
                         ],
                       ),

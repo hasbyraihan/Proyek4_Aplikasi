@@ -25,6 +25,7 @@ class _DashboardbaruState extends State<DashboardBaru> {
   int pria = 0;
   int wanita = 0;
   int total = 0;
+  List<String> _images = [];
 
   Future<void> _loadUserData() async {
     try {
@@ -92,11 +93,31 @@ class _DashboardbaruState extends State<DashboardBaru> {
     }
   }
 
+  Future<void> _fetchImages() async {
+    final databaseReference =
+        FirebaseDatabase.instance.ref().child('info-desa/dokumentasi-desa');
+
+    final snapshot = await databaseReference.get();
+
+    final List<String> fetchedImages = [];
+    if (snapshot.exists) {
+      Map<dynamic, dynamic> imagesMap = snapshot.value as Map<dynamic, dynamic>;
+      imagesMap.forEach((key, value) {
+        fetchedImages.add(value['imageUrl']);
+      });
+    }
+
+    setState(() {
+      _images = fetchedImages;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     fetchPopulasi();
     _loadUserData();
+    _fetchImages();
   }
 
   @override
@@ -157,17 +178,22 @@ class _DashboardbaruState extends State<DashboardBaru> {
                           const SizedBox(height: 25),
                           Text(
                             '${_user.nama}',
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             '${_user.role}',
-                            style: TextStyle(fontSize: 14, color: Colors.black.withOpacity(0.7)),
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black.withOpacity(0.7)),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             '${_user.jabatan}',
-                            style: TextStyle(fontSize: 14, color: Colors.black.withOpacity(0.7)),
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black.withOpacity(0.7)),
                           ),
                         ],
                       ),
@@ -184,17 +210,22 @@ class _DashboardbaruState extends State<DashboardBaru> {
                           const SizedBox(height: 25),
                           Text(
                             '${_user.nama}',
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             '${_user.role}',
-                            style: TextStyle(fontSize: 14, color: Colors.black.withOpacity(0.7)),
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black.withOpacity(0.7)),
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            '${_user.namaPerguruanTinggi}', 
-                            style: TextStyle(fontSize: 14, color: Colors.black.withOpacity(0.7)),
+                            '${_user.namaPerguruanTinggi}',
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black.withOpacity(0.7)),
                           ),
                         ],
                       ),
@@ -319,7 +350,8 @@ class _DashboardbaruState extends State<DashboardBaru> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => DokumentasiRW()),
+                        MaterialPageRoute(
+                            builder: (context) => DokumentasiRW()),
                       );
                     },
                   ),
@@ -327,7 +359,7 @@ class _DashboardbaruState extends State<DashboardBaru> {
                     crossAxisCount: 2,
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    childAspectRatio: 3 / 2,
+                    childAspectRatio: 2 / 2,
                     children: [
                       MenuCard(
                         icon: Icons.timeline,
@@ -357,11 +389,7 @@ class _DashboardbaruState extends State<DashboardBaru> {
             SizedBox(height: 5),
             ContainerCardCarousel(
               title: 'Dokumentasi Desa',
-              imagePaths: [
-                'assets/images/dokumentasi.png',
-                'assets/images/dokumentasi.png',
-                'assets/images/dokumentasi.png',
-              ],
+              imagePaths: _images,
             ),
           ],
         ),
@@ -484,8 +512,7 @@ class MenuCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         margin: const EdgeInsets.all(8),
-        padding: const EdgeInsets.all(16),
-        height: 190,
+        padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: const Color(0xFF60AD77),
           borderRadius: BorderRadius.circular(12),
@@ -586,12 +613,15 @@ class ContainerCardCarousel extends StatelessWidget {
           ),
           Expanded(
             child: CarouselSlider(
-              items: imagePaths.map((path) {
-                return Container(
-                  width: double.infinity,
-                  child: Image.asset(
-                    path,
-                    fit: BoxFit.cover,
+              items: imagePaths.map((url) {
+                return GestureDetector(
+                  onTap: () => _showImageDialog(context, url),
+                  child: Container(
+                    width: double.infinity,
+                    child: Image.network(
+                      url,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 );
               }).toList(),
@@ -608,6 +638,29 @@ class ContainerCardCarousel extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void _showImageDialog(BuildContext context, String imageUrl) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: GestureDetector(
+            onTap: () => Navigator.of(context).pop(),
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height * 0.75,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(imageUrl),
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

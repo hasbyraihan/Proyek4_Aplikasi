@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_helloo_world/AdminDesa/AdminEditFasilitasRW.dart';
 import 'package:flutter_helloo_world/AdminDesa/AdminEditLingkunganRW.dart';
-import 'package:flutter_helloo_world/Faq.dart';
+
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
 
@@ -18,7 +18,7 @@ class _AdminDokumentasiRWState extends State<AdminDokumentasiRW> {
     {"title": "rw-1", "subtitle": "Sinumbra"},
     {"title": "rw-2", "subtitle": "Sinumbra"},
     {"title": "rw-3", "subtitle": "Sinumbra"},
-    {"title": "rw-4", "subtitle": "Sinumbra"},    
+    {"title": "rw-4", "subtitle": "Sinumbra"},
     {"title": "rw-5", "subtitle": "Sinumbra"},
     {"title": "rw-6", "subtitle": "Sinumbra"},
     {"title": "rw-7", "subtitle": "Sinumbra"},
@@ -31,37 +31,69 @@ class _AdminDokumentasiRWState extends State<AdminDokumentasiRW> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Pilih Salah satu"),
-          content: Text("Edit Fasilitas atau Lingkungan ?"),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AdminEditDokumentasiRW(
-                      title: title,
+        return Dialog(
+          child: Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Pilih Salah satu",
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.close),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
                     ),
-                  ),
-                );
-              },
-              child: Text("Fasilitas"),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AdminEditLingkunganRW(
-                      title: title,
+                    SizedBox(height: 16),
+                    Text("Edit Fasilitas atau Lingkungan ?"),
+                    SizedBox(height: 24),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => AdminEditDokumentasiRW(
+                                  title: title,
+                                ),
+                              ),
+                            );
+                          },
+                          child: Text("Fasilitas"),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => AdminEditLingkunganRW(
+                                  title: title,
+                                ),
+                              ),
+                            );
+                          },
+                          child: Text("Lingkungan"),
+                        ),
+                      ],
                     ),
-                  ),
-                );
-              },
-              child: Text("Lingkungan"),
-            ),
-          ],
+                  ],
+                ),
+              ),
+            ],
+          ),
         );
       },
     );
@@ -72,16 +104,6 @@ class _AdminDokumentasiRWState extends State<AdminDokumentasiRW> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFFC5E0CD),
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          icon: const Icon(Icons.question_answer_outlined),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => FAQ()),
-            );
-          },
-        ),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 20.0),

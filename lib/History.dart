@@ -3,7 +3,6 @@ import 'package:firebase_database/firebase_database.dart';
 
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
-import 'package:flutter_helloo_world/Faq.dart';
 
 enum TemplateStatus {
   BelumDiverifikasi,
