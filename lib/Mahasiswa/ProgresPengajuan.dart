@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_helloo_world/AdminDesa/AdminDetailPengajuan.dart';
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
+import 'package:flutter_helloo_world/Mahasiswa/EditPengajuan.dart';
 import 'package:flutter_helloo_world/Mahasiswa/HasilPengabdian.dart';
 
 enum TemplateStatus {
@@ -113,6 +115,7 @@ class _ProgresPengajuanState extends State<ProgresPengajuan> {
                   TanggalSelesai: item['tanggalSelesai'] ?? 'Unknown',
                   templateStatus: _pengajuanStatus[item['id']],
                   pengajuanId: item['id'],
+                  keteranganRevisi: item['keteranganRevisi'] ?? 'Unknown',
                 );
               },
             );
@@ -147,6 +150,7 @@ class _ProgresPengajuanState extends State<ProgresPengajuan> {
 class CustomContainer extends StatelessWidget {
   final Color color;
   final String text;
+  final String keteranganRevisi;
   final String topLeftText;
   final String additionalText;
   final String TanggalAwal;
@@ -158,6 +162,7 @@ class CustomContainer extends StatelessWidget {
     Key? key,
     required this.color,
     required this.text,
+    required this.keteranganRevisi,
     required this.topLeftText,
     required this.additionalText,
     required this.TanggalAwal,
@@ -166,14 +171,14 @@ class CustomContainer extends StatelessWidget {
     required this.pengajuanId,
   }) : super(key: key);
 
-  final double _width = 200;
-  final double _height = 270;
-
   @override
   Widget build(BuildContext context) {
+    final double _width = MediaQuery.of(context).size.width;
+    final double _height = MediaQuery.of(context).size.width;
+
     return Container(
       width: _width,
-      height: _height,
+      height: _height * 0.7,
       margin: EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
         color: color,
@@ -196,7 +201,7 @@ class CustomContainer extends StatelessWidget {
           Text(
             '"' + text + '"',
             style: TextStyle(
-              color: Color.fromARGB(255,0,255,0),
+              color: Color.fromARGB(255, 0, 255, 0),
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
@@ -222,7 +227,7 @@ class CustomContainer extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 16),
+          SizedBox(height: 8),
           Text(
             templateStatus.toString().split('.').last,
             style: TextStyle(
@@ -232,7 +237,37 @@ class CustomContainer extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 16),
+          SizedBox(height: 8),
+          if (templateStatus != TemplateStatus.Diterima ||
+              templateStatus == TemplateStatus.Diterima)
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AdminDetailPengajuan(
+                      pengajuanId: pengajuanId,
+                    ),
+                  ),
+                );
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Text(
+                  'Detail Pengajuan Pengabdian',
+                  style: TextStyle(
+                    color: Colors.green,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
           if (templateStatus == TemplateStatus.Diterima)
             GestureDetector(
               onTap: () {
@@ -249,7 +284,7 @@ class CustomContainer extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(5),
+                  borderRadius: BorderRadius.circular(15),
                 ),
                 child: Text(
                   'Upload Hasil Pengabdian',
@@ -262,6 +297,47 @@ class CustomContainer extends StatelessWidget {
                 ),
               ),
             ),
+          SizedBox(height: 8),
+          if (templateStatus == TemplateStatus.PerluDirevisi) ...[
+            Text(
+              '"' + keteranganRevisi + '"',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 8),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EditPengajuan(
+                      pengajuanId: pengajuanId,
+                    ),
+                  ),
+                );
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Text(
+                  'Edit Pengajuan Pengabdian',
+                  style: TextStyle(
+                    color: Colors.redAccent,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ]
         ],
       ),
     );

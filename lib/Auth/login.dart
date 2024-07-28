@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_helloo_world/AdminDesa/AdminDashboard.dart';
 import 'package:flutter_helloo_world/Auth/AuthServices.dart';
 import 'package:flutter_helloo_world/Auth/daftar.dart';
+import 'package:flutter_helloo_world/Auth/ForgotPasswordPage.dart';
 import 'package:flutter_helloo_world/Mahasiswa/MahasiwaDashboard.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -67,7 +68,7 @@ class _LoginState extends State<Login> {
                 padding: EdgeInsets.symmetric(horizontal: 40),
                 child: TextField(
                   keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(                    
+                  decoration: InputDecoration(
                     prefixIcon: Icon(Icons.email),
                     iconColor: Colors.grey,
                     labelText: 'Email',
@@ -122,6 +123,11 @@ class _LoginState extends State<Login> {
               TextButton(
                 onPressed: () {
                   // Fungsi untuk navigasi ke halaman lupa password
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ForgotPasswordPage()),
+                  );
                 },
                 style: TextButton.styleFrom(
                   backgroundColor: Color(0xFFE9F0EB),
@@ -139,47 +145,42 @@ class _LoginState extends State<Login> {
                     await handleLogin(email, password);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF60AD77),
-                    minimumSize: Size(double.infinity, 50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    )
-                  ),
-                  child: Text(
-                    'Login', 
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700
-                    )
-                  ),
+                      backgroundColor: Color(0xFF60AD77),
+                      minimumSize: Size(double.infinity, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      )),
+                  child: Text('Login',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700)),
                 ),
               ),
               SizedBox(height: 40),
               Center(
-                child : RichText(
-                  text: TextSpan(
-                    text: 'Belum punya akun? ',
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
+                child: RichText(
+                    text: TextSpan(
+                  text: 'Belum punya akun? ',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  children: [
+                    TextSpan(
+                      text: 'DAFTAR',
+                      style: TextStyle(color: Colors.green),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => Daftar()),
+                          );
+                        },
                     ),
-                    children: [
-                      TextSpan(
-                        text: 'DAFTAR',
-                        style: TextStyle(color: Colors.green),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => Daftar()),
-                            );
-                          },
-                      ),
-                    ],
-                  )
-                ),
+                  ],
+                )),
               ),
             ],
           ),
@@ -251,11 +252,11 @@ class _LoginState extends State<Login> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Ada yang salah gaes:('),
-            duration: Duration(seconds: 2),
-          ),
-        );
+        SnackBar(
+          content: Text('Ada yang salah gaes:('),
+          duration: Duration(seconds: 2),
+        ),
+      );
     }
   }
 }

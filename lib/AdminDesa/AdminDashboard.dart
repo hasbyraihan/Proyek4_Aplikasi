@@ -148,18 +148,6 @@ class _AdminDashboardState extends State<AdminDashboard> {
           ),
           CustomContainer(
             color: Color(0xFF60AD77),
-            text: 'Dashboard',
-            additionalText: 'Lama',
-            icon: Icons.question_answer_outlined,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Dashboard()),
-              );
-            },
-          ),
-          CustomContainer(
-            color: Color(0xFF60AD77),
             text: 'Edit Contact',
             additionalText: 'Person',
             icon: Icons.contacts,

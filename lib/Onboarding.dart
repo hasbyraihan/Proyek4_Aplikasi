@@ -34,8 +34,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             padding: const EdgeInsets.only(right: 20, top: 20),
             child: InkWell(
               onTap: () {
-                Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (_) => DashboardBaru()));
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (_) => DashboardBaru()));
               }, //to login screen. We will update later
               child: const Text(
                 'Skip',
@@ -67,13 +67,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
               createPage(
                 image: 'assets/images/logo.png',
-                title: 'Constants.titleTwo',
-                description: 'Constants.descriptionTwo',
+                title: 'Simpemas',
+                description: 'Membantu mempermudah proses pengabdian',
               ),
               createPage(
                 image: 'assets/images/logo.png',
-                title: 'Constants.titleThree',
-                description: 'Constants.titleThree',
+                title: 'Simpemas',
+                description: 'Memperluas jaringan informasi desa indragiri',
               ),
             ],
           ),
@@ -101,8 +101,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       } else {
                         _showLoading(); // Menampilkan loading saat tombol ditekan
                         Timer(const Duration(seconds: 3), () {
-                          Navigator.pushReplacement(context,
-                              MaterialPageRoute(builder: (_) => DashboardBaru()));
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => DashboardBaru()));
                         });
                       }
                     });

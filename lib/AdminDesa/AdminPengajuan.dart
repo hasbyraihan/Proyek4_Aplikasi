@@ -9,6 +9,8 @@ enum TemplateStatus {
   Diterima,
   PerluDirevisi,
   Pending,
+  Selesai,
+  Selesai_Direview,
 }
 
 class AdminPengajuan extends StatefulWidget {
@@ -29,17 +31,21 @@ class _AdminPengajuanState extends State<AdminPengajuan> {
     if (snapshot.value != null) {
       Map<dynamic, dynamic> values = snapshot.value as Map<dynamic, dynamic>;
       values.forEach((key, value) {
-        Map<String, dynamic> item = {};
-        value.forEach((k, v) {
-          item[k.toString()] = v;
-        });
-        item['id'] = key.toString();
-        String status = item['statuspengajuan'];
-        TemplateStatus templateStatus = TemplateStatus.values.firstWhere(
-            (e) => e.toString() == 'TemplateStatus.' + status,
-            orElse: () => TemplateStatus.BelumDiverifikasi);
-        _pengajuanStatus[key.toString()] = templateStatus;
-        dataList.add(item);
+        if (value['statuspengajuan'] != 'Diterima' &&
+            value['statuspengajuan'] != 'Selesai' &&
+            value['statuspengajuan'] != 'Selesai_Direview') {
+          Map<String, dynamic> item = {};
+          value.forEach((k, v) {
+            item[k.toString()] = v;
+          });
+          item['id'] = key.toString();
+          String status = item['statuspengajuan'];
+          TemplateStatus templateStatus = TemplateStatus.values.firstWhere(
+              (e) => e.toString() == 'TemplateStatus.' + status,
+              orElse: () => TemplateStatus.BelumDiverifikasi);
+          _pengajuanStatus[key.toString()] = templateStatus;
+          dataList.add(item);
+        }
       });
     }
     return dataList;
@@ -56,8 +62,54 @@ class _AdminPengajuanState extends State<AdminPengajuan> {
       _pengajuanStatus[id] = status!;
     });
     if (status != null) {
-      _updateStatus(id, status);
+      if (status == TemplateStatus.PerluDirevisi) {
+        _showRevisiDialog(id);
+      } else {
+        _updateStatus(id, status);
+      }
     }
+  }
+
+  void _showRevisiDialog(String id) {
+    TextEditingController _controller = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: TextField(
+            controller: _controller,
+            decoration: InputDecoration(hintText: "Masukkan keterangan revisi"),
+          ),
+          actions: [
+            TextButton(
+              child: Text('Batal'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            ElevatedButton(
+              child: Text('Submit'),
+              onPressed: () {
+                String keterangan = _controller.text;
+                if (keterangan.isNotEmpty) {
+                  _updateStatusWithRevisi(
+                      id, TemplateStatus.PerluDirevisi, keterangan);
+                  Navigator.of(context).pop();
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _updateStatusWithRevisi(
+      String id, TemplateStatus status, String keterangan) async {
+    await _databaseRef.child(id).update({
+      'statuspengajuan': status.toString().split('.').last,
+      'keteranganRevisi': keterangan,
+    });
   }
 
   @override
@@ -101,7 +153,7 @@ class _AdminPengajuanState extends State<AdminPengajuan> {
                   TanggalAwal: item['tanggalAwal'] ?? 'Unknown',
                   TanggalSelesai: item['tanggalSelesai'] ?? 'Unknown',
                   Link: '',
-                  logoPath: 'assets/images/logopolban.png',
+                  logoPath: '',
                   templateStatus: _pengajuanStatus[item['id']],
                   onStatusChanged: (status) {
                     _onStatusChanged(item['id'], status);
@@ -134,6 +186,10 @@ class _AdminPengajuanState extends State<AdminPengajuan> {
         return Colors.redAccent;
       case TemplateStatus.Pending:
         return Color.fromARGB(255, 255, 187, 85);
+      case TemplateStatus.Selesai:
+        return Color.fromARGB(255, 105, 107, 255);
+      case TemplateStatus.Selesai_Direview:
+        return Color(0xFF60AD77);
     }
   }
 }
@@ -149,7 +205,7 @@ class CustomContainer extends StatelessWidget {
   final String logoPath;
   final TemplateStatus? templateStatus;
   final ValueChanged<TemplateStatus?> onStatusChanged;
-  final String pengajuanId; // Add pengajuan ID
+  final String pengajuanId;
 
   const CustomContainer({
     Key? key,
@@ -163,161 +219,118 @@ class CustomContainer extends StatelessWidget {
     required this.logoPath,
     required this.templateStatus,
     required this.onStatusChanged,
-    required this.pengajuanId, // Initialize pengajuan ID
+    required this.pengajuanId,
   }) : super(key: key);
-
-  final double _width = 200; // Atur lebar container di sini
-  final double _height = 170; // Atur tinggi container di sini
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: _width,
-      height: _height,
       margin: EdgeInsets.symmetric(vertical: 10),
+      padding: EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Stack(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Positioned(
-            left: 17, // Padding dari sisi kiri
-            top: 36, // Padding dari atas
-
-            child: Image.asset(
-              // Menambahkan gambar logo
-              logoPath,
-              width: 70, // Ukuran gambar logo
-              height: 70,
-            ),
-          ),
-          Positioned(
-            left: (_width) /
-                2, // Menempatkan teks di tengah horizontal berdasarkan lebar container dan lebar gambar logo
-            top: 12, // Padding dari atas
-            child: Align(
-              alignment: Alignment
-                  .center, // Menyatukan teks ke tengah horizontal dari container
-              child: Text(
-                topLeftText,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+          Center(
+            child: Text(
+              topLeftText,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
-          Positioned(
-            left: (_width) /
-                2, // Menempatkan teks di tengah horizontal berdasarkan lebar container dan lebar gambar logo
-            top: 12 +
-                20 +
-                8, // Padding dari atas + tinggi teks topLeftText + padding tambahan
-            child: Align(
-              alignment: Alignment
-                  .center, // Menyatukan teks ke tengah horizontal dari container
-              child: Text(
-                '"' + text + '"',
-                style: TextStyle(
-                  color: Color.fromARGB(255, 89, 255, 0),
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+          SizedBox(height: 8),
+          Center(
+            child: Text(
+              '"$text"',
+              style: TextStyle(
+                color: Color.fromARGB(255, 89, 255, 0),
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
-          Positioned(
-            left: (_width) / 2,
-            top: 12 + 20 + 8 + 20 + 8,
-            child: Align(
-              alignment: Alignment.center,
-              child: Text(
-                'Lokasi : ' + additionalText,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+          SizedBox(height: 8),
+          Center(
+            child: Text(
+              'Lokasi : $additionalText',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
-          Positioned(
-            left: (_width) / 2,
-            top: 12 + 20 + 8 + 20 + 8 + 18 + 8,
-            child: Align(
-              alignment: Alignment.center,
-              child: Text(
-                'Tanggal : ' + TanggalAwal + ' - ' + TanggalSelesai,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+          SizedBox(height: 8),
+          Center(
+            child: Text(
+              'Tanggal : $TanggalAwal - $TanggalSelesai',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
-          Positioned(
-            left: 20,
-            top: 120,
-            child: DropdownButton<TemplateStatus>(
-              value: templateStatus,
-              onChanged: (status) => onStatusChanged(status),
-              items: [
-                DropdownMenuItem(
-                  value: TemplateStatus.BelumDiverifikasi,
-                  child: Text('Belum Diverifikasi'),
-                ),
-                DropdownMenuItem(
-                  value: TemplateStatus.Diterima,
-                  child: Text('Diterima'),
-                ),
-                DropdownMenuItem(
-                  value: TemplateStatus.PerluDirevisi,
-                  child: Text('Perlu Direvisi'),
-                ),
-                DropdownMenuItem(
-                  value: TemplateStatus.Pending,
-                  child: Text('Pending'),
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            left: (_width),
-            top: 130,
-            child: GestureDetector(
-              onTap: () {
-                // Navigasi ke halaman lain
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AdminDetailPengajuan(
-                      pengajuanId: pengajuanId,
-                    ), // Pass the pengajuan ID
+          SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              DropdownButton<TemplateStatus>(
+                value: templateStatus,
+                onChanged: onStatusChanged,
+                items: [
+                  DropdownMenuItem(
+                    value: TemplateStatus.BelumDiverifikasi,
+                    child: Text('Belum Diverifikasi'),
                   ),
-                );
-              },
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 5), // Menambahkan padding di dalam container
-                decoration: BoxDecoration(
-                  color: Colors.white, // Warna latar belakang putih
-                  borderRadius: BorderRadius.circular(
-                      15), // Menambahkan radius border agar sudutnya melengkung
-                ),
-                child: Text(
-                  'Detail Selengkapnya',
-                  style: TextStyle(
-                    color: Colors.green,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                  DropdownMenuItem(
+                    value: TemplateStatus.Diterima,
+                    child: Text('Diterima'),
+                  ),
+                  DropdownMenuItem(
+                    value: TemplateStatus.PerluDirevisi,
+                    child: Text('Perlu Direvisi'),
+                  ),
+                  DropdownMenuItem(
+                    value: TemplateStatus.Pending,
+                    child: Text('Pending'),
+                  ),
+                ],
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AdminDetailPengajuan(
+                        pengajuanId: pengajuanId,
+                      ),
+                    ),
+                  );
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: Text(
+                    'Detail Selengkapnya',
+                    style: TextStyle(
+                      color: Colors.green,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
-            ),
+            ],
           ),
         ],
       ),
