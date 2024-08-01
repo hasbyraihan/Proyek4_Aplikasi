@@ -66,14 +66,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 description: 'Sistem Manajemen Pengabdian Masyarakat',
               ),
               createPage(
-                image: 'assets/images/logo.png',
-                title: 'Simpemas',
-                description: 'Membantu mempermudah proses pengabdian',
+                image: 'assets/images/images.jpeg',
+                title: 'Desa Indagiri',
+                description: 'Memperluas jaringan informasi desa indragiri',
               ),
               createPage(
                 image: 'assets/images/logo.png',
                 title: 'Simpemas',
-                description: 'Memperluas jaringan informasi desa indragiri',
+                description: 'Membantu mempermudah proses pengabdian',
               ),
             ],
           ),

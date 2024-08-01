@@ -15,16 +15,16 @@ class AdminDokumentasiRW extends StatefulWidget {
 class _AdminDokumentasiRWState extends State<AdminDokumentasiRW> {
   int _selectedIndex = 0;
   final List<Map<String, String>> items = [
-    {"title": "rw-1", "subtitle": "Sinumbra"},
-    {"title": "rw-2", "subtitle": "Sinumbra"},
-    {"title": "rw-3", "subtitle": "Sinumbra"},
+    {"title": "rw-1", "subtitle": "Indragiri"},
+    {"title": "rw-2", "subtitle": "Girimukti"},
+    {"title": "rw-3", "subtitle": "Eul-eul"},
     {"title": "rw-4", "subtitle": "Sinumbra"},
     {"title": "rw-5", "subtitle": "Sinumbra"},
-    {"title": "rw-6", "subtitle": "Sinumbra"},
-    {"title": "rw-7", "subtitle": "Sinumbra"},
-    {"title": "rw-8", "subtitle": "Sinumbra"},
-    {"title": "rw-9", "subtitle": "Sinumbra"},
-    {"title": "rw-10", "subtitle": "Sinumbra"},
+    {"title": "rw-6", "subtitle": "Kanaan"},
+    {"title": "rw-7", "subtitle": "Ciparay"},
+    {"title": "rw-8", "subtitle": "Bumi Nagara"},
+    {"title": "rw-9", "subtitle": "Persil"},
+    {"title": "rw-10", "subtitle": "Palawija"},
   ];
 
   void _showChoiceDialog(BuildContext context, String title) {

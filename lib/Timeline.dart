@@ -14,16 +14,16 @@ class _TimelineState extends State<Timeline> {
   int _selectedIndex = 0; // Deklarasi dan inisialisasi _selectedIndex
 
   final List<Map<String, String>> rwData = [
-    {'rw': 'RW 1', 'name': 'Sinumbra'},
-    {'rw': 'RW 2', 'name': 'Ciparay'},
-    {'rw': 'RW 3', 'name': 'Persil'},
-    {'rw': 'RW 4', 'name': 'Nyampay'},
-    {'rw': 'RW 5', 'name': 'Stamplat'},
-    {'rw': 'RW 6', 'name': 'Kanaan'},
-    {'rw': 'RW 7', 'name': 'Lokasi 7'},
-    {'rw': 'RW 8', 'name': 'Lokasi 8'},
-    {'rw': 'RW 9', 'name': 'Lokasi 9'},
-    {'rw': 'RW 10', 'name': 'Lokasi 10'},
+    {"rw": "rw-1", "name": "Indragiri"},
+    {"rw": "rw-2", "name": "Girimukti"},
+    {"rw": "rw-3", "name": "Eul-eul"},
+    {"rw": "rw-4", "name": "Sinumbra"},
+    {"rw": "rw-5", "name": "Sinumbra"},
+    {"rw": "rw-6", "name": "Kanaan"},
+    {"rw": "rw-7", "name": "Ciparay"},
+    {"rw": "rw-8", "name": "Bumi Nagara"},
+    {"rw": "rw-9", "name": "Persil"},
+    {"rw": "rw-10", "name": "Palawija"},
   ];
 
   void _onItemTapped(String rw) {
