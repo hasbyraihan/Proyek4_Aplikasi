@@ -38,30 +38,30 @@ class _TemplatePengajuanState extends State<TemplatePengajuan> {
     return templates;
   }
 
-  Future<void> requestPermissions() async {
-    if (Platform.isAndroid) {
-      var status = await Permission.storage.status;
-      if (!status.isGranted) {
-        status = await Permission.storage.request();
-      }
+  // Future<void> requestPermissions() async {
+  //   if (Platform.isAndroid) {
+  //     var status = await Permission.storage.status;
+  //     if (!status.isGranted) {
+  //       status = await Permission.storage.request();
+  //     }
 
-      var manageStatus = await Permission.manageExternalStorage.status;
-      if (!manageStatus.isGranted) {
-        manageStatus = await Permission.manageExternalStorage.request();
-      }
+  //     var manageStatus = await Permission.manageExternalStorage.status;
+  //     if (!manageStatus.isGranted) {
+  //       manageStatus = await Permission.manageExternalStorage.request();
+  //     }
 
-      if (status.isGranted && manageStatus.isGranted) {
-        print('Permissions granted');
-      } else {
-        print('Permissions denied');
-      }
-    }
-  }
+  //     if (status.isGranted && manageStatus.isGranted) {
+  //       print('Permissions granted');
+  //     } else {
+  //       print('Permissions denied');
+  //     }
+  //   }
+  // }
 
   @override
   void initState() {
     super.initState();
-    requestPermissions();
+    // requestPermissions();
   }
 
   @override
@@ -186,48 +186,52 @@ class CustomContainer extends StatelessWidget {
   Future<void> downloadFile(
       BuildContext context, String url, String fileName) async {
     try {
-      Dio dio = Dio();
-      var dir = await getExternalStorageDirectory();
-      if (dir == null) {
-        throw Exception("Could not access external storage directory");
-      }
-
-      String newPath = "";
-      List<String> paths = dir.path.split("/");
-      for (int x = 1; x < paths.length; x++) {
-        String folder = paths[x];
-        if (folder != "Android") {
-          newPath += "/" + folder;
-        } else {
-          break;
+      if(await Permission.storage.request().isGranted) {
+        Dio dio = Dio();
+        var dir = await getExternalStorageDirectory();
+        if (dir == null) {
+          throw Exception("Could not access external storage directory");
         }
-      }
-      newPath = newPath + "/Download";
-      dir = Directory(newPath);
+        String newPath = "";
+        List<String> paths = dir.path.split("/");
+        for (int x = 1; x < paths.length; x++) {
+          String folder = paths[x];
+          if (folder != "Android") {
+            newPath += "/" + folder;
+          } else {
+            break;
+          }
+        }
+        newPath = newPath + "/Download";
+        dir = Directory(newPath);
 
-      if (!await dir.exists()) {
-        await dir.create(recursive: true);
-      }
+        if (!await dir.exists()) {
+          await dir.create(recursive: true);
+        }
 
-      await dio.download(url, "${dir.path}/$fileName");
-      print("File downloaded to ${dir.path}/$fileName");
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text("Download Successful"),
-            content: Text("File has been downloaded to ${dir?.path}/$fileName"),
-            actions: [
-              TextButton(
-                child: Text("OK"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        },
-      );
+        await dio.download(url, "${dir.path}/$fileName");
+        print("File downloaded to ${dir.path}/$fileName");
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Download Successful"),
+              content: Text("File has been downloaded to ${dir?.path}/$fileName"),
+              actions: [
+                TextButton(
+                  child: Text("OK"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        print("Permission nanud");
+      }
+      
     } catch (e) {
       print("Error downloading file: $e");
       showDialog(

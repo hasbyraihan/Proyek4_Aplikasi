@@ -10,7 +10,6 @@ import 'dart:async';
 
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
-import 'package:flutter_helloo_world/Dashboard.dart';
 import 'package:flutter_helloo_world/Faq.dart';
 import 'package:flutter_helloo_world/Loading.dart';
 

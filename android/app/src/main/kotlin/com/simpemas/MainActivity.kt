@@ -1,4 +1,4 @@
-package com.example.flutter_helloo_world
+package com.simpemas
 
 import io.flutter.embedding.android.FlutterActivity
 
