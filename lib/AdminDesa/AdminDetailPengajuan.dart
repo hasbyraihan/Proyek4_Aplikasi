@@ -189,22 +189,31 @@ class _AdminDetailPengajuanState extends State<AdminDetailPengajuan> {
             logoPath: 'assets/images/logopolban.png',
           ),
           SizedBox(height: 20),
-          Container(
-            child: Wrap(
-              spacing: 55.0,
-              runSpacing: 10.0,
-              children: [
-                _buildDownloadContainer('Surat Izin Desa'),
-                _buildDownloadContainer('Surat Izin Kecamatan'),
-                _buildDownloadContainer('Surat Izin PT'),
-                _buildDownloadContainer('Surat Izin Koramil'),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 110.0), // Tambahkan padding kiri
-                  child: _buildDownloadContainer('Surat Izin Kapolsek'),
-                ),
-              ],
-            ),
+
+          // Bagian Wrap yang telah diubah untuk lebih responsif
+          LayoutBuilder(
+            builder: (context, constraints) {
+              // Dapatkan lebar layar
+              double screenWidth = constraints.maxWidth;
+
+              return Wrap(
+                spacing: screenWidth * 0.05, // Jarak antar elemen horizontal
+                runSpacing: screenWidth * 0.03, // Jarak antar elemen vertikal
+                alignment: WrapAlignment.center,
+                children: [
+                  _buildDownloadContainer('Surat Izin Desa'),
+                  _buildDownloadContainer('Surat Izin Kecamatan'),
+                  _buildDownloadContainer('Surat Izin PT'),
+                  _buildDownloadContainer('Surat Izin Koramil'),
+
+                  // Elemen kelima ditempatkan di tengah
+                  Align(
+                    alignment: Alignment.center, // Pusatkan elemen kelima
+                    child: _buildDownloadContainer('Surat Izin Kapolsek'),
+                  ),
+                ],
+              );
+            },
           ),
           SizedBox(height: 20),
         ],
@@ -221,36 +230,48 @@ class _AdminDetailPengajuanState extends State<AdminDetailPengajuan> {
   }
 
   Widget _buildDownloadContainer(String text) {
-    return InkWell(
-      onTap: () => _onDownloadPressed(text + '.pdf'),
-      borderRadius: BorderRadius.circular(10),
-      child: Ink(
-        width: 151,
-        height: 75,
-        decoration: BoxDecoration(
-          color: Color(0xFF60AD77),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Mengambil ukuran layar
+        double screenWidth = MediaQuery.of(context).size.width;
+        double screenHeight = MediaQuery.of(context).size.height;
+
+        // Menentukan ukuran elemen secara responsif
+        double containerWidth = screenWidth * 0.4; // 40% dari lebar layar
+        double containerHeight = screenHeight * 0.1; // 10% dari tinggi layar
+
+        return InkWell(
+          onTap: () => _onDownloadPressed(text + '.pdf'),
           borderRadius: BorderRadius.circular(10),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              text,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
+          child: Ink(
+            width: containerWidth,
+            height: containerHeight,
+            decoration: BoxDecoration(
+              color: Color(0xFF60AD77),
+              borderRadius: BorderRadius.circular(10),
             ),
-            SizedBox(height: 5),
-            Icon(
-              Icons.download,
-              color: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  text,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                SizedBox(height: 5),
+                Icon(
+                  Icons.download,
+                  color: Colors.white,
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
@@ -330,7 +351,7 @@ class CustomContainer extends StatelessWidget {
               child: Text(
                 '"' + text + '"',
                 style: TextStyle(
-                  color: Color.fromARGB(255, 62, 146, 17),
+                  color: Color.fromARGB(255, 0, 255, 0),
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),

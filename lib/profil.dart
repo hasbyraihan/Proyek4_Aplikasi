@@ -250,6 +250,7 @@ class _ProfilState extends State<Profil> {
                                     color: Colors.white, fontSize: 20)),
                           ),
                         ),
+                        SizedBox(height: 20),
                       ],
                     ),
                   ),

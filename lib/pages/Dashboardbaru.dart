@@ -422,38 +422,50 @@ class InfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      width: 160,
-      decoration: BoxDecoration(
-        color: color.withOpacity(1),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icon,
-            size: 30,
-            color: const Color.fromARGB(255, 49, 49, 49),
+    // Mengambil ukuran layar untuk membuat ukuran yang lebih fleksibel
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Container(
+          padding: EdgeInsets.all(screenWidth * 0.04), // Padding responsif
+          width: screenWidth * 0.4, // Menyesuaikan lebar dengan ukuran layar
+          decoration: BoxDecoration(
+            color: color.withOpacity(1),
+            borderRadius: BorderRadius.circular(20),
           ),
-          const SizedBox(height: 8),
-          Text(
-            title,
-            style: const TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.w400,
-                color: Color(0xFFFFFFFF)),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                icon,
+                size: screenWidth * 0.08, // Ukuran ikon yang responsif
+                color: const Color.fromARGB(255, 49, 49, 49),
+              ),
+              SizedBox(height: screenWidth * 0.02), // Jarak yang responsif
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: screenWidth * 0.035, // Ukuran font responsif
+                  fontWeight: FontWeight.w400,
+                  color: const Color(0xFFFFFFFF),
+                ),
+                textAlign:
+                    TextAlign.center, // Agar teks tetap rapi di layar kecil
+              ),
+              Text(
+                value,
+                style: TextStyle(
+                  fontSize: screenWidth *
+                      0.04, // Ukuran font yang lebih besar untuk value
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xFFFFFFFF),
+                ),
+              ),
+            ],
           ),
-          Text(
-            value,
-            style: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFFFFFFFF)),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

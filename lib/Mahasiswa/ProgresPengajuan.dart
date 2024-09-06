@@ -268,6 +268,7 @@ class CustomContainer extends StatelessWidget {
                 ),
               ),
             ),
+          SizedBox(height: 8),
           if (templateStatus == TemplateStatus.Diterima)
             GestureDetector(
               onTap: () {

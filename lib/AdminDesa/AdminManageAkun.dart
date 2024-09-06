@@ -171,70 +171,81 @@ class CustomContainer extends StatelessWidget {
     required this.onTapIcon2,
   }) : super(key: key);
 
-  final double _width = 207; // Atur lebar container di sini
-  final double _height = 130; // Atur tinggi container di sini
-
   @override
   Widget build(BuildContext context) {
+    // Menggunakan MediaQuery untuk menyesuaikan ukuran container berdasarkan ukuran layar
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    double containerWidth = screenWidth * 0.9; // 90% dari lebar layar
+    double containerHeight = screenHeight * 0.13; // 13% dari tinggi layar
+
     return Container(
-      width: _width,
-      height: _height,
+      width: containerWidth,
+      height: containerHeight,
       margin: EdgeInsets.symmetric(vertical: 10),
+      padding:
+          EdgeInsets.all(16), // Tambahkan padding untuk tampilan lebih rapi
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Stack(
+      child: Row(
+        mainAxisAlignment:
+            MainAxisAlignment.spaceBetween, // Membuat jarak antar elemen
         children: [
-          Positioned(
-            left: _width / 4 - 20,
-            top: _height / 2 - 35,
-            child: Text(
-              text,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+          // Teks utama dan teks tambahan dalam satu Column
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment
+                .center, // Agar teks berada di tengah secara vertikal
+            children: [
+              Text(
+                text,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: screenWidth *
+                      0.06, // Sesuaikan ukuran teks dengan lebar layar
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
+              SizedBox(height: 5), // Jarak antara teks utama dan teks tambahan
+              Text(
+                additionalText,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize:
+                      screenWidth * 0.05, // Ukuran lebih kecil dari teks utama
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
           ),
-          Positioned(
-            left: _width / 4 - 20,
-            top: _height / 2 + 5,
-            child: Text(
-              additionalText,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+          // Dua ikon di dalam Column
+          Column(
+            mainAxisAlignment: MainAxisAlignment
+                .center, // Agar ikon berada di tengah secara vertikal
+            children: [
+              GestureDetector(
+                onTap: onTapIcon1,
+                child: Icon(
+                  icon1,
+                  size: screenWidth *
+                      0.07, // Sesuaikan ukuran ikon dengan lebar layar
+                  color: Color.fromARGB(255, 16, 80, 8),
+                ),
               ),
-            ),
-          ),
-          Positioned(
-            left: _width +
-                80, // Posisi ikon pada 1/4 bagian dari panjang container
-            top: _height / 2 - 45,
-            child: GestureDetector(
-              onTap: onTapIcon1,
-              child: Icon(
-                icon1,
-                size: 35,
-                color: Color.fromARGB(255, 16, 80, 8),
+              SizedBox(height: 10), // Jarak antara dua ikon
+              GestureDetector(
+                onTap: onTapIcon2,
+                child: Icon(
+                  icon2,
+                  size: screenWidth *
+                      0.07, // Sesuaikan ukuran ikon dengan lebar layar
+                  color: Color.fromARGB(255, 16, 80, 8),
+                ),
               ),
-            ),
-          ),
-          Positioned(
-            left: _width +
-                80, // Posisi ikon pada 1/4 bagian dari panjang container
-            top: _height / 2 + 5,
-            child: GestureDetector(
-              onTap: onTapIcon2,
-              child: Icon(
-                icon2,
-                size: 35,
-                color: Color.fromARGB(255, 16, 80, 8),
-              ),
-            ),
+            ],
           ),
         ],
       ),

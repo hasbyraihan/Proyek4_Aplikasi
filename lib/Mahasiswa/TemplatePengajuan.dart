@@ -127,9 +127,6 @@ class CustomContainer extends StatelessWidget {
     required this.icon,
   }) : super(key: key);
 
-  final double _width = 207;
-  final double _height = 100;
-
   Future<bool> checkAndRequestStoragePermission() async {
     if (Platform.isAndroid) {
       var storageStatus = await Permission.storage.status;
@@ -186,7 +183,7 @@ class CustomContainer extends StatelessWidget {
   Future<void> downloadFile(
       BuildContext context, String url, String fileName) async {
     try {
-      if(await Permission.storage.request().isGranted) {
+      if (await Permission.storage.request().isGranted) {
         Dio dio = Dio();
         var dir = await getExternalStorageDirectory();
         if (dir == null) {
@@ -216,7 +213,8 @@ class CustomContainer extends StatelessWidget {
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text("Download Successful"),
-              content: Text("File has been downloaded to ${dir?.path}/$fileName"),
+              content:
+                  Text("File has been downloaded to ${dir?.path}/$fileName"),
               actions: [
                 TextButton(
                   child: Text("OK"),
@@ -229,9 +227,8 @@ class CustomContainer extends StatelessWidget {
           },
         );
       } else {
-        print("Permission nanud");
+        print("Permission denied");
       }
-      
     } catch (e) {
       print("Error downloading file: $e");
       showDialog(
@@ -256,11 +253,18 @@ class CustomContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Menggunakan MediaQuery untuk membuat tampilan lebih responsif
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    double containerWidth = screenWidth * 0.8; // 80% dari lebar layar
+    double containerHeight = screenHeight * 0.12; // 12% dari tinggi layar
+
     return GestureDetector(
       onTap: () => checkPermission(context),
       child: Container(
-        width: _width,
-        height: _height,
+        width: containerWidth,
+        height: containerHeight,
         margin: EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
           color: color,
@@ -269,8 +273,8 @@ class CustomContainer extends StatelessWidget {
         child: Stack(
           children: [
             Positioned(
-              left: _width + 90,
-              top: _height / 2 - 30,
+              right: 20, // Ikon akan selalu di sisi kanan
+              top: containerHeight / 2 - 30,
               child: Icon(
                 icon,
                 size: 60,
@@ -278,8 +282,8 @@ class CustomContainer extends StatelessWidget {
               ),
             ),
             Positioned(
-              left: _width / 4 - 20,
-              top: _height / 2 - 15,
+              left: 20, // Teks berada di kiri
+              top: containerHeight / 2 - 15,
               child: Text(
                 text,
                 style: TextStyle(
