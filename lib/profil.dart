@@ -98,6 +98,8 @@ class _ProfilState extends State<Profil> {
             final userRef = FirebaseDatabase.instance.ref('/Users/$userId');
             await userRef.update({'fotoProfilURL': downloadUrl});
 
+            imageCache.clear();
+
             // Update UI with the new photo URL
             setState(() {
               _user.fotoProfil = downloadUrl;
