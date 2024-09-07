@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_helloo_world/AdminDesa/AdminContactPerson.dart';
 import 'package:flutter_helloo_world/AdminDesa/AdminDaftarRating.dart';
+import 'package:flutter_helloo_world/AdminDesa/AdminAspirasiWarga.dart';
 import 'package:flutter_helloo_world/AdminDesa/AdminFAQEditPage.dart';
 import 'package:flutter_helloo_world/AdminDesa/AdminManageAkun.dart';
 import 'package:flutter_helloo_world/AdminDesa/AdminManageInfo.dart';
@@ -102,7 +103,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
             icon: Icons.bar_chart,
             onTap: () {
               _showLoading();
-              Timer(Duration(seconds: 3), () {
+              Timer(Duration(seconds: 1), () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => AdminPengajuan()));
               });
@@ -117,6 +118,18 @@ class _AdminDashboardState extends State<AdminDashboard> {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => AdminDaftarRating()),
+              );
+            },
+          ),
+          CustomContainer(
+            color: Color(0xFF60AD77),
+            text: 'Edit Aspirasi',
+            additionalText: 'Warga',
+            icon: Icons.people_rounded,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AdminAspirasiWarga()),
               );
             },
           ),
