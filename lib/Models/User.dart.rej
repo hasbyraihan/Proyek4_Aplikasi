@@ -1,0 +1,10 @@
+diff a/lib/Models/User.dart b/lib/Models/User.dart	(rejected hunks)
+@@ -4,7 +4,7 @@
+   final String nim;
+   final String role;
+   final String namaPerguruanTinggi;
+-  String fotoProfil;
++  final String fotoProfil;
+ 
+   User({
+     required this.uid,

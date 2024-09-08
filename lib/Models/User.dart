@@ -4,7 +4,7 @@ class User {
   final String nim;
   final String role;
   final String namaPerguruanTinggi;
-  final String fotoProfil;
+  String fotoProfil;
 
   User({
     required this.uid,
