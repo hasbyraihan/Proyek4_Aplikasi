@@ -84,8 +84,9 @@ class _TimelineDetailState extends State<TimelineDetail> {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return Center(
-                child:
-                    Text('RW ini Belum ada rencana menjadi lokasi Pengabdian'));
+                child: Text(
+                    'RW ini Belum ada rencana menjadi lokasi Pengabdian di ' +
+                        widget.rw));
           } else {
             List<Map<String, dynamic>> data = snapshot.data!;
             return ListView.builder(

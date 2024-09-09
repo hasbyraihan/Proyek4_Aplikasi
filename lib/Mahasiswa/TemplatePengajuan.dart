@@ -168,8 +168,12 @@ class CustomContainer extends StatelessWidget {
     try {
       Dio dio = Dio();
 
-      // Mendapatkan direktori penyimpanan dokumen aplikasi
-      final directory = await getApplicationDocumentsDirectory();
+      final directory = Directory('/storage/emulated/0/Download/Simpemas');
+
+      if (!await directory.exists()) {
+        await directory.create(recursive: true);
+      }
+
       final filePath = '${directory.path}/$fileName';
 
       // Download file ke direktori dokumen aplikasi
