@@ -5,6 +5,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
+import 'package:path_provider/path_provider.dart';
+import 'package:flutter/services.dart';
 
 class AdminUploadTemplatePage extends StatefulWidget {
   @override
@@ -25,13 +27,29 @@ class _AdminUploadTemplatePageState extends State<AdminUploadTemplatePage> {
   Map<String, File?> templateFiles = {};
 
   Future<void> _pickFile(String templateName) async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
-    if (result != null) {
-      File file = File(result.files.single.path!);
-      setState(() {
-        templateFiles[templateName] = file;
-      });
-      _uploadFileToFirebase(templateName, file);
+    try {
+      final pickedFile = await FilePicker.platform.pickFiles();
+      if (pickedFile != null) {
+        final filePath = pickedFile.files.single.path!;
+        final file = File(filePath);
+
+        // Simpan file ke direktori lokal aplikasi
+        final directory = await getApplicationDocumentsDirectory();
+        final localFilePath = '${directory.path}/${file.uri.pathSegments.last}';
+        final localFile = File(localFilePath);
+
+        await file.copy(localFilePath);
+
+        setState(() {
+          templateFiles[templateName] = localFile;
+        });
+
+        _uploadFileToFirebase(templateName, localFile);
+      }
+    } on PlatformException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to pick file: $e')),
+      );
     }
   }
 
@@ -69,6 +87,7 @@ class _AdminUploadTemplatePageState extends State<AdminUploadTemplatePage> {
   }
 
   int _selectedIndex = 1;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

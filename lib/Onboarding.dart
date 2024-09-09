@@ -3,6 +3,7 @@ import 'package:flutter_helloo_world/Loading.dart';
 import 'dart:async';
 
 import 'package:flutter_helloo_world/pages/Dashboardbaru.dart';
+import 'package:flutter_helloo_world/PermissionHandler.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({Key? key}) : super(key: key);
@@ -15,6 +16,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController(initialPage: 0);
   int currentIndex = 0;
   bool _isLoading = false; // Variabel loading
+
+  @override
+  void initState() {
+    super.initState();
+    PermissionHandler()
+        .checkPermissions(); // Meminta izin saat aplikasi pertama kali dibuka
+  }
 
   void _showLoading() {
     setState(() {

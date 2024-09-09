@@ -38,26 +38,6 @@ class _TemplatePengajuanState extends State<TemplatePengajuan> {
     return templates;
   }
 
-  // Future<void> requestPermissions() async {
-  //   if (Platform.isAndroid) {
-  //     var status = await Permission.storage.status;
-  //     if (!status.isGranted) {
-  //       status = await Permission.storage.request();
-  //     }
-
-  //     var manageStatus = await Permission.manageExternalStorage.status;
-  //     if (!manageStatus.isGranted) {
-  //       manageStatus = await Permission.manageExternalStorage.request();
-  //     }
-
-  //     if (status.isGranted && manageStatus.isGranted) {
-  //       print('Permissions granted');
-  //     } else {
-  //       print('Permissions denied');
-  //     }
-  //   }
-  // }
-
   @override
   void initState() {
     super.initState();
@@ -129,27 +109,30 @@ class CustomContainer extends StatelessWidget {
 
   Future<bool> checkAndRequestStoragePermission() async {
     if (Platform.isAndroid) {
-      var storageStatus = await Permission.storage.status;
-      var manageStatus = await Permission.manageExternalStorage.status;
-
-      if (!storageStatus.isGranted) {
-        storageStatus = await Permission.storage.request();
+      // Untuk Android 13 (API level 33) ke atas
+      if (Platform.operatingSystemVersion.contains('33') ||
+          Platform.version.startsWith('33')) {
+        // Tidak perlu permission untuk file media (gambar, audio, video)
+        return true;
+      } else {
+        // Untuk Android 12 ke bawah (SDK 32 dan sebelumnya)
+        var storageStatus = await Permission.storage.status;
+        if (!storageStatus.isGranted) {
+          storageStatus = await Permission.storage.request();
+        }
+        return true;
       }
-
-      if (!manageStatus.isGranted) {
-        manageStatus = await Permission.manageExternalStorage.request();
-      }
-
-      return storageStatus.isGranted && manageStatus.isGranted;
     } else {
       return true;
     }
   }
 
   Future<void> checkPermission(BuildContext context) async {
-    if (await checkAndRequestStoragePermission()) {
+    bool permissionGranted = await checkAndRequestStoragePermission();
+    if (permissionGranted) {
       downloadFile(context, url, text + ".pdf");
     } else {
+      // Tampilkan dialog jika izin belum diberikan (untuk versi Android yang lebih lama)
       showPermissionDialog(context);
     }
   }
@@ -183,54 +166,38 @@ class CustomContainer extends StatelessWidget {
   Future<void> downloadFile(
       BuildContext context, String url, String fileName) async {
     try {
-      if (await Permission.storage.request().isGranted) {
-        Dio dio = Dio();
-        var dir = await getExternalStorageDirectory();
-        if (dir == null) {
-          throw Exception("Could not access external storage directory");
-        }
-        String newPath = "";
-        List<String> paths = dir.path.split("/");
-        for (int x = 1; x < paths.length; x++) {
-          String folder = paths[x];
-          if (folder != "Android") {
-            newPath += "/" + folder;
-          } else {
-            break;
-          }
-        }
-        newPath = newPath + "/Download";
-        dir = Directory(newPath);
+      Dio dio = Dio();
 
-        if (!await dir.exists()) {
-          await dir.create(recursive: true);
-        }
+      // Mendapatkan direktori penyimpanan dokumen aplikasi
+      final directory = await getApplicationDocumentsDirectory();
+      final filePath = '${directory.path}/$fileName';
 
-        await dio.download(url, "${dir.path}/$fileName");
-        print("File downloaded to ${dir.path}/$fileName");
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Download Successful"),
-              content:
-                  Text("File has been downloaded to ${dir?.path}/$fileName"),
-              actions: [
-                TextButton(
-                  child: Text("OK"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        );
-      } else {
-        print("Permission denied");
-      }
+      // Download file ke direktori dokumen aplikasi
+      await dio.download(url, filePath);
+      print("File downloaded to $filePath");
+
+      // Menampilkan dialog sukses
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Download Successful"),
+            content: Text("File has been downloaded to $filePath"),
+            actions: [
+              TextButton(
+                child: Text("OK"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     } catch (e) {
       print("Error downloading file: $e");
+
+      // Menampilkan dialog gagal download
       showDialog(
         context: context,
         builder: (BuildContext context) {

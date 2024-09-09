@@ -8,8 +8,6 @@ import 'package:flutter_helloo_world/AdminDesa/AdminDaftarRating.dart';
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
 import 'package:flutter_helloo_world/Models/pengajuan.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class AdminRatingHasil extends StatefulWidget {
   final String pengajuanId;
@@ -78,51 +76,52 @@ class _AdminRatingHasilState extends State<AdminRatingHasil> {
   Future<void> downloadFile(
       BuildContext context, String url, String fileName) async {
     try {
-      if (await Permission.storage.request().isGranted) {
-        Dio dio = Dio();
-        var dir = await getExternalStorageDirectory();
-        String newPath = "";
-        List<String> paths = dir!.path.split("/");
-        for (int x = 1; x < paths.length; x++) {
-          String folder = paths[x];
-          if (folder != "Android") {
-            newPath += "/" + folder;
-          } else {
-            break;
-          }
-        }
-        newPath = newPath + "/Download";
-        dir = Directory(newPath);
+      Dio dio = Dio();
 
-        if (!await dir.exists()) {
-          await dir.create(recursive: true);
-        }
+      // Mendapatkan direktori Downloads
+      final externalDirectory =
+          Directory('/storage/emulated/0/Download/Simpemas');
 
-        await dio.download(url, "${dir.path}/$fileName");
-        print("File downloaded to ${dir.path}/$fileName");
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Download Successful"),
-              content:
-                  Text("File has been downloaded to ${dir?.path}/$fileName"),
-              actions: [
-                TextButton(
-                  child: Text("OK"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        );
-      } else {
-        print("Permission denied");
+      if (!await externalDirectory.exists()) {
+        await externalDirectory.create(recursive: true);
       }
+
+      var pengajuanTitle = _pengajuanData!.title;
+      final directory =
+          Directory('${externalDirectory.path}/${pengajuanTitle}');
+
+      if (!await directory.exists()) {
+        await directory.create(recursive: true);
+      }
+
+      final filePath = '${directory.path}/$fileName';
+
+      // Download file ke direktori Downloads
+      await dio.download(url, filePath);
+      print("File downloaded to $filePath");
+
+      // Menampilkan dialog sukses
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Download Successful"),
+            content: Text("File has been downloaded to $filePath"),
+            actions: [
+              TextButton(
+                child: Text("OK"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     } catch (e) {
       print("Error downloading file: $e");
+
+      // Menampilkan dialog gagal download
       showDialog(
         context: context,
         builder: (BuildContext context) {
