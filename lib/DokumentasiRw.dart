@@ -68,7 +68,7 @@ class _DokumentasiRWState extends State<DokumentasiRW> {
               },
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.green,
+                  color: const Color(0xFF60AD77),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Column(

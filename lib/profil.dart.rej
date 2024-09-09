@@ -1,0 +1,9 @@
+diff a/lib/profil.dart b/lib/profil.dart	(rejected hunks)
+@@ -10,7 +10,6 @@
+ import 'package:flutter_helloo_world/Component/NavigationBar.dart'
+     as BarNavigasi;
+ import 'package:flutter_helloo_world/pages/Dashboardbaru.dart';
+-import 'package:image_picker/image_picker.dart';
+ 
+ class Profil extends StatefulWidget {
+   @override

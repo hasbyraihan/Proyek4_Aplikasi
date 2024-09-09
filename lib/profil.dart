@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_helloo_world/Auth/AuthServices.dart';
 import 'package:flutter_helloo_world/Mahasiswa/KegiatanPengabdian.dart';
@@ -10,6 +13,7 @@ import 'package:flutter_helloo_world/Mahasiswa/ContactPerson.dart';
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
 import 'package:flutter_helloo_world/pages/Dashboardbaru.dart';
+import 'package:image_picker/image_picker.dart';
 
 class Profil extends StatefulWidget {
   @override
@@ -68,6 +72,96 @@ class _ProfilState extends State<Profil> {
     }
   }
 
+  Future<void> _changeProfilePhoto() async {
+    try {
+      final ImagePicker _picker = ImagePicker();
+      // Pick an image from gallery
+      final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+
+      if (image != null) {
+        final bool? isConfirmed = await _showConfirmationDialog(image.path);
+
+        if (isConfirmed == true) {
+          final firebaseUser = FirebaseAuth.instance.currentUser;
+          if (firebaseUser != null) {
+            final userId = firebaseUser.uid;
+            final fileName = '$userId/profile_picture.png';
+
+            // Upload image to Firebase Storage
+            final storageRef = FirebaseStorage.instance.ref().child('profile_pictures/$fileName');
+            final uploadTask = storageRef.putFile(File(image.path));
+
+            final snapshot = await uploadTask;
+            final downloadUrl = await snapshot.ref.getDownloadURL();
+
+            // Update user profile photo URL in Firebase Realtime Database
+            final userRef = FirebaseDatabase.instance.ref('/Users/$userId');
+            await userRef.update({'fotoProfilURL': downloadUrl});
+
+            imageCache.clear();
+
+            // Update UI with the new photo URL
+            setState(() {
+              _user.fotoProfil = downloadUrl;
+            });
+
+            print('Profile photo updated successfully!');
+          }
+        } else {
+          print('User cancelled photo change.');
+        }
+      }
+    } catch (e) {
+      print('Error while updating profile photo: $e');
+    }
+  }
+
+  Future<bool?> _showConfirmationDialog(String imagePath) async {
+    return showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Peringatan"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 150,
+                height: 150,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.green, width: 3), // Border lingkaran
+                ),
+                child: ClipOval(
+                  child: Image.file(
+                    File(imagePath), // Menampilkan gambar yang dipilih
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              SizedBox(height: 10),
+              Text("Yakin mau ganti fotonya kaya gini?"),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false); // User memilih 'Tidak'
+              },
+              child: Text("Tidak", style: TextStyle(color: Colors.green),),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true); // User memilih 'Ya'
+              },
+              child: Text("Ya", style: TextStyle(color: Colors.green)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     int _selectedIndex = 3;
@@ -123,7 +217,9 @@ class _ProfilState extends State<Profil> {
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 120),
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              _changeProfilePhoto();
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Color(0xFF60AD77),
                               minimumSize: Size(double.infinity, 40),

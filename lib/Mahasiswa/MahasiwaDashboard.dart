@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_helloo_world/Faq.dart';
 import 'package:flutter_helloo_world/Component/NavigationBar.dart'
     as BarNavigasi;
+import 'package:flutter_helloo_world/Mahasiswa/AspirasiWarga.dart';
 import 'package:flutter_helloo_world/Mahasiswa/ContactPerson.dart';
 import 'package:flutter_helloo_world/Mahasiswa/KegiatanPengabdian.dart';
 import 'package:flutter_helloo_world/Mahasiswa/Pengajuan.dart';
@@ -51,6 +52,18 @@ class _MahasiswaDashboardState extends State<MahasiswaDashboard> {
         padding: EdgeInsets.symmetric(
             horizontal: 16), // Tambahkan padding horizontal di sini
         children: [
+          CustomContainer(
+            color: Color(0xFF60AD77),
+            text: 'Informasi',
+            additionalText: 'Aspirasi Warga',
+            icon: Icons.people_rounded,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AspirasiWarga()),
+              );
+            },
+          ),
           CustomContainer(
             color: Color(0xFF60AD77),
             text: 'Pengajuan',
