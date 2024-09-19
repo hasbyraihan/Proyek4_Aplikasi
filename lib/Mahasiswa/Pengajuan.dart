@@ -364,6 +364,25 @@ class _PengajuanUploadFileState extends State<PengajuanUploadFile> {
     bool allFilesUploaded = templateFiles.values.every((file) => file != null);
 
     if (allFilesUploaded) {
+      // Tampilkan loading
+      showDialog(
+        context: context,
+        barrierDismissible: false, // Cegah dialog ditutup saat mengklik di luar
+        builder: (BuildContext context) {
+          return Dialog(
+            backgroundColor: Colors.transparent,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 16),
+                Text("Mengirim data...", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              ],
+            ),
+          );
+        },
+      );
+
       try {
         // Get the pengajuan ID by submitting the form via the callback
         String? pengajuanId = await widget.submitFormCallback();
@@ -379,6 +398,9 @@ class _PengajuanUploadFileState extends State<PengajuanUploadFile> {
             ),
           );
 
+          // Tutup dialog loading sebelum navigasi ke halaman lain
+          Navigator.pop(context);
+
           // Navigate to the dashboard page and remove all previous routes
           Navigator.pushAndRemoveUntil(
             context,
@@ -387,6 +409,9 @@ class _PengajuanUploadFileState extends State<PengajuanUploadFile> {
           );
         }
       } catch (e) {
+        // Tutup dialog loading jika terjadi error
+        Navigator.pop(context);
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error uploading files: $e'),

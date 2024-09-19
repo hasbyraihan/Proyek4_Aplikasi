@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:485364401816:android:040ddc1af035f3e65432ed",
+        "mobilesdk_app_id": "1:485364401816:android:53275ba5b6afcf335432ed",
         "android_client_info": {
-          "package_name": "com.example.flutter_helloo_world"
+          "package_name": "com.bmth.simpemas"
         }
       },
       "oauth_client": [],
@@ -27,9 +27,9 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:485364401816:android:4dbd0242b97d8df65432ed",
+        "mobilesdk_app_id": "1:485364401816:android:040ddc1af035f3e65432ed",
         "android_client_info": {
-          "package_name": "com.simpemas"
+          "package_name": "com.example.flutter_helloo_world"
         }
       },
       "oauth_client": [],

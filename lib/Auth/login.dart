@@ -195,6 +195,7 @@ class _LoginState extends State<Login> {
       _passwordError = false;
     });
 
+    // Tampilkan loading dialog
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -202,61 +203,76 @@ class _LoginState extends State<Login> {
           Center(child: CircularProgressIndicator()),
     );
 
-    final userCredential = await AuthServices().login(email, password);
-    Navigator.pop(context);
+    try {
+      final userCredential = await AuthServices().login(email, password);
 
-    if (userCredential != null) {
-      // Get the logged-in user's UID from the userCredential object
-      final userId = userCredential.user!.uid;
+      // Tutup loading dialog setelah proses login selesai
+      Navigator.pop(context);
 
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setBool('isLoggedIn', true);
+      if (userCredential != null) {
+        // Get the logged-in user's UID from the userCredential object
+        final userId = userCredential.user!.uid;
 
-      // Fetch user data (including role) from Firebase (replace with your implementation)
-      final userData = await AuthServices()
-          .getUserData(userId); // Replace _getUserData with your code
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setBool('isLoggedIn', true);
 
-      if (userData != null && userData['role'] != null) {
-        final userRole = UserRole.values.byName(userData['role'] as String);
+        // Fetch user data (including role) from Firebase (replace with your implementation)
+        final userData = await AuthServices().getUserData(userId); // Replace _getUserData with your code
 
-        // Show success notification
+        if (userData != null && userData['role'] != null) {
+          final userRole = UserRole.values.byName(userData['role'] as String);
+
+          // Show success notification
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Berhasil Login :)'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+
+          // Navigate based on user role after the SnackBar duration
+          Future.delayed(Duration(seconds: 2), () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) {
+                if (userRole == UserRole.admin) {
+                  return AdminDashboard();
+                } else {
+                  return MahasiswaDashboard();
+                }
+              }),
+            );
+          });
+        } else {
+          print('Error: Failed to retrieve user data or role is missing');
+          // Handle error (e.g., display message to user)
+        }
+      } else {
+        log('Firebase Auth Error');
+        setState(() {
+          _emailError = true;
+          _passwordError = true;
+        });
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Berhasil Login :)'),
+            content: Text('Ada yang salah gaes:('),
             duration: Duration(seconds: 2),
           ),
         );
-
-        // Navigate based on user role after the SnackBar duration
-        Future.delayed(Duration(seconds: 2), () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) {
-              if (userRole == UserRole.admin) {
-                return AdminDashboard();
-              } else {
-                return MahasiswaDashboard();
-              }
-            }),
-          );
-        });
-      } else {
-        print('Error: Failed to retrieve user data or role is missing');
-        // Handle error (e.g., display message to user)
       }
-    } else {
-      log('Firebase Auth Error');
-      setState(() {
-        _emailError = true;
-        _passwordError = true;
-      });
+    } catch (e) {
+      // Tutup loading dialog jika ada error
+      Navigator.pop(context);
 
+      // Handle error (e.g., display error message to user)
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Ada yang salah gaes:('),
+          content: Text('Error during login: $e'),
           duration: Duration(seconds: 2),
         ),
       );
     }
   }
+
 }

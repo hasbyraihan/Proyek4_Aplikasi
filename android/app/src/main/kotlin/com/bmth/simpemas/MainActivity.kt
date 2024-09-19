@@ -1,4 +1,4 @@
-package com.simpemas
+package com.bmth.simpemas
 
 import io.flutter.embedding.android.FlutterActivity
 
